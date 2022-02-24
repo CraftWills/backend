@@ -297,7 +297,7 @@ exports.forgotPassword = async (req, res) => {
     from: "as797007@gmail.com",
     to: userData.email,
     subject: "Your Password Reset Link",
-    text: `http://localhost:4200/resetpassword/${userData._id}`,
+    text: `https://craftwill-m2.vercel.app/resetpassword/${userData._id}`,
   };
   
   myFunction(otpSend);
