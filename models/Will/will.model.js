@@ -169,12 +169,7 @@ const WillSchema = new mongoose.Schema({
                 type : String
             },
             frequencyOfPayout: {
-                freqOfPay :{
-                    type : String
-                },
-                customField : {
-                    type : String
-                }
+            type : String
             },
             conditionsOfPayout : {
                 ifBenificiaryTurns: {
@@ -195,7 +190,7 @@ const WillSchema = new mongoose.Schema({
                 
             },
             fallback : {
-                activateTerminalClause : {
+                fallbackType : {
                     type : String
                 }
             },
