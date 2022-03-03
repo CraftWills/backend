@@ -5,6 +5,10 @@ const express = require("express");
 // User
 
 const userRouters = require("./routes/user.route");
+
+// admin
+
+const adminRouters = require ("./routes/admin.route");
 const subscriptionRouters = require("./routes/subscription/subscription.route");
 
 const memberRouter = require ("./routes/members/members.route")
@@ -60,6 +64,9 @@ app.use(cors());
 // Users
 app.use("/users", userRouters);
 
+// admin
+
+app.use("/admin",adminRouters);
 //members
 
 app.use ("/",memberRouter)

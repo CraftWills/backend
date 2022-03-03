@@ -24,6 +24,11 @@ router.post("/payment", authenticateToken,async (req, res) => {
   return res.json(result);
 });
 
+router.post("/stripePayment",authenticateToken,async(req,res)=>{
+  const result = await subscriptionController.stripePayment(req);
+  return res.json(result);
+})
+
 router.post("/product", authenticateToken,free.freePlan,async (req, res) => {
     const result = await subscriptionController.createProduct(req);
     return res.json(result);
@@ -34,7 +39,7 @@ router.get("/getSubDetails",authenticateToken , async (req,res)=>{
   return res.send(result);
 })
 
-
+router.post("createPaymentIntent",authenticateToken,subscriptionController.paymentIntent)
 // router.post("/cancleSub",authenticateToken, async (req, res) => {
 //   const result = await subscriptionController.cancleSubscription(req);
 //   return res.send(result);

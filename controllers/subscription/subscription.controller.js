@@ -3,9 +3,14 @@ const subscriptionDataAccess = require("../../dal/subscription/subscription.dal"
 const moment = require("moment-timezone");
 require("../../JsonWebToken/jwt");
 const Sub = require("../../models/subscription/subscription.model")
+const stripe = require("stripe")
 // const ExpressError = require("../../Errorgenerator/errorGenerator");
 
 // payment
+exports.stripePayment = async (req) => {
+  const token = await subscriptionDataAccess.chargeCustomerThroughTokenID(req);
+  console.log(token)
+  return token}
 
 exports.payment = async (req) => {
   // if(req.body.pricePlan=="free"){
@@ -17,7 +22,7 @@ exports.payment = async (req) => {
   const subscription = await subscriptionDataAccess.toke(result, req);
   const sub = await subscriptionDataAccess.subscriptionData(subscription, req);
   const subData = await subscriptionDataAccess.subId(sub);
-  
+  console.log(subscription)
   subData.createTime = moment().format("YYYY-MM-DD");
   subData.isoDate = moment().format("YYYY-MM-DD") + "T00:00:00Z";
   subData.amount=sub.plan.amount;
@@ -86,3 +91,16 @@ exports.getSubsDetails = async (req,res)=>{
   return data ;
 }
 
+exports.paymentIntent = async (req,res)=>{
+  try{
+ const paymentIntent = await stripe.paymentIntents.create({
+   amount : 1999,
+   currency : "usd"
+ })  
+ res.json({clientSecret : paymentIntent.clientSecret})
+} catch (err){
+  res.json({
+    message : err.message
+  })
+}
+}

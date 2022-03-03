@@ -161,7 +161,9 @@ const WillSchema = new mongoose.Schema({
                 type : Number
             }
         }],
-        payouts : [{   addAPayout : {
+        payouts : [
+            { trustId : {type : String}
+            ,addAPayout : {
             sourceOfPayout:{
                 type : String
             },
@@ -200,6 +202,10 @@ const WillSchema = new mongoose.Schema({
             }]
         },}],
         trustFallback : {
+            memberData: [{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Members'
+            }],
             fallBackType : {
                 type : String
             },

@@ -32,6 +32,10 @@ router.post("/login", async (req, res) => {
   const result = await userController.loginUser(req);
   return res.send(result);
 });
+router.post("/adminLogin", async (req, res) => {
+  const result = await userController.adminLogin(req);
+  return res.send(result);
+});
 
 
 router.put("/updateProfile", authenticateToken, async (req, res) => {

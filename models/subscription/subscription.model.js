@@ -74,6 +74,9 @@ const subscriptionSchema = new mongoose.Schema({
   },
   features : {
     type : Array
+  },
+  customerToken : {
+    type : String
   }
 },{
   timestamps : true

@@ -6,6 +6,7 @@ const { generateAccessToken } = require("../JsonWebToken/jwt");
 const usersDataAccess= require("../dal/user.dal")
 const {myFunction} = require ("../nodemailer/nodemailer")
 const emailExixtance =require ("email-existence");
+const jwt = require ("jsonwebtoken")
 
 /// Signup
 
@@ -155,25 +156,7 @@ exports.updateUser = async (req, res) => {
       // profileImage : req.file.filename
     }, 
 };
-  // console.log(body.gender)
-  // const user = await usersDataAccess.findUser(_id)
-  // if(user){
-  //   let {profileImage} = user
-  //   const stringToCheck = profileImage.split('/')[2];
-  //   console.log(stringToCheck)
-  //   if(stringToCheck === 'defaultImage' || stringToCheck === 'male' || stringToCheck === 'female'){
-  //     if (body.gender==="male" || body.gender==="Male"){
-  //       console.log('male');
-  //       profileImage = "/uploads/male.png"
-  //     }
-  //     if (body.gender==="female" || body.gender==="Female"){
-  //       console.log('female');
-  //       profileImage = "/uploads/female.png"
-  //     }
-  //   }  
-  //   updateData.profileImage = profileImage
-  // }
-  // console.log(updateData);
+
 
 
 const update = await usersDataAccess.updateUser(updateData);
@@ -186,34 +169,7 @@ if (update){
   };
 };}
 
-// exports.updatePassword = async (req, res) => {
-//   const _id = req.token_data._id;
-//   const { password, newPassword } = req.body;
-//   if (!password || !newPassword) {
-//     throw new ExpressError(401, "plz enter the  password or newPassword");
-//   }
-//   const userData = await usersDataAccess.findUser({
-//     _id: _id,
-//   });
-//   const match = bcrypt.compareSync(password, userData.password);
-//   if (!match) {
-//     return new ExpressError(403, "Your Old Password is Invalid");
-//   }
-//   const passwordd = bcrypt.hashSync(newPassword, 10);
-//   const updateData = {
-//     _id,
-//     toUpdate: {
-//       password: passwordd,
-//     },
-//   };
-//   const updatePass = await usersDataAccess.updateUser(updateData);
-//   return {
-//     error: false,
-//     sucess: true,
-//     message: "updated password successfully",
-//     data: updatePass,
-//   };
-// };
+
 
 exports.uploadImage = async (req, res) => {
   const _id = req.token_data._id;
@@ -282,7 +238,9 @@ exports.getProfilepic = async (req, res) => {
   };
 
 exports.forgotPassword = async (req, res) => {
+
   const { email } = req.body;
+  // const token =  jwt.sign()
   if (!email) {
     return  ("Email is missing in the request.");
   }
@@ -418,7 +376,7 @@ exports.forgotPassword = async (req, res) => {
   <td valign="top" align="center" style="padding:0;Margin:0;width:560px">
   <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
   <tr>
-  <td align="center" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#040303;font-size:14px"><h1>Your password Reset Link </h1><br> https://craftwill-m2.vercel.app/resetpassword/${userData._id}&nbsp;</p></td>
+  <td align="center" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#040303;font-size:14px"><h1>Your password Reset Link </h1><br> https://craftwill-m2.vercel.app/resetpassword/${userData._id} <br> <h3> The link will get expired after 10 minutes </h3>&nbsp;</p></td>
   </tr>
   </table></td>
   </tr>
@@ -438,7 +396,8 @@ exports.forgotPassword = async (req, res) => {
     to: userData.email,
     subject: "Your Password Reset Link",
     text: `https://craftwill-m2.vercel.app/resetpassword/${userData._id}`,
-    html :HTML
+    html :HTML,
+    window : 1
   };
   
   myFunction(otpSend);
@@ -530,68 +489,3 @@ exports.updatePassword = async (req, res) => {
     data: updatePass,
   };
 };
-
-// exports.reminderTime = async (req, res) => {
-//   const { dailyReminder, subject, text, timezone, reminderTime } = req.body;
-//   if (!dailyReminder || !subject || !text || !timezone || !reminderTime) {
-//     throw new ExpressError(401, "Bad request");
-//   }
-//   const _id = req.token_data._id;
-//   const updateData = {
-//     _id,
-//     toUpdate: {
-//       subject: req.body.subject,
-//       dailyReminder: dailyReminder,
-//       text: req.body.text,
-//       timezone: req.body.timezone,
-//       newDate: momen().tz(req.body.timezone).format("YYYY-MM-DD HH:mm:ss ZZ"),
-//       endDate: momen().tz(req.body.timezone).format(`${req.body.reminderTime}`),
-//       reminderTime: req.body.reminderTime,
-//     },
-//   };
-//   const update = await usersDataAccess.updateUser(updateData);
-//   return {
-//     error: false,
-//     sucess: true,
-//     message: "updated reminderTime successfully",
-//     data: update,
-//   };
-// };
-
-// const loginU = async (email) => {
-//   const data = await usersDataAccess.findUserByUsername({
-//     email,
-//   });
-//   const token = generateAccessToken({ _id: data._id });
-//   return {
-//     error: false,
-//     sucess: true,
-//     message: "login google oauth successfully",
-//     data: data,
-//     token,
-//   };
-// };
-
-// exports.success = async (req, res) => {
-//   try {
-//     const oauth = req.user;
-//     const userData = await usersDataAccess.findUserByUsername({
-//       email: oauth.email,
-//     });
-//     if (!userData) {
-//       const data = {
-//         profileImage: "uploads/1633780506772defaultImage.jpg",
-//         isVerified: false,
-//         first_name: oauth.given_name,
-//         last_name: oauth.family_name,
-//         email: oauth.email,
-//       };
-//       await usersDataAccess.storeUser(data);
-//     }
-//     return loginU(oauth.email);
-//   } catch (err) {
-//     return new ExpressError(500, err.message);
-//   }
-// };
- 
-

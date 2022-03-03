@@ -216,6 +216,18 @@ catch(err){
 }
 }
 
+const chargeCustomerThroughTokenID = async function (req,res) {
+  var param = {
+      amount: req.body.planPrice,
+      currency : 'usd',
+      // name : req.body.name,
+      // plan : req.body.pricePlan,
+      // email : req.body.email,
+      source: req.body.tokenId
+  }
+return await  stripe.charges.create(param)}
+
+
   /////////////////////////////////////////
 
 //     const subscription = await stripe.subscriptions.retrieve('sub_1KRYyhJrEVeMChFEc5WAeQM2');
@@ -264,5 +276,6 @@ const delPlan = async (req) => {
 
 module.exports = {freePlan,
   storeData, findSub, customers, subscriptionData,
-  toke, card, subId, creatp, price, createProduct, canclesub, delPlan,subscription, Upgrade
+  toke, card, subId, creatp, price, createProduct, canclesub, delPlan,subscription, Upgrade,
+  chargeCustomerThroughTokenID
 }
