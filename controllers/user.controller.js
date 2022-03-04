@@ -442,8 +442,7 @@ exports.resetPassword = async (req, res) => {
     toUpdate: {
       password: password,
     },
-    
-  }
+}
   const updatePass = await usersDataAccess.updateUser(updateData);
 
   return {
@@ -465,24 +464,24 @@ exports.updatePassword = async (req, res) => {
   const userData = await usersDataAccess.findUser({
     _id: _id,
   });
-  const match = bcrypt.compareSync(password, userData.password);
-  if (!match) {
+const match = bcrypt.compareSync(password, userData.password);
+if (!match) {
     return {
       error : true,
       success : false,
       message : "your old password is invalid"
     }
   }
-  const passwordd = bcrypt.hashSync(newPassword, 10);
-  const updateData = {
+const passwordd = bcrypt.hashSync(newPassword, 10);
+const updateData = {
     _id,
     toUpdate: {
       password: passwordd,
     },
   };
-  const updatePass = await usersDataAccess.updateUser(updateData);
+const updatePass = await usersDataAccess.updateUser(updateData);
 
-  return {
+return {
     error: false,
     success: true,
     message: "updated password successfully",

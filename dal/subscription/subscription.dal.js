@@ -63,7 +63,7 @@ const card = async (customer, req) => {
     exp_year: req.body.expYear,
     cvc: req.body.cvc,
   };
-
+console.log(stripe.tokens.create(param))
   return {
     token: await stripe.tokens.create(param),
     customerId: customer.id,
@@ -218,7 +218,7 @@ catch(err){
 
 const chargeCustomerThroughTokenID = async function (req,res) {
   var param = {
-      amount: req.body.planPrice,
+      amount:200,
       currency : 'usd',
       // name : req.body.name,
       // plan : req.body.pricePlan,

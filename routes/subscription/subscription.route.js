@@ -39,6 +39,11 @@ router.get("/getSubDetails",authenticateToken , async (req,res)=>{
   return res.send(result);
 })
 
+// router.get("/getAllSubDetails", async (req,res)=>{
+//   const result = await subscriptionController.getSubsDetails(req);
+//   return res.send(result);
+// })
+
 router.post("createPaymentIntent",authenticateToken,subscriptionController.paymentIntent)
 // router.post("/cancleSub",authenticateToken, async (req, res) => {
 //   const result = await subscriptionController.cancleSubscription(req);
