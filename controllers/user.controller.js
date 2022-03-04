@@ -395,7 +395,7 @@ exports.forgotPassword = async (req, res) => {
     from: "dev.craftwill@gmail.com",
     to: userData.email,
     subject: "Your Password Reset Link",
-    text: `https://craftwill-m2.vercel.app/resetpassword/${userData._id}`,
+    text: `https://craftwill-m3.vercel.app/resetpassword/${userData._id}`,
     html :HTML,
     window : 1
   };

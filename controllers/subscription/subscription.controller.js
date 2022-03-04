@@ -20,9 +20,9 @@ exports.payment = async (req) => {
   const customer = await subscriptionDataAccess.customers(req);
   const result = await subscriptionDataAccess.card(customer, req);
   const subscription = await subscriptionDataAccess.toke(result, req);
+  console.log("tokennn",subscription)
   const sub = await subscriptionDataAccess.subscriptionData(subscription, req);
   const subData = await subscriptionDataAccess.subId(sub);
-  console.log(subscription)
   subData.createTime = moment().format("YYYY-MM-DD");
   subData.isoDate = moment().format("YYYY-MM-DD") + "T00:00:00Z";
   subData.amount=sub.plan.amount;
