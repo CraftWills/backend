@@ -66,7 +66,7 @@ router.put("/forgotPassword", async (req, res) => {
 
 // router.put("/emailVerified", async (req, res) => {
 //   const result = await userController.verifyEmail(req);
-//   return res.send(result);
+//   return res.send(result); 
 // });
 
 router.put("/resetPassword", async (req, res) => {
@@ -74,6 +74,10 @@ router.put("/resetPassword", async (req, res) => {
   return res.send(result);
 });
 
+router.put("/verifyEmail/:id",async (req,res)=>{
+  const result = await userController.verifyEmail(req);
+  return res.send(result);
+}); 
 // router.put("/reminder", authenticateToken, async (req, res) => {
 //   const result = await userController.reminderTime(req);
 //   return res.send(result);

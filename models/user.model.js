@@ -53,15 +53,13 @@ const UserSchema = new mongoose.Schema({
    type: mongoose.Schema.Types.ObjectId,
    ref: 'MemberData'
   },
-  subscription:{
-    subscriptionId: { type: mongoose.Schema.Types.ObjectId , default:null},  
-    subId: {type: String},
-    // tempSubId: {type: String},
-    priceId:{type:String, default:null},
-    date: { type: Date },
-    expiryDate: { type: Date },
-    isActive: {type:Boolean},
+  Subscription:{
+    type : mongoose.Schema.Types.ObjectId,
+    ref : "subscription"
   },
+  isVerified : {
+    type : Boolean
+  }
 });
 
 const User = mongoose.model("UserData", UserSchema);

@@ -6,6 +6,7 @@ const { generateAccessToken } = require("../JsonWebToken/jwt");
 const usersDataAccess= require("../dal/user.dal")
 const {myFunction} = require ("../nodemailer/nodemailer")
 const emailExixtance =require ("email-existence");
+const User = require ("../models/user.model");
 const jwt = require ("jsonwebtoken")
 
 /// Signup
@@ -33,27 +34,26 @@ exports.createUser = async (req) => {
     postalCode : req.body.postalCode,
     citizenship : req.body.citizenship,
     dob : req.body.dob,
-    profileImage : null
+    profileImage : null,
+    isVerified : false
    };
    
-
-
-  //  if (data.gender==="male" || data.gender==="Male"){
-  //    data.profileImage = "/uploads/male.png"
-  //  }
-  //  if (data.gender==="female" || data.gender==="Female"){
-  //    data.profileImage = "/uploads/female.png"
-  //  }
-
   const storedUser = await usersDataAccess.storeUser(data);
   if (storedUser){
-  return {
+  const otpSend = {
+      from: "dev.craftwill@gmail.com",
+      to: data.email,
+      subject: "Your Password verify Link",
+      text: `https://craftwill-m3.vercel.app/${storedUser._id}`
+  };
+myFunction(otpSend);
+return {
     error: false,
     success: true,
     message: "user created successfully",
     data: storedUser,
   }}
-  else{
+else{
     return{
       error : true,
       success : false ,
@@ -62,9 +62,30 @@ exports.createUser = async (req) => {
   };
 }
 
-// exports.createUserByLink = async (req) => {
-//   const { email, password, first_name, last_name } = req.body;
-//   if (!password || !email || !first_name || !last_name) {
+
+//TO DO
+exports.verifyEmail = async (req)=>{
+  try {
+    const _id = req.params.id;
+    let updateData = {
+      _id,
+      toUpdate: {
+        isVerified : true
+      } 
+     }
+    const data = await usersDataAccess.updateUser(updateData)
+    return {
+      success : true,
+      error : false,
+      data : data
+    }
+  }
+  catch(err){
+    return err.message
+}}
+//  exports.createUserByLink = async (req) => {
+  //   if (!password || !email || !first_name || !last_name) {
+  //   const { email, password, first_name, last_name } = req.body;
 //     throw new ExpressError(401, "Bad request");
 //   }
 //   const passwordHash = bcrypt.hashSync(req.body.password, 10);
@@ -390,6 +411,7 @@ exports.forgotPassword = async (req, res) => {
   </div>
   </body>
   </html>`;
+
   console.log(userData.email)
   const otpSend = {
     from: "dev.craftwill@gmail.com",
@@ -410,25 +432,25 @@ return {
   };
 };
 
-exports.verifyEmail = async(req,res)=>{
-  const {_id} = req.body;
-  if (!_id){
-    throw new ExpressError(401,"please enter the _id");
-  }
-  const updateData= {
-    _id,
-    toUpdate : {
-      isVerified : true,
-    }
-  }
-  const update  = await usersDataAccess.updateUser(updateData);
-  return {
-    error : false,
-    success : true,
-    message : "email is verified successfully",
-    verify : update
-  }
-}
+// exports.verifyEmail = async(req,res)=>{
+//   const {_id} = req.body;
+//   if (!_id){
+//     throw new ExpressError(401,"please enter the _id");
+//   }
+//   const updateData= {
+//     _id,
+//     toUpdate : {
+//       isVerified : true,
+//     }
+//   }
+//   const update  = await usersDataAccess.updateUser(updateData);
+//   return {
+//     error : false,
+//     success : true,
+//     message : "email is verified successfully",
+//     verify : update
+//   }
+// }
  
 exports.resetPassword = async (req, res) => {
   const { _id, newPassword} = req.body;

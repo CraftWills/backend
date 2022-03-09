@@ -14,7 +14,6 @@ const subscriptionSchema = new mongoose.Schema({
     type: String,
   },
 
-
   upgrade: {
     type: Boolean,
     default:false

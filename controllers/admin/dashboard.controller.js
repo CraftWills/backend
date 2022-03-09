@@ -4,6 +4,7 @@
 // Total Earnings  = Week/month/lifetime
 const moment = require("moment-timezone");
 const subscription = require ("../../models/subscription/subscription.model")
+const users = require ("../../models/user.model");
 
 ///--- to do-----
 
@@ -15,32 +16,20 @@ exports.getUsersMonthly = async (req,res)=> {
       let month= moment().tz("Asia/Kolkata").format("MM");
       let year = moment().tz("Asia/Kolkata").format("YYYY");
       m=n+1;
-      // if (n >= month) {
-      //       year--;
-      // }
+      console.log("the calculation is :-",m)
       const date = moment().format(`${year}-0${m}-01`);
-    
       let changeMonth = moment().format(`${year}-0${n}-01`);
-      // console.log(changeMonth)
-      // console.log(date)
-  
-    const assetData = await AssetsDataAccess.findAssetsMonthly({
-        fromDate: `${changeMonth}T00:00:00Z`,
-        endDate: `${date}T00:00:00Z`, 
+      console.log(changeMonth);
+      console.log(date);
+     
+    const userData = await subscription.find({
+      $gte : `${changeMonth}`,
+        $lt :  `${date}`, 
     })
-    
-    var total = 0
-    assetData.forEach(function (item, index) {
-      const Astdta= item.bankAccount.estimateValue;
-      total+=Astdta
-  });
-  console.log("Total assets amount",total)
-    res.json({
-      message : "Assets total amount found successfully",
-      success : true,
-      amount : total
-    })
+    console.log(userData)
+
     }
+
     catch (err) {
         res.json({
             success : false,
@@ -49,20 +38,42 @@ exports.getUsersMonthly = async (req,res)=> {
         })
     }
     
-  }
+  }   
   
-exports.allUsers =  async (req,res)=>{
-    const users = await subscription.find();
-    let datas= []
-    users.forEach(function (item, index) {
-        const data= {
-            name : item.name,
-            email : item.stripeEmail,
-            subscriptionDate : item.subscriptionStartDate,
-            expiryDate : item.subscriptionEndDate,
-            lastLogin : item.updatedAt
-        };
-        datas.push(data)
-     });
-    res.send(datas);
+exports.allSubscriptionUsers =  async (req,res)=>{
+try{
+  const users = await subscription.find();
+  console.log(users)
+  return users.map(getUserDetails);
+  
+  function getUserDetails(item) {
+    console.log([
+      item.name,item.stripeEmail,item.subscriptionStartDate,item.subscriptionEndDate,item.updatedAt
+    ])
+    }
+}catch(err){
+  res.json({
+    message : err.message
+  })
+}
+}
+
+
+exports.allUsers =  async (req,res) =>{
+  try {
+    users.find()
+    .populate("Subscription")
+    .then(p=>console.log(p))
+  }catch(err){
+    return err.message
+  }
+}
+  
+exports.deleteAllUsers = async (req,res)=>{
+  try{
+    
+  }
+  catch(err){
+    return err.message; 
+  }
 }

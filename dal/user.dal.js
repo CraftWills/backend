@@ -28,7 +28,7 @@ const updateUser = async (userData) => {
     { $set: userData.toUpdate },
     { new: true }
   );
-  // await user.save()
+  // await user.s ave()
   return user;
 };
 

@@ -17,7 +17,7 @@ const storeAsset = async (AssetsToStore) => {
 };
 
 // const findUserByUsername = async (username) => {
-//   const user = await User.findOne(username);
+//   const user = await User.findOne(username);c
 //   return user;
 // };
 
