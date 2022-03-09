@@ -59,7 +59,7 @@ else{
       success : false ,
       message : "User already exists",
     }
-  };
+  };    
 }
 
 
@@ -73,11 +73,14 @@ exports.verifyEmail = async (req)=>{
         isVerified : true
       } 
      }
+     const token = generateAccessToken({ _id: _id });
+     
     const data = await usersDataAccess.updateUser(updateData)
     return {
       success : true,
       error : false,
-      data : data
+      data : data,
+      token : token
     }
   }
   catch(err){
