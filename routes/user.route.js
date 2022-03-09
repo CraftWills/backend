@@ -78,6 +78,8 @@ router.put("/verifyEmail",async (req,res)=>{
   const result = await userController.verifyEmail(req);
   return res.send(result);
 }); 
+
+
 // router.put("/reminder", authenticateToken, async (req, res) => {
 //   const result = await userController.reminderTime(req);
 //   return res.send(result);

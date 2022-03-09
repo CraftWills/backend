@@ -10,7 +10,7 @@ const User = require("../../models/user.model")
 const moment = require ("moment-timezone")
 const liabilities = require ("../../models/liabilities/liabilities.model")
 // const liquid = ['bankAccount','investmentAccount','insurancePolicy','business','intellectualProperty']
-const iliquid = ['personalPossession','realEsate','motorVehicle','safeDepositBox']
+// const iliquid = ['personalPossession','realEsate','motorVehicle','safeDepositBox']
 
 // const AssetTypeFind = async(req,res)=>{
 //   const liquid = ['bankAccount','investmentAccount','insurancePolicy','business','intellectualProperty']
@@ -200,119 +200,119 @@ const update = await AssetsDataAccess.updateAsset(updateData);
 };
 
   
-const totalAssetsAmount = async(req,res)=>{
-    const aggCursor = await asset.aggregate([
-        {
-          $match: {
-            user_id: req.token_data._id
-          }
-        }, {
-          $group: {
-            _id: '$user_id', 
-            total: {
-              $sum : '$bankAccount.estimateValue'
-            }
-          }
-        }
-      ]);
+// const totalAssetsAmount = async(req,res)=>{
+//     const aggCursor = await asset.aggregate([
+//         {
+//           $match: {
+//             user_id: req.token_data._id
+//           }
+//         }, {
+//           $group: {
+//             _id: '$user_id', 
+//             total: {
+//               $sum : '$bankAccount.estimateValue'
+//             }
+//           }
+//         }
+//       ]);
    
-aggCursor.forEach(function (item, index) {
-console.log(item.total)
-res.json(item.total)   
-});
-}
+// aggCursor.forEach(function (item, index) {
+// console.log(item.total)
+// res.json(item.total)   
+// });
+// }
 
 
-const totalNetWorth = async(req,res)=>{
-    const aggCursor1 = await asset.aggregate([
-        {
-          $match: {
-            user_id: req.token_data._id
-          }
-        }, {
-          $group: {
-            _id: '$user_id', 
-            total: {
-              $sum : '$bankAccount.estimateValue'
-            }
-          }
-        }
-      ])
-    const aggCursor2 = await liabilities.aggregate([
-        {
-          $match: {
-            user_id: req.token_data._id
-          }
-        }, {
-          $group: {
-            _id: '$user_id', 
-            total: {
-              $sum: '$privateDept.current_Outstanding_Amount'
-            }
-          }
-        }
-      ])
+// const totalNetWorth = async(req,res)=>{
+//     const aggCursor1 = await asset.aggregate([
+//         {
+//           $match: {
+//             user_id: req.token_data._id
+//           }
+//         }, {
+//           $group: {
+//             _id: '$user_id', 
+//             total: {
+//               $sum : '$bankAccount.estimateValue'
+//             }
+//           }
+//         }
+//       ])
+//     const aggCursor2 = await liabilities.aggregate([
+//         {
+//           $match: {
+//             user_id: req.token_data._id
+//           }
+//         }, {
+//           $group: {
+//             _id: '$user_id', 
+//             total: {
+//               $sum: '$privateDept.current_Outstanding_Amount'
+//             }
+//           }
+//         }
+//       ])
 
-     var a=0;
-     var b=0;
-     aggCursor1.forEach(function (item, index) {
-         const agg1= item.total;
-         a+=agg1;
-     });
-     aggCursor2.forEach(function(item,index){
-         const agg2 = item.total;
-         b+=agg2;
-     })  
-    res.json({
-        message : "Total net worth",
-        amount : b-a
-    })
-    console.log(b-a)    
-}
+//      var a=0;
+//      var b=0;
+//      aggCursor1.forEach(function (item, index) {
+//          const agg1= item.total;
+//          a+=agg1;
+//      });
+//      aggCursor2.forEach(function(item,index){
+//          const agg2 = item.total;
+//          b+=agg2;
+//      })  
+//     res.json({
+//         message : "Total net worth",
+//         amount : b-a
+//     })
+//     console.log(b-a)    
+// }
 
-const getAssetsMonthly = async (req,res)=> {
-  try{
-    let n =req.body.monthNumber;
-    let m;
-    let month= moment().tz("Asia/Kolkata").format("MM");
-    let year = moment().tz("Asia/Kolkata").format("YYYY");
-    m=n+1;
-    // if (n >= month) {
-    //       year--;
-    // }
-    const date = moment().format(`${year}-0${m}-01`);
+// const getAssetsMonthly = async (req,res)=> {
+//   try{
+//     let n =req.body.monthNumber;
+//     let m;
+//     let month= moment().tz("Asia/Kolkata").format("MM");
+//     let year = moment().tz("Asia/Kolkata").format("YYYY");
+//     m=n+1;
+//     // if (n >= month) {
+//     //       year--;
+//     // }
+//     const date = moment().format(`${year}-0${m}-01`);
   
-    let changeMonth = moment().format(`${year}-0${n}-01`);
-    // console.log(changeMonth)
-    // console.log(date)
+//     let changeMonth = moment().format(`${year}-0${n}-01`);
+//     // console.log(changeMonth)
+//     // console.log(date)
 
-  const assetData = await AssetsDataAccess.findAssetsMonthly({
-      fromDate: `${changeMonth}T00:00:00Z`,
-      endDate: `${date}T00:00:00Z`, 
-      type : "bankAccount"
-  })
+//   const assetData = await AssetsDataAccess.findAssetsMonthly({
+//       fromDate: `${changeMonth}T00:00:00Z`,
+//       endDate: `${date}T00:00:00Z`, 
+//       type : "bankAccount"
+//   })
   
-  var total = 0
-  assetData.forEach(function (item, index) {
-    const Astdta= item.bankAccount.estimateValue;
-    total+=Astdta
-});
-console.log("Total assets amount",total)
-  res.json({
-    message : "Assets total amount found successfully",
-    success : true,
-    amount : total
-  })
-  }
-  catch (err) {
-      res.json({
-          success : false,
-          message : "Something went wrong",
-          error : err.message
-      })
-  }
+//   var total = 0
+//   assetData.forEach(function (item, index) {
+//     const Astdta= item.bankAccount.estimateValue;
+//     total+=Astdta
+// });
+// console.log("Total assets amount",total)
+//   res.json({
+//     message : "Assets total amount found successfully",
+//     success : true,
+//     amount : total
+//   })
+//   }
+//   catch (err) {
+//       res.json({
+//           success : false,
+//           message : "Something went wrong",
+//           error : err.message
+//       })
+//   }
   
-}
+// }
 
 
 const filterAssets = async(req,res)=>{
@@ -383,4 +383,146 @@ const countLiquidAndiliquid = async (req,res)=>{
   })  
 }
 
-module.exports = {storeAssets,getAssetsMonthly,updateAssets,totalAssetsAmount,totalNetWorth,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid}
+const quickStats = async(req,res)=>{
+  const _id = req.token_data._id
+  const aggCursor1 = await asset.aggregate([
+    {
+      $match: {
+        user_id: _id
+      }
+    }, {
+      $group: {
+        _id: '$user_id', 
+        total: {
+          $sum : '$bankAccount.estimateValue'
+        }
+      }
+    }
+  ])
+const aggCursor2 = await liabilities.aggregate([
+    {
+      $match: {
+        user_id: _id
+      }
+    }, {
+      $group: {
+        _id: '$user_id', 
+        total: {
+          $sum: '$privateDept.current_Outstanding_Amount'
+        }
+      }
+    }
+  ])
+
+ var a=0;
+ var b=0;
+ aggCursor1.forEach(function (item, index) {
+     const agg1= item.total;
+     a+=agg1;
+ });
+ aggCursor2.forEach(function(item,index){
+     const agg2 = item.total;
+     b+=agg2;
+ })  
+ console.log(a-b)  
+ const totalAssets = await asset.aggregate([
+   {
+     $match: {
+       user_id: _id
+      }
+    }, {
+      $group: {
+        _id: '$user_id', 
+        total: {
+          $sum : '$bankAccount.estimateValue'
+        }
+      }
+    }
+  ]);
+  var totalAst = 0
+  totalAssets.forEach(function (item, index) {
+    console.log(item.total)
+    totalAst+=item.total 
+  });
+  res.json({
+     totalNetWorth : {
+       amount : a-b
+     },
+     totalAssets : {
+       amount : totalAst
+     },
+     totalLiabilities : {
+       amount : b
+     },
+     totalAssetsInTrust: {    ///total assets in trust should be valid
+       amount : totalAst
+     }     
+
+  })
+}
+
+const Statics = async(req,res)=>{
+  try{
+    let n =req.body.monthNumber;
+    let m;
+    let month= moment().tz("Asia/Kolkata").format("MM");
+    let year = moment().tz("Asia/Kolkata").format("YYYY");
+    m=n+1;
+    // if (n >= month) {
+    //       year--;
+    // }
+    const date = moment().format(`${year}-0${m}-01`);
+  
+    let changeMonth = moment().format(`${year}-0${n}-01`);
+    // console.log(changeMonth)
+    // console.log(date)
+
+  const assetData = await AssetsDataAccess.findAssetsMonthly({
+      fromDate: `${changeMonth}T00:00:00Z`,
+      endDate: `${date}T00:00:00Z`, 
+      type : "bankAccount"
+  })
+  
+  var total = 0
+  assetData.forEach(function (item, index) {
+    const Astdta= item.bankAccount.estimateValue;
+    total+=Astdta
+});
+console.log("Total assets amount",total)
+
+const aggCursor = await liabilities.aggregate([
+  {
+    $match: {
+      user_id: req.token_data._id
+    }
+  }, {
+    $group: {
+      _id: '$user_id', 
+      total: {
+        $sum: '$privateDept.current_Outstanding_Amount'
+      }
+    }
+  }
+]);
+var liabilityStatAmount = 0
+aggCursor.forEach(function (item, index) {
+  console.log(item.total)
+  liabilityStatAmount+=item.total   
+});
+  res.json({
+    assetStats :{data : total},
+    liabilitiesStats : {
+      data : liabilityStatAmount
+    }  
+  })
+  }
+  catch (err) {
+      res.json({
+          success : false,
+          message : "Something went wrong",
+          error : err.message
+      })
+  }
+}
+
+module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats,Statics}

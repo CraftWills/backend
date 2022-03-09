@@ -19,4 +19,8 @@ router.get("/allUsers", async (req, res) => {
     return res.send(result);
 });
 
+router.get("/totalWillCreated",async(req,res)=>{
+    const result = await dashboardController.allSubscriptionUsers(req);
+    return res.send(result);
+})
 module.exports = router;

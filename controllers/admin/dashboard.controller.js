@@ -5,7 +5,7 @@
 const moment = require("moment-timezone");
 const subscription = require ("../../models/subscription/subscription.model")
 const users = require ("../../models/user.model");
-
+const wills = require("../../models/Will/will.model");
 ///--- to do-----
 
 
@@ -60,4 +60,19 @@ try{
 
 
 
-// exports.totalWIllCreated 
+exports.totalWillCreated = async(req,res)=>{
+  
+  try{
+    var willCount = 0
+    const willData = wills.find();
+    willData.forEach((item,index)=>{
+        willCount+=1
+    })
+    console.log(willCount);
+  }catch(err){
+    return {
+      success : false,
+      message : err.message
+    }
+  }
+}
