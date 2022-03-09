@@ -44,7 +44,7 @@ exports.createUser = async (req) => {
       from: "dev.craftwill@gmail.com",
       to: data.email,
       subject: "Your Password verify Link",
-      text: `https://craftwill-m3.vercel.app/${storedUser._id}`
+      text: `https://craftwill-m3.vercel.app/verifyEmail/${storedUser._id}`
   };
 myFunction(otpSend);
 return {
