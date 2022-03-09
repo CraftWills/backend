@@ -74,7 +74,7 @@ router.put("/resetPassword", async (req, res) => {
   return res.send(result);
 });
 
-router.put("/verifyEmail/:id",async (req,res)=>{
+router.put("/verifyEmail",async (req,res)=>{
   const result = await userController.verifyEmail(req);
   return res.send(result);
 }); 

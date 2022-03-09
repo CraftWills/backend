@@ -66,7 +66,7 @@ else{
 //TO DO
 exports.verifyEmail = async (req)=>{
   try {
-    const _id = req.params.id;
+    const _id = req.body.id;
     let updateData = {
       _id,
       toUpdate: {

@@ -59,21 +59,5 @@ try{
 }
 
 
-exports.allUsers =  async (req,res) =>{
-  try {
-    users.find()
-    .populate("Subscription")
-    .then(p=>console.log(p))
-  }catch(err){
-    return err.message
-  }
-}
-  
-exports.deleteAllUsers = async (req,res)=>{
-  try{
-    
-  }
-  catch(err){
-    return err.message; 
-  }
-}
+
+// exports.totalWIllCreated 
