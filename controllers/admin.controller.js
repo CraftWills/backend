@@ -213,7 +213,7 @@ exports.forgotAdmin = async(req,res)=>{
             html :HTML
           };
 
-        myFunction(otpSend);
+      myFunction(otpSend);
         res.json( {
             error: false,
             success: true,

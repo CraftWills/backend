@@ -8,7 +8,7 @@ router.post('/storeAssets',authenticateToken,AssetsController.storeAssets);
 router.get ("/getAssets",authenticateToken,AssetsController.getAssets);
 router.put("/updateAssets/:id",authenticateToken,AssetsController.updateAssets);
 // router.get("/getAssetStat",authenticateToken,AssetsController.totalAssetsAmount);
-router.get("/statics",authenticateToken,AssetsController.Statics);
+router.post("/statics",authenticateToken,AssetsController.Statics);
 router.get("/quickStats",authenticateToken,AssetsController.quickStats);
 // router.get ("/getAssetsMonthly",authenticateToken,AssetsController.getAssetsMonthly);
 router.post("/filterAssets",authenticateToken,AssetsController.filterAssets);
