@@ -6,9 +6,8 @@ const moment = require("moment-timezone");
 const subscription = require ("../../models/subscription/subscription.model")
 const users = require ("../../models/user.model");
 const wills = require("../../models/Will/will.model");
-///--- to do-----
 
-
+///--- to do--------
 exports.getUsersMonthly = async (req,res)=> {
     try{
       let n =req.body.monthNumber;
@@ -58,21 +57,44 @@ try{
 }
 }
 
-
-
 exports.totalWillCreated = async(req,res)=>{
   
   try{
-    var willCount = 0
-    const willData = wills.find();
+    var willCount = 0 
+    const willData = await wills.find();
     willData.forEach((item,index)=>{
         willCount+=1
     })
-    console.log(willCount);
+    return({
+      success : true,
+      error : false,
+      totalWill : willCount
+    })
   }catch(err){
     return {
       success : false,
       message : err.message
     }
+  }
+}
+
+exports.totalActiveWills = async(req,res)=>{
+  try{
+     var activeWills =0
+     const totalActiveWills = await wills.find();
+     totalActiveWills.forEach((item,index)=>{
+       activeWills+=1;
+     })
+     return {
+       success : true,
+       error : false,
+       totalActiveWIlls : activeWills 
+     }
+  }
+  catch(err){
+    return ( {
+      success : false,
+      message : err.message
+    })
   }
 }

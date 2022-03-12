@@ -246,8 +246,8 @@ const WillSchema = new mongoose.Schema({
                 }]
 
             },
-            recommendedAdvisor : {
-                appointAdvisor : {
+            recommendedAdvisor : [
+                 {
                     advisorName : {
                         type : String
                     },
@@ -256,9 +256,12 @@ const WillSchema = new mongoose.Schema({
                     },
                     expertise : {
                         type : String
+                    },
+                    advisorId : {
+                        type : String
                     }
-            }
-            },
+            }]
+            ,
             finalWords : {
                 type : String
             },
@@ -268,12 +271,7 @@ const WillSchema = new mongoose.Schema({
             customClause : {
                 type : String
             },
-            languages : {
-                type : String
-            },
-            conditionsOfPayout : {
-                type : String
-            }   
+      
         }}
 });
 

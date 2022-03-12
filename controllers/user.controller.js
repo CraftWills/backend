@@ -179,6 +179,7 @@ exports.updateUser = async (req, res) => {
       Citizenship : req.body.Citizenship,
       // profileImage : req.file.filename
     }, 
+    
 };
 
 

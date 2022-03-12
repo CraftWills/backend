@@ -14,7 +14,7 @@ exports.createAdmin = async(req,res)=>{
         const data = new admin({
             email : req.body.email,
             password : req.body.password
-        })
+        })  
         const savedData= await data.save();
         console.log(savedData);
         res.json({
@@ -256,3 +256,23 @@ exports.resetAdminPassword = async (req, res) => {
   console.log(err.message)
 };
 };
+
+exports.updateAdmin = async(req,res)=>{
+  try{
+    const data = await admin.find();
+    return data
+  }
+  catch(err){
+    return err.message
+  }
+}
+
+
+exports.uploadAdminPic = async(req,res)=>{
+  try {
+    
+  }
+  catch(err){
+    return err.message
+  }
+}

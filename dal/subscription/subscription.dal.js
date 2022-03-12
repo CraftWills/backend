@@ -6,6 +6,7 @@ const userModel = require("../../models/user.model");
 const mongoose= require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const {myFunction} = require ("../../nodemailer/nodemailer")
+const SubscriptionHistory = require("../../models/subscription/subscription.history")
 
 const findb = async (data) => {
 const subscription = await stripe.subscriptions.retrieve(
@@ -32,6 +33,11 @@ const storeData = async (subscriptionToStore) => {
   return data;
 };
 
+const storeDataToHistory = async (subscriptionToStore)=>{
+  const data = await Subscription.create(subscriptionToStore);
+  return data;
+};
+
 const findSub = async (data) => {
     
 const reports = await Subscription.find();  
@@ -52,8 +58,27 @@ const customers = async (req) => {
       country: req.body.country,
     },
   });
-  return createCustomer;
-};
+  return createCustomer;  
+};  
+
+const createCustomer = async data =>{
+    return new Promise(async(resolve,reject)=>{
+      try{
+        await stripe.customers.create({
+          source : data.cardDetails.cardToken,
+          email : data.personalDetails.email,
+          name : data.fullName
+        }).then(async res =>{
+              data.customerId = res.id;
+              const result = await _stripeSubscribePlan.default.createSubscription(data);
+          })
+     }
+      catch(err){
+        console.log(err.message);
+         return reject(err)
+      }
+    })
+}
 
 const card = async (customer, req) => {
   let param = {};
@@ -63,8 +88,9 @@ const card = async (customer, req) => {
     exp_year: req.body.expYear,
     cvc: req.body.cvc,
   };
+
 console.log(stripe.tokens.create(param))
-  return {
+  return {  
     token: await stripe.tokens.create(param),
     customerId: customer.id,
   };
@@ -105,7 +131,8 @@ const subId = async (sub) => {
 
 const createPlan = async (data) => {
   const plan = await stripe.plans.create({
-    amount: data.planPrice,
+    // amount: data.planPrice,
+    amount: 20,
     currency: "usd",
     interval: "month",
     // interval_count: data.stripeDuration,
@@ -125,6 +152,9 @@ const freePlan = async (req, res, next) => {
       }
   }
 
+
+//// 01
+
 const createProduct = async (req) => {
   const resp = await stripe.products.create({
     name: "monthly",
@@ -135,7 +165,7 @@ const createProduct = async (req) => {
 
 const price = async (resp, req) => {
   const res = await stripe.prices.create({
-    unit_amount: req.body.planPrice,
+    unit_amount: 20, //req.body.planPrice,
     currency: "usd",
     recurring: { interval: "month" },
     product: resp.id,
@@ -274,5 +304,5 @@ const delPlan = async (req) => {
 module.exports = {freePlan,
   storeData, findSub, customers, subscriptionData,
   toke, card, subId, creatp, price, createProduct, canclesub, delPlan,subscription, Upgrade,
-  chargeCustomerThroughTokenID
+  chargeCustomerThroughTokenID,createCustomer,storeDataToHistory
 }

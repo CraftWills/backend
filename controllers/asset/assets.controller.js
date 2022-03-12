@@ -453,7 +453,7 @@ const aggCursor2 = await liabilities.aggregate([
      },
      totalLiabilities : {
        amount : b
-     },
+     }, 
      totalAssetsInTrust: {    ///total assets in trust should be valid
        amount : totalAst
      }     
@@ -461,68 +461,80 @@ const aggCursor2 = await liabilities.aggregate([
   })
 }
 
-const Statics = async(req,res)=>{
-  try{
-    let n =req.body.monthNumber;
-    let m;
-    let month= moment().tz("Asia/Kolkata").format("MM");
-    let year = moment().tz("Asia/Kolkata").format("YYYY");
-    m=n+1;
-    // if (n >= month) {
-    //       year--;
-    // }
-    const date = moment().format(`${year}-0${m}-01`);
-  
-    let changeMonth = moment().format(`${year}-0${n}-01`);
-    // console.log(changeMonth)
-    // console.log(date)
+// const Statics = async(req,res)=>{
+//   try{
+//     let n =req.body.monthNumber;
+//     let m;
+//     let month= moment().tz("Asia/Kolkata").format("MM");
+//     let year = moment().tz("Asia/Kolkata").format("YYYY");
+//     m=n+1;
+//     const date = moment().format(`${year}-0${m}-01`);
+//     let changeMonth = moment().format(`${year}-0${n}-01`);
+//     // console.log(changeMonth)
+//     // console.log(date)
 
-  const assetData = await AssetsDataAccess.findAssetsMonthly({
-      fromDate: `${changeMonth}T00:00:00Z`,
-      endDate: `${date}T00:00:00Z`, 
-      type : "bankAccount"
-  })
+//   const assetData = await AssetsDataAccess.findAssetsMonthly({
+//       fromDate: `${changeMonth}T00:00:00Z`,
+//       endDate: `${date}T00:00:00Z`, 
+//       type : "bankAccount"
+//   })
   
-  var total = 0
-  assetData.forEach(function (item, index) {
-    const Astdta= item.bankAccount.estimateValue;
-    total+=Astdta
-});
-console.log("Total assets amount",total)
+//   var total = 0
+//   assetData.forEach(function (item, index) {
+//     const Astdta= item.bankAccount.estimateValue;
+//     total+=Astdta
+// }); 
+// console.log("Total assets amount",total)
 
-const aggCursor = await liabilities.aggregate([
-  {
-    $match: {
-      user_id: req.token_data._id
-    }
-  }, {
-    $group: {
-      _id: '$user_id', 
-      total: {
-        $sum: '$privateDept.current_Outstanding_Amount'
-      }
-    }
-  }
-]);
-var liabilityStatAmount = 0
-aggCursor.forEach(function (item, index) {
-  console.log(item.total)
-  liabilityStatAmount+=item.total   
-});
-  res.json({
-    assetStats :{data : total},
-    liabilitiesStats : {
-      data : liabilityStatAmount
-    }  
-  })
-  }
-  catch (err) {
-      res.json({
-          success : false,
-          message : "Something went wrong",
-          error : err.message
-      })
-  }
+// const aggCursor = await liabilities.aggregate([
+//   {
+//     $match: {
+//       user_id: req.token_data._id
+//     }
+//   }, {
+//     $group: {
+//       _id: '$user_id', 
+//       total: {
+//         $sum: '$privateDept.current_Outstanding_Amount'
+//       }
+//     }
+//   }
+// ]);
+// var liabilityStatAmount = 0
+// aggCursor.forEach(function (item, index) {
+//   console.log(item.total)
+//   liabilityStatAmount+=item.total   
+// });
+//   res.json({
+//     assetStats :{data : total},
+//     liabilitiesStats : {
+//       data : liabilityStatAmount
+//     }  
+//   })
+//   }
+//   catch (err) {
+//       res.json({
+//           success : false,
+//           message : "Something went wrong",
+//           error : err.message
+//       })
+//   }
+// }
+
+/// to do
+
+const Statics = async (req,res)=>{
+     try {
+        const FIRST_MONTH = 1;
+        const LAST_MONTH = 12;
+        const now = new Date();
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const YEAR_BEFORE = new Date();
+        const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+               
+     }
+     catch(err){
+       return err.message
+     }
 }
-
 module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats,Statics}

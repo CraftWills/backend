@@ -3,7 +3,9 @@ const subscriptionDataAccess = require("../../dal/subscription/subscription.dal"
 const moment = require("moment-timezone");
 require("../../JsonWebToken/jwt");
 const Sub = require("../../models/subscription/subscription.model")
+const users = require("../../models/user.model")
 const stripe = require("stripe")
+const subHistory = require("../../models/subscription/subscription.history");
 // const ExpressError = require("../../Errorgenerator/errorGenerator");
 
 // payment
@@ -16,8 +18,9 @@ exports.payment = async (req) => {
   // if(req.body.pricePlan=="free"){
   // return await subscriptionDataAccess.storeData({pricePlan:req.body.pricePlan})};
 
-  const _id = req.token_data._id;
+  const id = req.token_data._id;
   const customer = await subscriptionDataAccess.customers(req);
+  console.log(customer)
   const result = await subscriptionDataAccess.card(customer, req);
   const subscription = await subscriptionDataAccess.toke(result, req);
   console.log("tokennn",subscription)
@@ -26,7 +29,7 @@ exports.payment = async (req) => {
   subData.createTime = moment().format("YYYY-MM-DD");
   subData.isoDate = moment().format("YYYY-MM-DD") + "T00:00:00Z";
   subData.amount=sub.plan.amount;
-  subData.userId=_id
+  subData.userId=id
   subData.subscription=true
   subData.pricePlan=req.body.pricePlan
   
@@ -45,7 +48,16 @@ exports.payment = async (req) => {
 
   subData.subscriptionStartDate= moment().format("YYYY-MM-DD");
   subData.subscriptionEndDate= moment().format(`YYYY-${months}-DD`);
-  return await subscriptionDataAccess.storeData(subData)};
+  let dta = await  subHistory.find({userId : req.token_data?._id});
+  console.log(dta)
+  let id2 = req.token_data._id
+  let usrdta = await users.findByIdAndUpdate(id2,{$set : {
+    Subscription : dta._id
+  }})
+  console.log(usrdta)
+  return await subscriptionDataAccess.storeData(subData);
+  
+};
 // };
   
 
@@ -58,10 +70,10 @@ exports.createProduct = async (req) => {
   const data2 = await subscriptionDataAccess.price(data1, req);
   const data3 = await subscriptionDataAccess.creatp(data2, data1, req);
   data3.userId=req.token_data._id
-  return await subscriptionDataAccess.storeData(data3)};
+  return await subscriptionDataAccess.storeDataToHistory(data3)};
 
 exports.upgradeSub = async(req) =>{
-  return await subscriptionDataAccess.Upgrade(req)
+  return await subscriptionDataAccess.Upgrade(req);
 }
 
 // exports.getTotalAmountToday = async (req) => {
@@ -104,3 +116,4 @@ exports.paymentIntent = async (req,res)=>{
   })
 }
 }
+
