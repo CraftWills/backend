@@ -66,7 +66,7 @@ exports.blockUser =async(req,res)=>{
             isBlocked : true
         }});
         if (data){
-            res.send( "data has been removed successfully");
+            res.send( " User has been blocked successfully");
         }
         else{
             res.send('something went wrong')
@@ -79,3 +79,4 @@ exports.blockUser =async(req,res)=>{
         })
     }
 }
+

@@ -119,11 +119,12 @@ const WillSchema = new mongoose.Schema({
             //// What is to happen if the benificiary does not survive the testator?
         },
         ],
+        assetsResidualType : {
+            type : String
+        },
     }]
     ,
-    assetsResidualType : {
-        type : String
-    },
+  
 
     //Trust 
    trust : [{
