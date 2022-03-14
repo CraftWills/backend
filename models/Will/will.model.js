@@ -52,7 +52,7 @@ const WillSchema = new mongoose.Schema({
         type: String,
     },
 
-    addPrimaryExecutor: [
+    primaryExecutors: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Members"
@@ -64,7 +64,7 @@ const WillSchema = new mongoose.Schema({
     replacement_executor_type: {
         type: String
     },
-    addReplacementExecutor: [
+    replacementExecutors: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Members"
@@ -79,7 +79,7 @@ const WillSchema = new mongoose.Schema({
     guardian_executor_type: {     /// joint ? sole? etc
         type: String
     },
-    addGuardianExecutor: [{
+    guardianExecutor: [{
         type: mongoose.Schema.Types.ObjectId,
         ref : "Members"
     }],
@@ -89,7 +89,7 @@ const WillSchema = new mongoose.Schema({
     guardian_replacement_executor_type: {    /// joint ? sole? etc
         type: String
     },
-    addGuardianReplacementExecutor: [{
+    GuardianReplacementExecutor: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Members"
     }],
@@ -97,7 +97,7 @@ const WillSchema = new mongoose.Schema({
     /// Distribution Of Assets
     /// Liabilities
 
-    liabilities: [{
+    liabilitiesData: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Liabilities'
     }],
