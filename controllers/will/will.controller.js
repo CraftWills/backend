@@ -13,7 +13,6 @@ const date = require ("date-and-time");
 var todayDate=(date.format(new Date(), 'MM-DD-YYYY'));
 var count = 0
 
-
 exports.storeWill = async (req,res) => {
   const _id = req.token_data._id
   const now = new Date()
@@ -35,20 +34,20 @@ exports.storeWill = async (req,res) => {
       assetScope : req.body.assetScope,
       // Appoint Primary Executor
       primary_executor_type : req.body.primary_executor_type,
-      addPrimaryExecutor : req.body.primaryExecutors,
+      primaryExecutors : req.body.primaryExecutors,
       // Appoint Replacement Executor
       replacement_executor_type : req.body.replacement_executor_type,
-      addReplacementExecutor : req.body.replacementExecutors,
+      replacementExecutors : req.body.replacementExecutors,
       // Appoint Guardian
       guardian_type : req.body.guardian_type,
       guardian_executor_type : req.body.guardian_executor_type,
-      addGuardianExecutor : req.body.guardianExecutor,
+      guardianExecutor : req.body.guardianExecutor,
       // Appoint Replacement Guardian
       guardian_replacement_executor_type : req.body.guardian_replacement_executor_type,
-      addGuardianReplacementExecutor : req.body.guardianReplacementExecutor,
+      guardianReplacementExecutor : req.body.guardianReplacementExecutor,
       // Distribution of Assets
       // Liabilities
-      liabilities : req.body.liabilitiesData,
+      liabilitiesData : req.body.liabilitiesData,
       // Assets
       assets : req.body.assets,
       // Trust
@@ -95,8 +94,9 @@ return {
 exports.pastVersions = async (req,res)=>{
   const user = req.token_data._id
   try {
-  const users = await WillDataAccess.findPastVersions(user)
+  const users = await WillDataAccess.findPastVersions(user)  
   console.log(users)
+
   res.json({
     message : "data found successfully",
     success : true,
@@ -148,20 +148,20 @@ exports.UpdateWillData = async (req, res) => {
       assetScope : req.body.assetScope,
       // Appoint Primary Executor
       primary_executor_type : req.body.primary_executor_type,
-      addPrimaryExecutor : req.body.primaryExecutors,
+      primaryExecutors : req.body.primaryExecutors,
       // Appoint Replacement Executor
       replacement_executor_type : req.body.replacement_executor_type,
-      addReplacementExecutor : req.body.replacementExecutors,
+      replacementExecutors : req.body.replacementExecutors,
       // Appoint Guardian
       guardian_type : req.body.guardian_type,
       guardian_executor_type : req.body.guardian_executor_type,
-      addGuardianExecutor : req.body.guardianExecutor,
+      guardianExecutor : req.body.guardianExecutor,
       // Appoint Replacement Guardian
       guardian_replacement_executor_type : req.body.guardian_replacement_executor_type,
-      addGuardianReplacementExecutor : req.body.guardianReplacementExecutor,
+      guardianReplacementExecutor : req.body.guardianReplacementExecutor,
       // Distribution of Assets
       // Liabilities
-      liabilities : req.body.liabilitiesData,
+      liabilitiesData : req.body.liabilitiesData,
       // Assets
       assets : req.body.assets,
       // Trust

@@ -89,7 +89,7 @@ const card = async (customer, req) => {
     cvc: req.body.cvc,
   };
 
-console.log(stripe.tokens.create(param))
+// console.log(stripe.tokens.create(param))
   return {  
     token: await stripe.tokens.create(param),
     customerId: customer.id,

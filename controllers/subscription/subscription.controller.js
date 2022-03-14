@@ -26,6 +26,8 @@ exports.payment = async (req) => {
   console.log("tokennn",subscription)
   const sub = await subscriptionDataAccess.subscriptionData(subscription, req);
   const subData = await subscriptionDataAccess.subId(sub);
+  console.log(new Date(sub.current_period_start), new Date(sub.current_period_end), 'sub');
+  // console.log(moment(sub.current_period_start).format(),moment(current_period_end).format());
   subData.createTime = moment().format("YYYY-MM-DD");
   subData.isoDate = moment().format("YYYY-MM-DD") + "T00:00:00Z";
   subData.amount=sub.plan.amount;
@@ -48,14 +50,17 @@ exports.payment = async (req) => {
 
   subData.subscriptionStartDate= moment().format("YYYY-MM-DD");
   subData.subscriptionEndDate= moment().format(`YYYY-${months}-DD`);
-  let dta = await  subHistory.find({userId : req.token_data?._id});
-  console.log(dta)
+  let newSub = await subHistory.create(subData);
+  // let dta = await  subHistory.find({userId : id});
+  // console.log(dta,'sub dta')
   let id2 = req.token_data._id
   let usrdta = await users.findByIdAndUpdate(id2,{$set : {
-    Subscription : dta._id
-  }})
-  console.log(usrdta)
-  return await subscriptionDataAccess.storeData(subData);
+    Subscription : newSub._id
+  }},{new : true})
+  let user= await users.findById(id);
+  console.log( user,id, 'final output')
+  return newSub
+  // return await subscriptionDataAccess.storeData(subData);
   
 };
 // };

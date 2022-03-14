@@ -126,7 +126,7 @@ const WillSchema = new mongoose.Schema({
        trustData : {
            type : mongoose.Schema.Types.ObjectId,
        },
-       addTrust : {
+       addTrust : { 
            appointPrimaryTrustee : {
                specifyOwnershipType : {
                    type : String

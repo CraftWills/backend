@@ -5,9 +5,12 @@ const wills = require("../../models/Will/will.model");
 
 exports.sortByAllUsers = async(req,res)=>{
     try{
-        const data = await users.find({"fullName": "Ibrahim Adil"});
-        console.log(data)
-          
+        const data = await users.find().populate('Subscription');
+       console.log(data)
+        
+        data.forEach((item,index)=>{
+            console.log(item?.Subscription?.subscriptionEndDate)            
+        })             
     }
     catch(err){
         return err.message

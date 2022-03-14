@@ -54,8 +54,7 @@ const UserSchema = new mongoose.Schema({
    ref: 'MemberData'
   },
   Subscription:{
-    // type : mongoose.Schema.Types.ObjectId,
-    type : String,
+    type : mongoose.Schema.Types.ObjectId,
     ref : "subscriptionHistory"
   },
   isVerified : {
