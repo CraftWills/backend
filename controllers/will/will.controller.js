@@ -50,7 +50,9 @@ exports.storeWill = async (req,res) => {
       liabilitiesData : req.body.liabilitiesData,
       // Assets
       assets : req.body.assets,
+      assetsResidualType : req.body.assetsResidualType,
       // Trust
+
       trust : req.body.trust,
       // Distribute Residual Assets
       specifyResidualAssetBenificiary : req.body.specifyResidualAssetBenificiary,
@@ -164,6 +166,7 @@ exports.UpdateWillData = async (req, res) => {
       liabilitiesData : req.body.liabilitiesData,
       // Assets
       assets : req.body.assets,
+      assetsResidualType : req.body.assetsResidualType,
       // Trust
       trust : req.body.trust,
       // Distribute Residual Assets

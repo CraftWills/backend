@@ -24,16 +24,18 @@ router.get("/totalWillCreated",async(req,res)=>{
     return res.send(result);
 })
 
-router.get("/sortByUser",async(req,res)=>{
-    const result = await userManagementController.sortByAllUsers(req);
-    res.send(result);
-})
-
+// router.get("/sortByUser",async(req,res)=>{
+//     const result = await userManagementController.sortByAllUsers(req);
+//     res.send(result);
+// })
+router.get("/sortByUser",userManagementController.sortByAllUsers);
+router.get("/sortBySubscribers",userManagementController.sortBySubscribedUsers);
+router.delete("/deleteUser/:id",userManagementController.deleteUser)
+router.put("/blockUser",userManagementController.blockUser)
 router.get("/updateAdmin", async(req,res)=>{
     const result = await adminController.updateAdmin(req);
     res.send(result);
 })
-
 
 module.exports = router;
 

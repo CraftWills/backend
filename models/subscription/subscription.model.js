@@ -66,7 +66,8 @@ const subscriptionSchema = new mongoose.Schema({
     type:String
   },
   subscription:{
-    type:Boolean
+    type:Boolean,
+    default : false
   },
   amount:{
     type:Number
@@ -76,6 +77,10 @@ const subscriptionSchema = new mongoose.Schema({
   },
   customerToken : {
     type : String
+  }
+  ,isBlocked : {
+    type : Boolean,
+    default : false
   }
 },{
   timestamps : true
