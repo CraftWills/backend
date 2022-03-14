@@ -8,7 +8,7 @@ exports.sortByAllUsers = async(req,res)=>{
         const data = await users.find().populate('Subscription');
         console.log(data)
         data.forEach((item,index)=>{
-            console.log ([item?.fullName,item?.email,item?.Subscription?.subscriptionStartDate,item?.Subscription?.subscriptionEndDate])            
+            // console.log ({name : item?.fullName,email:item?.email,item?.Subscription?.subscriptionStartDate,item?.Subscription?.subscriptionEndDate})            
         })             
     }
     catch(err){

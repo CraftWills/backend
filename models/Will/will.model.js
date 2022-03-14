@@ -89,7 +89,7 @@ const WillSchema = new mongoose.Schema({
     guardian_replacement_executor_type: {    /// joint ? sole? etc
         type: String
     },
-    GuardianReplacementExecutor: [{
+    guardianReplacementExecutor: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Members"
     }],
