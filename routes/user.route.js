@@ -48,7 +48,7 @@ router.put("/updatePassword", authenticateToken, async (req, res) => {
   const result = await userController.updatePassword(req);
   return res.send(result);
 });
-
+  
 
 router.put("/upload",
   authenticateToken,

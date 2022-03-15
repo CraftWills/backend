@@ -13,7 +13,8 @@ exports.createAdmin = async(req,res)=>{
     try {
         const data = new admin({
             email : req.body.email,
-            password : req.body.password
+            password : req.body.password,
+            profilePic : null
         })  
         const savedData= await data.save();
         console.log(savedData);
@@ -230,6 +231,27 @@ exports.forgotAdmin = async(req,res)=>{
 }
 
 
+exports.uploadImage = async (req, res) => {
+  const id = req.body.id;
+  let profileImage;
+  if (!req.file) {
+    profileImage = null;
+  } else {
+    profileImage = "uploads/" + req.file.filename;
+  }
+  const updatedProfile = await admin.findByIdAndUpdate(id,{$set : {
+    profilePic : profileImage
+  }});
+  return {
+    error: false,
+    success: true,
+    message: "Uploaded Image Sucessfully",
+    data: updatedProfile,
+  };
+};
+
+
+
 
 exports.resetAdminPassword = async (req, res) => {
   try{
@@ -240,7 +262,7 @@ exports.resetAdminPassword = async (req, res) => {
   if (newPassword){
   const updateData = await admin.findByIdAndUpdate(_id,  { $set: {
     password : newPassword
-  } },
+  }},
     { new: true })
   console.log(updateData)
   // const updatePass = await usersDataAccess.updateUser(updateData);
@@ -257,22 +279,45 @@ exports.resetAdminPassword = async (req, res) => {
 };
 };
 
+
 exports.updateAdmin = async(req,res)=>{
   try{
-    const data = await admin.find();
-    return data
-  }
-  catch(err){
-    return err.message
-  }
+    const { _id, firstName , lastName, gender} = req.body;
+    if (!_id || !firstName , !lastName , !gender) {
+      return ("plz enter the  firstName or lastName or gender")
+    }
+    const updateData = await admin.findByIdAndUpdate(_id,  { $set: {
+      firstName : req.body.firstName,
+      lastName : req.body.lastName,
+      gender : req.body.gender
+    }},
+      { new: true })
+    console.log(updateData)
+    // const updatePass = await usersDataAccess.updateUser(updateData);
+  
+    res.json( {
+      error: false,
+      success: true,
+      message: "admin updated  successfully",
+      data: updateData,
+    });
+  }catch(err){
+    res.send(err.message)
+    console.log(err.message)
+  };
 }
 
 
-exports.uploadAdminPic = async(req,res)=>{
-  try {
-    
-  }
-  catch(err){
-    return err.message
-  }
+
+exports.getProfilepic = async (req, res) => {
+  try{
+  const _id =  req.body.id
+  const users = await admin.findById(_id);
+  
+  return { 
+    profilePic : users.profilePic
 }
+  }catch(err){
+    return err.message;
+  }
+};

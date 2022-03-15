@@ -80,3 +80,22 @@ exports.blockUser =async(req,res)=>{
     }
 }
 
+
+exports.filterUsers = async(req,res)=>{
+    const _id = req.body.id
+  
+    const data = await users.find({user_id : _id})
+    const filters = {};
+    if (req.body.type) {
+      filters.type = req.body.type;
+    }
+    const filteredUsers = data.filter(user => {
+      let isValid = true;
+      for (key in filters) {
+        console.log(key, user[key], filters[key]);
+        isValid = isValid && user[key] == filters[key];
+      }
+      return isValid;
+    });
+    res.send(filteredUsers);
+  }

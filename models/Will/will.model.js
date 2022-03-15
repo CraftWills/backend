@@ -124,9 +124,7 @@ const WillSchema = new mongoose.Schema({
         },
     }]
     ,
-  
-
-    //Trust 
+  //Trust 
    trust : [{
        trustData : {
            type : mongoose.Schema.Types.ObjectId,
