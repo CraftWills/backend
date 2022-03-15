@@ -93,6 +93,10 @@ app.use('/will',willRouter)
 
 app.use("/subscription",subscriptionRouters);
 
+
+app.use(bodyParser.json({limit: "100000000000000mb"}));
+app.use(bodyParser.urlencoded({limit: "50000000000000000000mb", extended: true, parameterLimit:50000}));
+
 app.listen(PORT, () => {
   console.log(`YOUR SERVER IS WORKING AT PORT ${PORT}`);
 });
