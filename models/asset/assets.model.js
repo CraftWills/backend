@@ -127,7 +127,7 @@ const AssetsSchema = new mongoose.Schema({
            
         },    
     }
-});
+},{timestamps:true});
 
 const Bank = mongoose.model("AssetsData", AssetsSchema);
 module.exports = Bank;

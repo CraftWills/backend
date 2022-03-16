@@ -9,6 +9,7 @@ const usersDataAccess = require("../../dal/user.dal")
 const User = require("../../models/user.model")
 const moment = require ("moment-timezone")
 const liabilities = require ("../../models/liabilities/liabilities.model")
+const liabilitiesDataAccess = require("../../dal/liabilities/liabilities.dal")
 // const liquid = ['bankAccount','investmentAccount','insurancePolicy','business','intellectualProperty']
 // const iliquid = ['personalPossession','realEsate','motorVehicle','safeDepositBox']
 
@@ -270,49 +271,142 @@ const update = await AssetsDataAccess.updateAsset(updateData);
 //     console.log(b-a)    
 // }
 
-// const getAssetsMonthly = async (req,res)=> {
-//   try{
-//     let n =req.body.monthNumber;
-//     let m;
-//     let month= moment().tz("Asia/Kolkata").format("MM");
-//     let year = moment().tz("Asia/Kolkata").format("YYYY");
-//     m=n+1;
-//     // if (n >= month) {
-//     //       year--;
-//     // }
-//     const date = moment().format(`${year}-0${m}-01`);
-  
-//     let changeMonth = moment().format(`${year}-0${n}-01`);
-//     // console.log(changeMonth)
-//     // console.log(date)
+const Statics = async(req,res)=>{
+  try{
+    const FIRST_MONTH = 1
+    const LAST_MONTH = 12
+    var startOfToday = moment().format("YYYY-MM-DD");
 
-//   const assetData = await AssetsDataAccess.findAssetsMonthly({
-//       fromDate: `${changeMonth}T00:00:00Z`,
-//       endDate: `${date}T00:00:00Z`, 
-//       type : "bankAccount"
-//   })
-  
-//   var total = 0
-//   assetData.forEach(function (item, index) {
-//     const Astdta= item.bankAccount.estimateValue;
-//     total+=Astdta
-// });
-// console.log("Total assets amount",total)
-//   res.json({
-//     message : "Assets total amount found successfully",
-//     success : true,
-//     amount : total
-//   })
-//   }
-//   catch (err) {
-//       res.json({
-//           success : false,
-//           message : "Something went wrong",
-//           error : err.message
-//       })
-//   }
-  
-// }
+    // let startOfToday = new Date(now., now.getMonth(), now.getDate());
+    let YEAR_BEFORE = moment().subtract(1, 'year').format("YYYY-MM-DD");
+    console.log(YEAR_BEFORE)
+
+    // req.body.fromDate
+    // req.body.endDate
+    const monthsArray = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]
+    
+    let data= await asset.aggregate([{ 
+      $match: { 
+      isoDate: {$gte: "2021-03-08", 
+        $lt: "2022-03-16"}
+    }
+    },
+      { 
+          $group: {
+              _id: { "year_month": { $substrCP: [ "$isoDate", 0, 7 ] } }, 
+              count: { $sum: 1 },
+              total : {
+                $sum : "$estimateValue"
+            }
+          } 
+
+      },
+      {
+        $sort: { "_id.year_month": 1 }
+    },
+    { 
+      $project: { 
+          _id: 0, 
+          count: 1, 
+          total:1,
+          month_year: { 
+              $concat: [ 
+                { $arrayElemAt: [ monthsArray, { $subtract: [ { $toInt: { $substrCP: [ "$_id.year_month", 5, 2 ] } }, 1 ] } ] },
+                "-", 
+                { $substrCP: [ "$_id.year_month", 0, 4 ] }
+              ] 
+          }
+      } 
+  },
+  { 
+    $group: { 
+        _id: null, 
+        data: { $push: { k: "$month_year", v: "$total" } }
+    } 
+  },
+  { 
+    $addFields: { 
+        start_year: { $substrCP: [ YEAR_BEFORE, 0, 4 ] }, 
+        end_year: { $substrCP: [ startOfToday, 0, 4 ] },
+        months1: { $range: [ { $toInt: { $substrCP: [ YEAR_BEFORE, 5, 2 ] } }, { $add: [ LAST_MONTH, 1 ] } ] },
+        months2: { $range: [ FIRST_MONTH, { $add: [ { $toInt: { $substrCP: [ startOfToday, 5, 2 ] } }, 1 ] } ] }
+    } 
+},
+
+{ 
+  $addFields: { 
+      template_data: { 
+          $concatArrays: [ 
+              { $map: { 
+                   input: "$months1", as: "m1",
+                   in: {
+                       count: 0,
+                       month_year: { 
+                           $concat: [ { $arrayElemAt: [ monthsArray, { $subtract: [ "$$m1", 1 ] } ] }, "-",  "$start_year" ] 
+                       }                                            
+                   }
+              } }, 
+              { $map: { 
+                   input: "$months2", as: "m2",
+                   in: {
+                       count: 0,
+                       month_year: { 
+                           $concat: [ { $arrayElemAt: [ monthsArray, { $subtract: [ "$$m2", 1 ] } ] }, "-",  "$end_year" ] 
+                       }                                            
+                   }
+              } }
+          ] 
+     }
+  }
+},
+{ 
+  $addFields: { 
+      data: { 
+         $map: { 
+             input: "$template_data", as: "t",
+             in: {   
+                 k: "$$t.month_year",
+                 v: { 
+                     $reduce: { 
+                         input: "$data", initialValue: 0, 
+                         in: {
+                             $cond: [ { $eq: [ "$$t.month_year", "$$this.k"] },
+                                          { $add: [ "$$this.v", "$$value" ] },
+                                          { $add: [ 0, "$$value" ] }
+                             ]
+                         }
+                     } 
+                 }
+             }
+          }
+      }
+  }
+},
+  {
+    $project: { 
+        data: { $arrayToObject: "$data" }, 
+        _id: 0 
+    } 
+  }
+    ]); 
+      let finalResult ;
+      if(data.length>0){
+         finalResult=data[0].data
+
+      }else{
+         finalResult=[];
+      }
+      res.json( {
+        status:200,
+        success:true,
+        data:finalResult
+      })
+  }catch(error){
+    console.log(error)
+    res.send( error.message);
+    
+  }
+}
 
 
 const filterAssets = async(req,res)=>{
@@ -461,30 +555,7 @@ const aggCursor2 = await liabilities.aggregate([
   })
 }
 
-// const Statics = async(req,res)=>{
-//   try{
-//     let n =req.body.monthNumber;
-//     let m;
-//     let month= moment().tz("Asia/Kolkata").format("MM");
-//     let year = moment().tz("Asia/Kolkata").format("YYYY");
-//     m=n+1;
-//     const date = moment().format(`${year}-0${m}-01`);
-//     let changeMonth = moment().format(`${year}-0${n}-01`);
-//     // console.log(changeMonth)
-//     // console.log(date)
 
-//   const assetData = await AssetsDataAccess.findAssetsMonthly({
-//       fromDate: `${changeMonth}T00:00:00Z`,
-//       endDate: `${date}T00:00:00Z`, 
-//       type : "bankAccount"
-//   })
-  
-//   var total = 0
-//   assetData.forEach(function (item, index) {
-//     const Astdta= item.bankAccount.estimateValue;
-//     total+=Astdta
-// }); 
-// console.log("Total assets amount",total)
 
 // const aggCursor = await liabilities.aggregate([
 //   {
@@ -523,18 +594,5 @@ const aggCursor2 = await liabilities.aggregate([
 
 /// to do
 
-// const Statics = async (req,res)=>{
-//      try {
-//         const FIRST_MONTH = 1;
-//         const LAST_MONTH = 12;
-//         const now = new Date();
-//         const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-//         const YEAR_BEFORE = new Date();
-//         const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-               
-//      }
-//      catch(err){
-//        return err.message
-//      }
-// }
-module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats}
+
+module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats,Statics}

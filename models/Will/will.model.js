@@ -233,8 +233,20 @@ const WillSchema = new mongoose.Schema({
           type : Number
       }
     }],
-    trustFallback : { 
-        type : mongoose.Schema.Types.Mixed,
+    trustFallback : {
+        trustType : {
+            type : String
+        },
+ customType : {type : String},
+        memberData : [{
+            members : {
+                type : mongoose.Schema.Types.ObjectId,
+                ref : "Members"
+            },
+            specifyShares : {
+                type : Number
+            }
+        }]
     },
 
     clauses : {
