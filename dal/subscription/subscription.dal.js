@@ -248,7 +248,7 @@ catch(err){
 
 const chargeCustomerThroughTokenID = async function (req,res) {
   var param = {
-      amount:200,
+      amount:req.body.planPrice,
       currency : 'usd',
       source: req.body.customerTOken
   }

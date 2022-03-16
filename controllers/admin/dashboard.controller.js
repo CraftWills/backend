@@ -52,7 +52,7 @@ exports.getUsersMonthly = async(req,res)=>{
 
     const monthsArray = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]
     
-    let data= await subscription.aggregate([{ 
+    let data= await subscriptionHistory.aggregate([{ 
       $match: { 
       createdAt: {$gte: new Date(req.body.fromDate), 
         $lt: new Date(req.body.endDate)}
