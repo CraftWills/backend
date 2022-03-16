@@ -250,7 +250,7 @@ const chargeCustomerThroughTokenID = async function (req,res) {
   var param = {
       amount:200,
       currency : 'usd',
-      source: req.body.tokenId
+      source: req.body.customerTOken
   }
 return await  stripe.charges.create(param)}
 
