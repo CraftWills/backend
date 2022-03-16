@@ -523,18 +523,18 @@ const aggCursor2 = await liabilities.aggregate([
 
 /// to do
 
-const Statics = async (req,res)=>{
-     try {
-        const FIRST_MONTH = 1;
-        const LAST_MONTH = 12;
-        const now = new Date();
-        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const YEAR_BEFORE = new Date();
-        const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+// const Statics = async (req,res)=>{
+//      try {
+//         const FIRST_MONTH = 1;
+//         const LAST_MONTH = 12;
+//         const now = new Date();
+//         const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+//         const YEAR_BEFORE = new Date();
+//         const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                
-     }
-     catch(err){
-       return err.message
-     }
-}
-module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats,Statics}
+//      }
+//      catch(err){
+//        return err.message
+//      }
+// }
+module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats}

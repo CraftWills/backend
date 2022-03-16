@@ -11,9 +11,10 @@ const subHistory = require("../../models/subscription/subscription.history");
 // payment
 exports.stripePayment = async (req) => {
   const token = await subscriptionDataAccess.chargeCustomerThroughTokenID(req);
+  // console.log(subscriptionDataAccess?.subId?.data)
   console.log(token)
   return token}
-
+ 
 exports.payment = async (req) => {
   // if(req.body.pricePlan=="free"){
   // return await subscriptionDataAccess.storeData({pricePlan:req.body.pricePlan})};
