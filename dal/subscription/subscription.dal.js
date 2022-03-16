@@ -247,13 +247,17 @@ catch(err){
 }
 
 const chargeCustomerThroughTokenID = async function (req,res) {
-  var param = {
-      amount:req.body.planPrice,
-      currency : 'usd',
-      source: req.body.customerTOken
-  }
-return await  stripe.charges.create(param)}
-
+  try{ var param = {
+    amount:req.body.planPrice,
+    currency : 'usd',
+    source: req.body.customerTOken
+}
+return await  stripe.charges.create(param)
+}
+catch(err){
+  return err.message
+}}
+ 
 
   /////////////////////////////////////////
 

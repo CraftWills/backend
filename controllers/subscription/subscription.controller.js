@@ -17,7 +17,7 @@ exports.stripePayment = async (req) => {
 exports.payment = async (req) => {
   // if(req.body.pricePlan=="free"){
   // return await subscriptionDataAccess.storeData({pricePlan:req.body.pricePlan})};
-
+try{
   const id = req.token_data._id;
   const customer = await subscriptionDataAccess.customers(req);
   console.log(customer)
@@ -60,6 +60,10 @@ exports.payment = async (req) => {
   let user= await users.findById(id);
   console.log( user,id, 'final output')
   return newSub
+}
+catch(err){
+  return err.message
+}
   // return await subscriptionDataAccess.storeData(subData);
   
 };
