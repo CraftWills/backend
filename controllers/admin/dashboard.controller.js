@@ -163,14 +163,14 @@ exports.getUsersMonthly = async(req,res)=>{
       }else{
          finalResult=[];
       }
-      return {
+      res.json( {
         status:200,
         success:true,
         data:finalResult
-      }
+      })
   }catch(error){
     console.log(error)
-    return error;
+    res.send (error.message);
     
   }
 }

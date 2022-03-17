@@ -223,6 +223,7 @@ exports.uploadImage = async (req, res) => {
 
 
 exports.getUser = async (req, res) => {
+  try{
   const users = await usersDataAccess.findUser(req.token_data._id);
     
   console.log(users.profileImage)
@@ -251,6 +252,9 @@ exports.getUser = async (req, res) => {
     }
     
   };
+}catch(err){
+  return err.message
+}
 };
 
 
