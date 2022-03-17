@@ -56,7 +56,7 @@ exports.storeWill = async (req,res) => {
       trust : req.body.trust,
       // Distribute Residual Assets
       specifyResidualAssetBenificiary : req.body.specifyResidualAssetBenificiary,
-      trustFallback : req.body.trustFallback,
+      trustFallback : req.body?.trustFallback,
       // Clauses 
       clauses : req.body.clauses
     })
@@ -82,15 +82,21 @@ exports.storeWill = async (req,res) => {
 
 
 exports.getWillDetails = async (req, res) => {
-  const user = req.token_data._id
-  const users = await WillDataAccess.findWill(user);
-  
-return {
-    error: false,
-    success: true,
-    message: "Will Found Successfully",
-    data: {users}
-  };
+  try{
+    
+    const user = req.token_data._id
+    const users = await WillDataAccess.findWill(user);
+    
+  return {
+      error: false,
+      success: true,
+      message: "Will Found Successfully",
+      data: {users}
+    };
+  }
+  catch(err){
+    return err.message
+  }
 }
 
 exports.pastVersions = async (req,res)=>{
