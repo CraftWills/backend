@@ -454,7 +454,6 @@ const deleteAssets = async (req,res)=>{
       error : err.message
     })
   }
-
 }
 
 const countLiquidAndiliquid = async (req,res)=>{

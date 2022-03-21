@@ -148,9 +148,9 @@ const WillSchema = new mongoose.Schema({
                    ref : "Members"
                }]
            },
-           specifyTrusteePowers :{
+           specifyTrusteePowers :[{
                type : String
-           },
+           }],
         },
         assets : [{
             assetData : {
