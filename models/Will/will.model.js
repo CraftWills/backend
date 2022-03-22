@@ -211,8 +211,13 @@ const WillSchema = new mongoose.Schema({
         },}],
         trustFallback : {
             memberData: [{
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Members'
+                member :{
+                    type : mongoose.Schema.Types.ObjectId,
+                    ref : "Members"
+                },
+                specifyShares : {
+                    type : Number
+                }
             }],
             fallBackType : {
                 type : String

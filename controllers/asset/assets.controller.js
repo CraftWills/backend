@@ -562,7 +562,16 @@ const averageDistributionRate = async (req,res)=>{
   try{
     const _id = req.token_data._id
     const willData = await will.find({user_id : _id});
-    console.log(willData)
+    const listData = []
+    willData.forEach((item,index)=>{
+        (item?.assets).forEach((item1,index1)=>{
+            (item1?.membersData).forEach(async(item2,index2)=>{
+                let a= await member.findById(item2?.member)
+                console.log(a)
+            })
+         })
+    })
+
 
   }
   catch(err){
