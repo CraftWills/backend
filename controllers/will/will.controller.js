@@ -194,3 +194,20 @@ else {
 return "something went wrong"
 }
 };
+
+
+
+
+exports.deleteWills = async(req,res)=>{
+  try{
+    await Will.remove();
+    res.send("data has been removed successfully");
+  }
+  catch(err){
+    res.json({
+      success : false,
+      error : true,
+      message : err.message
+    })
+  }
+}

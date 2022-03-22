@@ -149,7 +149,12 @@ const WillSchema = new mongoose.Schema({
                }]
            },
            specifyTrusteePowers :[{
-               type : String
+               isSelected : {
+                   type : Boolean
+               },
+               name : {
+                   type : String
+               }
            }],
         },
         assets : [{

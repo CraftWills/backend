@@ -14,5 +14,6 @@ router.get("/quickStats",authenticateToken,AssetsController.quickStats);
 router.post("/filterAssets",authenticateToken,AssetsController.filterAssets);
 router.delete("/deleteAssets",authenticateToken,AssetsController.deleteAssets);
 router.get("/findDataCount",authenticateToken,AssetsController.countLiquidAndiliquid)
+router.get("/averageDistributionRate",authenticateToken,AssetsController.averageDistributionRate)
 
 module.exports = router; 

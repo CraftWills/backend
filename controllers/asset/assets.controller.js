@@ -3,11 +3,13 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 // const ExpressError = require("../Errorgenerator/errorGenerator");
 const { generateAccessToken } = require("../../JsonWebToken/jwt");
+const will = require ("../../models/Will/will.model")
 const asset = require("../../models/asset/assets.model")
 const AssetsDataAccess = require("../../dal/asset/assets.dal")
 const usersDataAccess = require("../../dal/user.dal")
 const User = require("../../models/user.model")
 const moment = require ("moment-timezone")
+const member = require("../../models/members.model")
 const liabilities = require ("../../models/liabilities/liabilities.model")
 const liabilitiesDataAccess = require("../../dal/liabilities/liabilities.dal")
 // const liquid = ['bankAccount','investmentAccount','insurancePolicy','business','intellectualProperty']
@@ -556,42 +558,18 @@ const aggCursor2 = await liabilities.aggregate([
 
 
 
-// const aggCursor = await liabilities.aggregate([
-//   {
-//     $match: {
-//       user_id: req.token_data._id
-//     }
-//   }, {
-//     $group: {
-//       _id: '$user_id', 
-//       total: {
-//         $sum: '$privateDept.current_Outstanding_Amount'
-//       }
-//     }
-//   }
-// ]);
-// var liabilityStatAmount = 0
-// aggCursor.forEach(function (item, index) {
-//   console.log(item.total)
-//   liabilityStatAmount+=item.total   
-// });
-//   res.json({
-//     assetStats :{data : total},
-//     liabilitiesStats : {
-//       data : liabilityStatAmount
-//     }  
-//   })
-//   }
-//   catch (err) {
-//       res.json({
-//           success : false,
-//           message : "Something went wrong",
-//           error : err.message
-//       })
-//   }
-// }
+const averageDistributionRate = async (req,res)=>{
+  try{
+    const _id = req.token_data._id
+    const willData = await will.find({user_id : _id});
+    console.log(willData)
 
-/// to do
+  }
+  catch(err){
+    res.send(err.message);
+  }
+}
+          
 
 
-module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats,Statics}
+module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats,Statics,averageDistributionRate}
