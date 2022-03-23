@@ -166,10 +166,34 @@ const deleteMembers = async (req,res)=>{
     }
 }
 
+const deleteMemberById = async(req,res)=>{
+    try{
+    const _id = req.params.id
+    const deletedData = await members.findByIdAndRemove({_id});
+    if (deletedData){
+        res.json({
+            success : true,
+            message : "Data has been removed successfully"
+        })
+    }
+    else{
+        res.json({
+            success : false,
+            message : "something went wrong"
+        })
+    }
+    }
+    catch(err){
+        res.send(err.message)
+    }
+
+}
+
 module.exports = {
     createMember,
     membersFilter,
     getMembers,
     updateMember,
-    deleteMembers
+    deleteMembers,
+    deleteMemberById
 }

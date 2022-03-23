@@ -566,14 +566,30 @@ const averageDistributionRate = async (req,res)=>{
     willData.forEach((item,index)=>{
         (item?.assets).forEach((item1,index1)=>{
             (item1?.membersData).forEach(async(item2,index2)=>{
-                let a= await member.findById(item2?.member)
-                console.log(a)
+                listData.push(item2)
+                
             })
-         })
+          })
     })
-
-
+    // console.log(listData)
+    const listData2 =[]
+    const dta = []
+    const d={}
+    listData.forEach((item,index)=>{
+        listData2.push(item.member)
+        dta.push(item.specify_Shares)
+    })
+    listData2.forEach(async(item,index)=>{
+        const data = await member.findById(item)
+        let b = data.memberAsPerson.fullname
+        dta.forEach((item1,index1)=>{
+            d.paul=item1
+        })
+        console.log(d)
+    })
+  
   }
+
   catch(err){
     res.send(err.message);
   }
