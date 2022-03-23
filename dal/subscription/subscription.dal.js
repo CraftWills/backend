@@ -220,7 +220,7 @@ try {
     return user.save().then(async(resp)=>{
       if (resp){
         const otpSend = {
-          from: "as797007@gmail.com",
+          from: process.env.email,
           to: user.email,
           subject: "Mail from craftwills"
         };
