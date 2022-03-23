@@ -278,7 +278,8 @@ const Statics = async(req,res)=>{
     const FIRST_MONTH = 1
     const LAST_MONTH = 12
     var startOfToday = moment().format("YYYY-MM-DD");
-
+    var startOfYear = moment().startOf('year').format("YYYY-MM-DD");
+    console.log("start of year"+startOfYear)
     // let startOfToday = new Date(now., now.getMonth(), now.getDate());
     let YEAR_BEFORE = moment().subtract(1, 'year').format("YYYY-MM-DD");
     console.log(YEAR_BEFORE)
@@ -289,8 +290,8 @@ const Statics = async(req,res)=>{
     
     let data= await asset.aggregate([{ 
       $match: { 
-      isoDate: {$gte: "2021-03-08", 
-        $lt: "2022-03-16"}
+      isoDate: {$gte: startOfYear, 
+        $lt: startOfToday}
     }
     },
       { 
@@ -391,6 +392,111 @@ const Statics = async(req,res)=>{
     } 
   }
     ]); 
+
+    let data2= await liabilities.aggregate([{ 
+      $match: { 
+      isoDate: {$gte: startOfYear, 
+        $lt: startOfToday}
+    }
+    },
+      { 
+          $group: {
+              _id: { "year_month": { $substrCP: [ "$isoDate", 0, 7 ] } }, 
+              count: { $sum: 1 },
+              total : {
+                $sum : "$estimateValue"
+            }
+          } 
+
+      },
+      {
+        $sort: { "_id.year_month": 1 }
+    },
+    { 
+      $project: { 
+          _id: 0, 
+          count: 1, 
+          total:1,
+          month_year: { 
+              $concat: [ 
+                { $arrayElemAt: [ monthsArray, { $subtract: [ { $toInt: { $substrCP: [ "$_id.year_month", 5, 2 ] } }, 1 ] } ] },
+                "-", 
+                { $substrCP: [ "$_id.year_month", 0, 4 ] }
+              ] 
+          }
+      } 
+  },
+  { 
+    $group: { 
+        _id: null, 
+        data2: { $push: { k: "$month_year", v: "$total" } }
+    } 
+  },
+  { 
+    $addFields: { 
+        start_year: { $substrCP: [ YEAR_BEFORE, 0, 4 ] }, 
+        end_year: { $substrCP: [ startOfToday, 0, 4 ] },
+        months1: { $range: [ { $toInt: { $substrCP: [ YEAR_BEFORE, 5, 2 ] } }, { $add: [ LAST_MONTH, 1 ] } ] },
+        months2: { $range: [ FIRST_MONTH, { $add: [ { $toInt: { $substrCP: [ startOfToday, 5, 2 ] } }, 1 ] } ] }
+    } 
+},
+
+{ 
+  $addFields: { 
+      template_data: { 
+          $concatArrays: [ 
+              { $map: { 
+                   input: "$months1", as: "m1",
+                   in: {
+                       count: 0,
+                       month_year: { 
+                           $concat: [ { $arrayElemAt: [ monthsArray, { $subtract: [ "$$m1", 1 ] } ] }, "-",  "$start_year" ] 
+                       }                                            
+                   }
+              } }, 
+              { $map: { 
+                   input: "$months2", as: "m2",
+                   in: {
+                       count: 0,
+                       month_year: { 
+                           $concat: [ { $arrayElemAt: [ monthsArray, { $subtract: [ "$$m2", 1 ] } ] }, "-",  "$end_year" ] 
+                       }                                            
+                   }
+              } }
+          ] 
+     }
+  }
+},
+{ 
+  $addFields: { 
+      data2: { 
+         $map: { 
+             input: "$template_data", as: "t",
+             in: {   
+                 k: "$$t.month_year",
+                 v: { 
+                     $reduce: { 
+                         input: "$data2", initialValue: 0, 
+                         in: {
+                             $cond: [ { $eq: [ "$$t.month_year", "$$this.k"] },
+                                          { $add: [ "$$this.v", "$$value" ] },
+                                          { $add: [ 0, "$$value" ] }
+                             ]
+                         }
+                     } 
+                 }
+             }
+          }
+      }
+  }
+},
+  {
+    $project: { 
+        data: { $arrayToObject: "$data2" }, 
+        _id: 0 
+    } 
+  }
+    ]); 
       let finalResult ;
       if(data.length>0){
          finalResult=data[0].data
@@ -398,11 +504,21 @@ const Statics = async(req,res)=>{
       }else{
          finalResult=[];
       }
+
+      let finalResult2 ;
+      if (data2.length>0){
+         finalResult2=data2[0].data
+      }
+      else{
+        finalResult2=[];
+      }
       res.json( {
         status:200,
         success:true,
-        data:finalResult
+        assets:finalResult,
+        liabilities : finalResult2
       })
+      
   }catch(error){
     console.log(error)
     res.send( error.message);
