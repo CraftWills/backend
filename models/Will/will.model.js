@@ -247,7 +247,7 @@ const WillSchema = new mongoose.Schema({
         trustType : {
             type : String
         },
- customType : {
+     customType : {
      type : String
     },
         memberData : [{

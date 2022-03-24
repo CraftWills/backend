@@ -9,8 +9,8 @@ exports.totalSubscribedUsers = async(req,res)=>{
         let totalMonthPlanSub = 0;
         let totalFreePlanSub = 0;
         let totalEarning = 0;
-        const data =await subscription.find();
         console.log(data);
+        const data =await subscription.find();
         data.forEach((item,index)=>{
 
             totalEarning+=item?.amount || 0
@@ -118,12 +118,11 @@ exports.allSubscribers = async(req,res)=>{
                 subscriptionDate : item?.subscriptionStartDate,
                 expiryDate : item?.subscriptionEndDate,
                 SubscribedPlan : item?.pricePlan,
-                Status : item?.subscription
+                Status : item?.subscription 
             })
         })
-
     }
     catch(err){
-
+        res.json(err.message)
     }
 }

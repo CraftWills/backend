@@ -439,7 +439,7 @@ return {
     data: userData,
   };
 };
-
+  
 // exports.verifyEmail = async(req,res)=>{
 //   const {_id} = req.body;
 //   if (!_id){

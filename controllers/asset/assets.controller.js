@@ -574,6 +574,30 @@ const deleteAssets = async (req,res)=>{
   }
 }
 
+/// deleteAssetById
+
+const deleteAssetById = async(req,res)=>{
+  try{
+    const _id = req.params.id
+    const deletedData = await asset.findByIdAndRemove({_id});
+    if (deletedData){
+        res.json({
+            success : true,
+            message : "Data has been removed successfully"
+        })
+    }
+    else{
+        res.json({
+            success : false,
+            message : "something went wrong"
+        })
+    }
+    }
+    catch(err){
+        res.send(err.message)
+    }
+}
+
 const countLiquidAndiliquid = async (req,res)=>{
   var liquid = 0;
   var iliquid = 0;
@@ -677,40 +701,107 @@ const aggCursor2 = await liabilities.aggregate([
 const averageDistributionRate = async (req,res)=>{
   try{
     const _id = req.token_data._id
-    const willData = await will.find({user_id : _id});
-    const listData = []
-    willData.forEach((item,index)=>{
-        (item?.assets).forEach((item1,index1)=>{
-            (item1?.membersData).forEach(async(item2,index2)=>{
-                listData.push(item2)
-                
-            })
-          })
-    })
-    // console.log(listData)
-    const listData2 =[]
-    const dta = []
-    const d={}
-    listData.forEach((item,index)=>{
-        listData2.push(item.member)
-        dta.push(item.specify_Shares)
-    })
-    listData2.forEach(async(item,index)=>{
-        const data = await member.findById(item)
-        let b = data.memberAsPerson.fullname
-        dta.forEach((item1,index1)=>{
-            d.paul=item1
-        })
-        console.log(d)
-    })
-  
-  }
+    const Assetdata = await will.aggregate([
+      {
+          $match: {
+              "user_id" : _id
+          }
+      },
+      {
+          $unwind: {
+              path: "$assets"
+          }
+      },
+      {
+         $unwind: {
+              path: "$assets.membersData"
+          }
+      },
+      {
+          $project: {
+              "assets.membersData.member":1,
+              "assets.membersData.specify_Shares":1
+          }
+      }
+      ])
 
+    const residualData  = await will.aggregate([
+      {
+          $match: {
+              "user_id": _id
+          }
+      },
+      {
+          $unwind: {
+              path : "$specifyResidualAssetBenificiary"
+          }
+      },
+      {
+         $project: {
+             "specifyResidualAssetBenificiary.member" : 1,
+             "specifyResidualAssetBenificiary.specifyShares" : 1
+         }  
+      }
+      
+      ])
+
+      const trustFallbackData = await will.aggregate([
+        {
+            $match: {
+                "user_id": _id
+            }
+        },
+        {
+            $unwind: {
+                path : "$trustFallback.memberData"
+            }
+        },
+        {
+            $project: {
+                "trustFallback.memberData.members": 1,
+                "trustFallback.memberData.specifyShares" : 1
+            }
+        }
+        
+      ])
+
+const finalData= []
+
+res.send(trustFallbackData)
+
+let totalAssetShares=0
+let residualDataShares=0
+let trustFallbackShares=0
+Assetdata.forEach(async(item,index)=>{
+    totalAssetShares+=item?.assets?.membersData?.specify_Shares
+    console.log(item?.assets?.membersData?.member)
+})
+
+residualData.forEach((item,index)=>{
+  residualDataShares+=item?.specifyResidualAssetBenificiary?.specifyShares
+  console.log(item?.specifyResidualAssetBenificiary?.member)
+    
+})
+
+trustFallbackData.forEach((item,index)=>{
+  trustFallbackData += item?.trustFallback?.memberData?.specifyShares
+  console.log(item?.trustFallback?.memberData?.members)
+    
+})
+
+
+console.log(totalAssetShares)
+console.log(residualDataShares)
+console.log(trustFallbackData)
+  }
   catch(err){
-    res.send(err.message);
+    res.json({
+      success : false,
+      error : true,
+      message : err.message
+    })
   }
 }
           
 
-
-module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats,Statics,averageDistributionRate}
+module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats,Statics,averageDistributionRate,deleteAssetById}
