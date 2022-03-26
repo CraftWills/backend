@@ -84,13 +84,13 @@ exports.storeWill = async (req,res) => {
 exports.getWillDetails = async (req, res) => {
   try{
     const user = req.token_data._id
-    const users = await WillDataAccess.findWill(user);
+    const users = await Will.find({user});
     
   return {
       error: false,
       success: true,
       message: "Will Found Successfully",
-      data: {users}
+      data: users
     };
   }
   catch(err){

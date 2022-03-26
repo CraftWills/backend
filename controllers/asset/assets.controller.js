@@ -781,7 +781,8 @@ Assetdata.forEach(async(item,index)=>{
     memberAsset+=1
     totalAsset+=1
     let mem=item?.assets?.membersData?.member
-    console.log(mem)
+    let membername = await member.findById(mem)
+    console.log(membername)
 })
 
 residualData.forEach((item,index)=>{
