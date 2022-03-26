@@ -21,11 +21,11 @@ exports.storeWill = async (req,res) => {
       user_id : _id,
       // Personal Information
       DATE : date.format(now, 'MM-DD-YYYY | HH:mm:ss'),
-      willName : "My Will Version "+ count++,
       id_Number : req.body.id_Number,
       id_Type :  req.body.id_Type,
       fullName : req.body.fullName,
       gender : req.body.gender,
+      willName : "My Will Version "+ count++,
       email : req.body.email,
       floorNumber : req.body.floorNumber,
       unitNumber : req.body.unitNumber,
@@ -71,7 +71,7 @@ exports.storeWill = async (req,res) => {
   } catch (err){
     res.json({
       message : "Error Found",
-      Success : false,
+      success : false,
       error : err.message
     })
   }
@@ -136,7 +136,9 @@ exports.getWill = async(req,res)=>{
     })
   }
 }
+
 // Update Bank Details
+
 
 exports.UpdateWillData = async (req, res) => {
   const _id = req.params.id
@@ -146,6 +148,7 @@ exports.UpdateWillData = async (req, res) => {
       id_Number : req.body.id_Number,
       id_Type :  req.body.id_Type,
       fullName : req.body.fullName,
+      willName : "My Will Version "+ count++,
       gender : req.body.gender,
       email : req.body.email,
       floorNumber : req.body.floorNumber,

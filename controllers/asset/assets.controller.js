@@ -28,13 +28,13 @@ const storeAssets = async (req, res) => {
     const creatTime = moment().format("YYYY-MM-DD");
     // const creatTime ="2010-11-30";
     try {
+
     const Asset = new asset({
         user_id: user,
         country: req.body.country,
         specifyOwnershipType: req.body.specifyOwnershipType,
         type : req.body.type,
         isoDate: `${creatTime}`,
-      
         bankAccount:
        {
             bankname: req.body.bankAccount?.bankname,
@@ -130,7 +130,6 @@ const updateAssets = async (req, res) => {
       toUpdate: {
         country: req.body.country,
         specifyOwnershipType: req.body.specifyOwnershipType,
-    
         bankAccount:  
        {
           bankname: req.body.bankAccount?.bankname,
@@ -699,6 +698,7 @@ const aggCursor2 = await liabilities.aggregate([
 
 
 const averageDistributionRate = async (req,res)=>{
+
   try{
     const _id = req.token_data._id
     const Assetdata = await will.aggregate([
@@ -725,7 +725,7 @@ const averageDistributionRate = async (req,res)=>{
       }
       ])
 
-    const residualData  = await will.aggregate([
+const residualData  = await will.aggregate([
       {
           $match: {
               "user_id": _id
@@ -767,34 +767,43 @@ const averageDistributionRate = async (req,res)=>{
 
 const finalData= []
 
-res.send(trustFallbackData)
+res.send(Assetdata)
 
 let totalAssetShares=0
 let residualDataShares=0
 let trustFallbackShares=0
+let totalAsset =0
+let memberAsset = 0
+let totalMemberInTrust =0
+let totalAssetInTrust =0
 Assetdata.forEach(async(item,index)=>{
-    totalAssetShares+=item?.assets?.membersData?.specify_Shares
-    console.log(item?.assets?.membersData?.member)
+    totalAssetShares+=item?.assets?.membersData?.specify_Shares || 0
+    memberAsset+=1
+    totalAsset+=1
+    let mem=item?.assets?.membersData?.member
+    console.log(mem)
 })
 
 residualData.forEach((item,index)=>{
-  residualDataShares+=item?.specifyResidualAssetBenificiary?.specifyShares
-  console.log(item?.specifyResidualAssetBenificiary?.member)
-    
+  residualDataShares+=item?.specifyResidualAssetBenificiary?.specifyShares || 0
+  // console.log(item?.specifyResidualAssetBenificiary?.member)
 })
 
 trustFallbackData.forEach((item,index)=>{
-  trustFallbackData += item?.trustFallback?.memberData?.specifyShares
-  console.log(item?.trustFallback?.memberData?.members)
-    
-})
+  trustFallbackShares += item?.trustFallback?.memberData?.specifyShares || 0
+  // console.log(item?.trustFallback?.memberData?.members)
+  totalMemberInTrust+=1
+  totalAssetInTrust+=1
+    })
 
 
-console.log(totalAssetShares)
-console.log(residualDataShares)
-console.log(trustFallbackData)
-  }
-  catch(err){
+// console.log(totalAssetShares)
+// console.log(residualDataShares)
+// console.log(trustFallbackShares)
+}
+
+
+catch(err){
     res.json({
       success : false,
       error : true,
@@ -803,5 +812,4 @@ console.log(trustFallbackData)
   }
 }
           
-
 module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats,Statics,averageDistributionRate,deleteAssetById}

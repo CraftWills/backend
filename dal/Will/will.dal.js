@@ -10,7 +10,7 @@ const findWill = async (data) => {
 const findPastVersions = async (data) => {
   const fetchdata = ["willName","DATE"]
   const user = await Will.find({user_id : data}).select(fetchdata);
-  return user;
+  return user; 
 };
 
 // storeWill
