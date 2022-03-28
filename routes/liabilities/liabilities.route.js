@@ -9,7 +9,8 @@ router.get("/getStats",authenticateToken,liabilitiesController.liabilitystats);
 router.post("/filterLiabilities",authenticateToken,liabilitiesController.liabilitiesFilter);
 router.put("/UpdateLiabilities/:id",authenticateToken,liabilitiesController.updateLiabilities);
 router.delete("/deleteLiabilities",authenticateToken,liabilitiesController.deleteLiabilities);
-router.get("/getLiabilitiesMonthly",authenticateToken,liabilitiesController.getLiabilitiesMonthly)
+router.get("/getLiabilitiesMonthly",authenticateToken,liabilitiesController.getLiabilitiesMonthly);
+router.delete("/deleteLiabilitiesById/:id",authenticateToken,liabilitiesController.deleteLiabilitiesById);
 
 
 module.exports = router;

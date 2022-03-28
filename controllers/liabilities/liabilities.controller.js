@@ -229,4 +229,19 @@ const deleteLiabilities = async(req,res)=>{
   }
 }
 
-module.exports = {storeLiabilities , getLiabilities ,liabilitystats,liabilitiesFilter,updateLiabilities,deleteLiabilities,getLiabilitiesMonthly}
+const deleteLiabilitiesById = async (req,res)=>{
+    try{
+       const _id = req.params.id
+       const data= await liabilities.findByIdAndRemove({_id})
+       if (data){
+         res.send("Liabilities data has been deleted")
+       }
+       else{
+         res.send("something went wrong")
+       }
+    }
+    catch(err){
+      res.send(err.message)
+    }
+}
+module.exports = {storeLiabilities , getLiabilities ,liabilitystats,liabilitiesFilter,updateLiabilities,deleteLiabilities,getLiabilitiesMonthly,deleteLiabilitiesById}

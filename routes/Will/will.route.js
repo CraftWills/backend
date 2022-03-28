@@ -28,4 +28,5 @@ router.get("/pastVersions",authenticateToken, WillController.pastVersions);
 router.get("/getWill/:id",authenticateToken,WillController.getWill)
 
 router.delete("/deleteWill",authenticateToken,WillController.deleteWills)
+router.delete("/deleteWillById/:id",authenticateToken,WillController.deleteWillById)
 module.exports  = router

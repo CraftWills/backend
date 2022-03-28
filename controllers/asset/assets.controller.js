@@ -12,6 +12,9 @@ const moment = require ("moment-timezone")
 const member = require("../../models/members.model")
 const liabilities = require ("../../models/liabilities/liabilities.model")
 const liabilitiesDataAccess = require("../../dal/liabilities/liabilities.dal")
+var _ = require('lodash');
+//"-" is not defined
+// ====================
 // const liquid = ['bankAccount','investmentAccount','insurancePolicy','business','intellectualProperty']
 // const iliquid = ['personalPossession','realEsate','motorVehicle','safeDepositBox']
 
@@ -765,44 +768,32 @@ const residualData  = await will.aggregate([
         
       ])
 
-const finalData= []
-
-res.send(Assetdata)
-
-let totalAssetShares=0
-let residualDataShares=0
-let trustFallbackShares=0
-let totalAsset =0
-let memberAsset = 0
-let totalMemberInTrust =0
-let totalAssetInTrust =0
-Assetdata.forEach(async(item,index)=>{
-    totalAssetShares+=item?.assets?.membersData?.specify_Shares || 0
-    memberAsset+=1
-    totalAsset+=1
-    let mem=item?.assets?.membersData?.member
-    let membername = await member.findById(mem)
-    console.log(membername)
-})
-
-residualData.forEach((item,index)=>{
-  residualDataShares+=item?.specifyResidualAssetBenificiary?.specifyShares || 0
-  // console.log(item?.specifyResidualAssetBenificiary?.member)
-})
-
-trustFallbackData.forEach((item,index)=>{
-  trustFallbackShares += item?.trustFallback?.memberData?.specifyShares || 0
-  // console.log(item?.trustFallback?.memberData?.members)
-  totalMemberInTrust+=1
-  totalAssetInTrust+=1
-    })
+console.log(Assetdata)
 
 
+function mapper() {
+  const newassets = Assetdata.map(el => {
+    return el.assets.membersData
+  })
+  
+
+  const data2 = _.groupBy (newassets,'member');
+  gettotalPerMember(data2);
 // console.log(totalAssetShares)
 // console.log(residualDataShares)
 // console.log(trustFallbackShares)
 }
-
+function gettotalPerMember(data){
+  Object.keys().forEach(el=>{
+      const totalShare = data[el].reduce((prev,curr)=>{
+        data[el]=totalShare
+      })
+    })
+  // console.log(data)
+  res.send(data)
+}
+mapper();
+  }
 
 catch(err){
     res.json({

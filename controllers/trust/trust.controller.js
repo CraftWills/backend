@@ -136,3 +136,18 @@ exports.deleteTrusts = async (req,res)=> {
     })
   }}
 
+exports.deleteTrustById = async(req,res)=>{
+  try{
+    const _id = req.params.id
+    const data = await trust.findByIdAndRemove({_id})
+    if (data){
+      res.send("Trust data has been deleted successfully")
+    }
+    else{
+      res.send("Something went wrong")
+    }
+  } 
+  catch(err){
+    res.send(err.message)
+  }
+}
