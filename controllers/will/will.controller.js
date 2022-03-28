@@ -218,7 +218,7 @@ exports.deleteWills = async(req,res)=>{
 exports.deleteWillById = async(req,res)=>{
   try{
     const _id = req.params.id
-    const deleteWill = Will.findByIdAndRemove({_id})
+    const deleteWill = await Will.findByIdAndRemove({_id})
     if (deleteWill){
        res.send("will data has been deleted successfully")
   }

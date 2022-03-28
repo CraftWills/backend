@@ -779,9 +779,6 @@ function mapper() {
 
   const data2 = _.groupBy (newassets,'member');
   gettotalPerMember(data2);
-// console.log(totalAssetShares)
-// console.log(residualDataShares)
-// console.log(trustFallbackShares)
 }
 function gettotalPerMember(data){
   Object.keys().forEach(el=>{
