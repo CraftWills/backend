@@ -234,14 +234,26 @@ const deleteLiabilitiesById = async (req,res)=>{
        const _id = req.params.id
        const data= await liabilities.findByIdAndRemove({_id})
        if (data){
-         res.send("Liabilities data has been deleted")
-       }
+         res.json({
+           success : true,
+           error : false,
+           message : "Data has been removed successfully"
+           })
+          }
        else{
-         res.send("something went wrong")
+         res.json({
+          success : false,
+          error : true,
+          message : "Data not found"
+         })
        }
     }
     catch(err){
-      res.send(err.message)
+      res.json({
+        success : false,
+        error : true,
+        message : err.message
+      })
     }
 }
 module.exports = {storeLiabilities , getLiabilities ,liabilitystats,liabilitiesFilter,updateLiabilities,deleteLiabilities,getLiabilitiesMonthly,deleteLiabilitiesById}
