@@ -15,6 +15,10 @@ const membersSchema = new mongoose.Schema ({
     isoDate : {
       type : String
     },
+    isMember : {
+      type : Boolean,
+      default : true
+    },
     memberAsPerson : {
         fullname : {
             type : String,  

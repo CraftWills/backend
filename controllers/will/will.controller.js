@@ -11,6 +11,7 @@ const User = require("../../models/user.model");
 const {myFunction} = require ("../../nodemailer/nodemailer");
 const date = require ("date-and-time");
 var todayDate=(date.format(new Date(), 'MM-DD-YYYY'));
+const member = require("../../models/members.model");
 var count = 0
 
 exports.storeWill = async (req,res) => {
@@ -61,7 +62,15 @@ exports.storeWill = async (req,res) => {
       clauses : req.body.clauses
     })
     const savedData = await data.save();
-    console.log(savedData);
+    if (savedData){
+      const dta = await member.find({user_id : _id})
+      
+      // dta.isMember = false
+      dta.forEach((item,index)=>{
+          item.isMember = false
+      })
+    }
+    // console.log(savedData);
     res.json({
       message : "Data has been saved successfully",
       success : true,
