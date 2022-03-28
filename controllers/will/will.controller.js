@@ -220,13 +220,25 @@ exports.deleteWillById = async(req,res)=>{
     const _id = req.params.id
     const deleteWill = await Will.findByIdAndRemove({_id})
     if (deleteWill){
-       res.send("will data has been deleted successfully")
+       res.json({
+         success : true,
+         error : false,
+         message : "Will data has been deleted successfully"
+     })
   }
   else{
-    res.send("something Went Wrong")
+    res.json({
+      success : false,
+      error : true,
+      message : "Will data not found"
+    })
   }
 }
   catch(err){
-    res.send(err.message)
+    res.json({
+      success : false,
+      error : true,
+      message : err.message,
+      })
   }
 }
