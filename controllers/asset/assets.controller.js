@@ -702,7 +702,7 @@ const aggCursor2 = await liabilities.aggregate([
 
 const averageDistributionRate = async (req,res)=>{
 
-  try{
+try{
     const _id = req.token_data._id
     const Assetdata = await will.aggregate([
       {
@@ -748,7 +748,7 @@ const residualData  = await will.aggregate([
       
       ])
 
-      const trustFallbackData = await will.aggregate([
+const trustFallbackData = await will.aggregate([
         {
             $match: {
                 "user_id": _id
@@ -768,7 +768,7 @@ const residualData  = await will.aggregate([
         
       ])
 
-console.log(Assetdata)
+res.send(Assetdata)
 
 
 function mapper() {
@@ -777,9 +777,10 @@ function mapper() {
   })
   
 
-  const data2 = _.groupBy (newassets,'member');
+const data2 = _.groupBy (newassets,'member');
   gettotalPerMember(data2);
 }
+
 function gettotalPerMember(data){
   Object.keys().forEach(el=>{
       const totalShare = data[el].reduce((prev,curr)=>{
