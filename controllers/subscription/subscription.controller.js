@@ -114,7 +114,7 @@ exports.deletePlan = async (req) => {
 exports.getSubsDetails = async (req,res)=>{
   const  _id = req.token_data._id;
   // const data = await Sub.find({userId : _id}) ;
-  const data = await Sub.find({userId : _id}) ;
+  const data = await subHistory.find({userId : _id}) ;
   return data ;
 }
 
