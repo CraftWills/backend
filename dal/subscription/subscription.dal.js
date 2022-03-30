@@ -186,7 +186,8 @@ const canclesub = async (req) => {
   })
   if (reports) {
     console.log(reports)//sub_1KRytLJrEVeMChFEv2D8kcrj
-    const subscribe = await  stripe.subscriptions.del(reports[0].subId);
+    const subscribe = await  stripe.subscriptions.del(reports[0]?.subId);
+    console.log(subscribe)
     const user = await Subscription.findOneAndUpdate(
       reports[0].subscriptionEndDate,
       { $set: { subscription: false } },

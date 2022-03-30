@@ -45,10 +45,10 @@ router.get("/getSubDetails",authenticateToken , async (req,res)=>{
 // })
 
 router.post("createPaymentIntent",authenticateToken,subscriptionController.paymentIntent)
-// router.post("/cancleSub",authenticateToken, async (req, res) => {
-//   const result = await subscriptionController.cancleSubscription(req);
-//   return res.send(result);
-// });
+router.post("/cancleSub",authenticateToken, async (req, res) => {
+  const result = await subscriptionController.cancleSubscription(req);
+  return res.send(result);
+});
 
 
 // router.get("/getLastYear", async (request, response) => {

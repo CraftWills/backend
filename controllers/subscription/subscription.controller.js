@@ -63,7 +63,11 @@ try{
   return newSub
 }
 catch(err){
-  return err.message
+  return {
+    success : false,
+    error : true,
+    message : err.message
+  }
 }
   // return await subscriptionDataAccess.storeData(subData);
   
@@ -109,6 +113,7 @@ exports.deletePlan = async (req) => {
 
 exports.getSubsDetails = async (req,res)=>{
   const  _id = req.token_data._id;
+  // const data = await Sub.find({userId : _id}) ;
   const data = await Sub.find({userId : _id}) ;
   return data ;
 }
@@ -127,3 +132,18 @@ exports.paymentIntent = async (req,res)=>{
 }
 }
 
+// {
+// "fullName":"Singh Ankur",
+// "email":"ankur@gmail.com",
+// "password":"singhsta",
+// "id_type":"NRIC",
+// "id_number":"80075",
+// "gender":"Male",
+// "floorNumber":"22222",
+// "unitNumber":"7817222",
+// "streetName":"New address",
+// "postalCode":1277232,
+// "id_country":"Singapore",
+// "dob":"14/11/1995",
+// "citizenship":"Singapore"
+// }
