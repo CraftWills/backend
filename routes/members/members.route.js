@@ -10,5 +10,4 @@ router.put("/updateMember/:id",authenticateToken,membersController.updateMember)
 router.delete("/deleteMembers",authenticateToken,membersController.deleteMembers)
 router.delete("/deleteMemberById/:id",authenticateToken,membersController.deleteMemberById)
 
-
 module.exports = router

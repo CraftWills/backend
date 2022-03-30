@@ -69,6 +69,7 @@ exports.storeWill = async (req,res) => {
       dta.forEach((item,index)=>{
           item.isMember = false
       })
+      console.log(dta)
     }
     // console.log(savedData);
     res.json({
@@ -226,8 +227,14 @@ exports.deleteWills = async(req,res)=>{
 exports.deleteWillById = async(req,res)=>{
   try{
     const _id = req.params.id
+    const id = req.token_data._id
     const deleteWill = await Will.findByIdAndRemove({_id})
     if (deleteWill){
+      const dta = await member.find({user_id : id})
+      dta.forEach((item,index)=>{
+          item.isMember = true
+      })
+      console.log(dta)
        res.json({
          success : true,
          error : false,
