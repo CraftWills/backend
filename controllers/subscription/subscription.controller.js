@@ -188,15 +188,15 @@ exports.cancelSubsPlan = async(req,res)=>{
     const _id = req.body._id
     const subHist = await subHistory.findOne({_id:_id})
     
-    const deleted = await stripe.subscriptions.del(
-      subHist.subId
+    const deleted = await stripe.subscriptions.update(
+      subHist.subId , {cancel_at_period_end: true}
     );
 
     if (deleted){
-      const sub= await subHistory.find({userId : _id})
-      sub.forEach((item,index)=>{
-          item.isActive = false
-      })
+      const sub= await subHistory.findOne({_id : _id})
+      if (sub){
+        sub.isCancelled = true
+      }
       return {
         success : true,
         error : false,

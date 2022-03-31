@@ -127,6 +127,10 @@ const subscriptionHistorySchema = new mongoose.Schema({
   isActive : {
     type : Boolean,
     default : true
+  },
+  isCancelled : {
+    type : Boolean,
+    default : false
   }
 },{
   timestamps : true
