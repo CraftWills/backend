@@ -4,14 +4,15 @@ const moment = require("moment-timezone");
 const stripe = require("stripe")(process.env.skTestKey);
 const todayDate = moment().tz("Asia/Kolkata").format("YYYY-MM-DD");
 const Subscription = require("../models/subscription/subscription.model");
+const subHistory = require("../models/subscription/subscription.history")
 cron.schedule("20 0 * * *", async () => {
-  const reports = await Subscription.find({ subscriptionEndDate: todayDate})
+  const reports = await subHistory.find({ subscriptionEndDate: todayDate})
   if (reports) {
     console.log("Cronjob is Running")  
     const subscribe = await  stripe.subscriptions.del(reports[0].subId);
-    const user = await Subscription.findOneAndUpdate(
+    const user = await subHistory.findOneAndUpdate(
       reports[0].subscriptionEndDate,
-      { $set: { subscription: false } },
+      { $set: { isActive: false } },
       { new: true }
       );
       

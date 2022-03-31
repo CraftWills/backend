@@ -123,6 +123,10 @@ const subscriptionHistorySchema = new mongoose.Schema({
   },
   customerToken : {
     type : String
+  },
+  isActive : {
+    type : Boolean,
+    default : true
   }
 },{
   timestamps : true

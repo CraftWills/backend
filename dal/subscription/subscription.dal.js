@@ -48,15 +48,15 @@ const reports = await Subscription.find();
 const customers = async (req) => {
   const createCustomer = await stripe.customers.create({
     email: req.body.stripeEmail,
-    description: req.body.description,
     name: req.body.name,
-    address: {
-      line1: req.body.address,
-      postal_code: req.body.zip,
-      city: req.body.city,
-      state: req.body.state,
-      country: req.body.country,
-    },
+    source : req.body.customerTOken
+    // address: {
+    //   line1: req.body.address,
+    //   postal_code: req.body.zip,
+    //   city: req.body.city,
+    //   state: req.body.state,
+    //   country: req.body.country,
+    // },
   });
   return createCustomer;  
 };  
@@ -105,9 +105,9 @@ const toke = async (result, req) => {
 };
 
 
-const subscriptionData = async (subscription, req) => {
+const subscriptionData = async (req) => {
   return await stripe.subscriptions.create({
-    customer: subscription.customer,
+    customer: req.body.customerId,
     items: [
       {
         price: req.body.priceId,
@@ -181,16 +181,16 @@ const creatp = async (res, resp, req) => {
 };
 
 const canclesub = async (req) => {
-  const reports = await Subscription.find({
+  const reports = await SubscriptionHistory.find({
     $and: [{ userId: req.token_data._id }, { subscriptionEndDate: todayDate }]
   })
   if (reports) {
     console.log(reports)//sub_1KRytLJrEVeMChFEv2D8kcrj
     const subscribe = await  stripe.subscriptions.del(reports[0]?.subId);
     console.log(subscribe)
-    const user = await Subscription.findOneAndUpdate(
+    const user = await SubscriptionHistory.findOneAndUpdate(
       reports[0].subscriptionEndDate,
-      { $set: { subscription: false } },
+      { $set: { isActive: false } },
       { new: true }
     );
     return subscribe

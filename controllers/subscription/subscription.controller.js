@@ -4,7 +4,7 @@ const moment = require("moment-timezone");
 require("../../JsonWebToken/jwt");
 const Sub = require("../../models/subscription/subscription.model")
 const users = require("../../models/user.model")
-const stripe = require("stripe")
+const stripe = require("stripe")("sk_test_51KRYRcJrEVeMChFE3d3tCZnWYtFbGrk1t59uL8fTPEdrxqZOuQkPuQUd8ScGM7byky2VwbW5aFxNC6IAhv80LLr700lJeMZIiC")
 const subHistory = require("../../models/subscription/subscription.history");
 // const ExpressError = require("../../Errorgenerator/errorGenerator");
 
@@ -21,11 +21,12 @@ exports.payment = async (req) => {
 try{
   const id = req.token_data._id;
   const customer = await subscriptionDataAccess.customers(req);
+  req.body.customerId = customer.id
   console.log(customer)
-  const result = await subscriptionDataAccess.card(customer, req);
-  const subscription = await subscriptionDataAccess.toke(result, req);
-  console.log("tokennn",subscription)
-  const sub = await subscriptionDataAccess.subscriptionData(subscription, req);
+  // const result = await subscriptionDataAccess.card(customer, req);
+  // const subscription = await subscriptionDataAccess.toke(result, req);
+  // console.log("tokennn",subscription)
+  const sub = await subscriptionDataAccess.subscriptionData(req);
   const subData = await subscriptionDataAccess.subId(sub);
   console.log(new Date(sub.current_period_start), new Date(sub.current_period_end), 'sub');
   // console.log(moment(sub.current_period_start).format(),moment(current_period_end).format());
@@ -90,6 +91,51 @@ exports.upgradeSub = async(req) =>{
   return await subscriptionDataAccess.Upgrade(req);
 }
 
+exports.deleteAllSub = async(req)=>{
+  return await subHistory.remove()
+}
+
+// exports.cancelSubsPlan = async(req)=>{
+//   try{
+//   let subs= await subHistory.findOne({userId : req.token_data._id })
+//   if (subs){
+//     let subId = subs.subscription.subId;
+//     if (subs.subscription.isActive){
+//       const subscriptionDelete = await stripe.subscription.del(subs.subscription.subId);
+//       if (subscriptionDelete.status ==="canceled"){
+//         subs.subscription.subId = null;
+//         subs.clientId = '';
+//         subs.secretCode = '';
+//         subs.stripeEmail = '';
+//         subs.stripeConnceted =false ;
+//         return subs.save().then(async(subbs)=>{
+//           let SubscriptionHistory = await subscriptionHistoryModel.findOne({subId : subId})
+//           SubscriptionHistory.isActive = false;
+//           return SubscriptionHistory.save().then((result)=>{
+//             return {
+//               status : 200,
+//               message : "Plan cancelled successfully",
+//               success : true
+//             }
+//           })
+//         }).catch((error)=>{
+//              return error
+//         })
+//       }
+
+//     }else{
+//       return{
+//         status : 400,
+//         message : "Plan Already Cancelled",
+//         success : true,
+//         data : "",
+//       }
+//     }
+//   }
+// }
+// catch(err){
+//   return err.message;
+// }}
 // exports.getTotalAmountToday = async (req) => {
 //   const createTime = moment().tz("Asia/Kolkata").format("YYYY-MM-DD");//req.body.createTime;//"2021-10-23"
 //   const sub = await subscriptionDataAccess.findSub({createTime:createTime});
@@ -134,6 +180,39 @@ exports.paymentIntent = async (req,res)=>{
     message : err.message
   })
 }
+}
+
+
+exports.cancelSubsPlan = async(req,res)=>{
+  try{
+    const _id = req.body._id
+    const subHist = await subHistory.findOne({_id:_id})
+    
+    const deleted = await stripe.subscriptions.del(
+      subHist.subId
+    );
+
+    if (deleted){
+      const sub= await subHistory.find({userId : _id})
+      sub.forEach((item,index)=>{
+          item.isActive = false
+      })
+      return {
+        success : true,
+        error : false,
+        message : "Data has been deleted",
+        data : sub
+      }
+    }
+
+  }
+  catch(err){
+    return {
+      success : false,
+      error : true,
+      message : err.message
+    }
+  }
 }
 
 // {

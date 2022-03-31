@@ -27,7 +27,6 @@ router.get("/getProfilepic",authenticateToken ,async (request, response) => {
   return response.json(result);
 });
 
-
 router.post("/login", async (req, res) => {
   const result = await userController.loginUser(req);
   return res.send(result);
@@ -87,10 +86,10 @@ router.put("/verifyEmail",async (req,res)=>{
 
 // router.get("/resetPassword/:_id", userController.getId);
 
-// router.get("/getAll", async (req, res) => {
-//   const result = await userController.getAllusers(req);
-//   return res.send(result);
-// });
+router.get("/getAll", async (req, res) => {
+  const result = await userController.getAllUsers(req);
+  return res.send(result);
+});
 
 // const isLoggedIn = (req, res, next) => {
 //   if (req.user) {

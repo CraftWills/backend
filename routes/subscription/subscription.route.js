@@ -44,12 +44,22 @@ router.get("/getSubDetails",authenticateToken , async (req,res)=>{
 //   return res.send(result);
 // })
 
-router.post("createPaymentIntent",authenticateToken,subscriptionController.paymentIntent)
+router.post("/createPaymentIntent",authenticateToken,subscriptionController.paymentIntent)
 router.post("/cancleSub",authenticateToken, async (req, res) => {
   const result = await subscriptionController.cancleSubscription(req);
   return res.send(result);
 });
 
+router.post("/cancelSubPlan",authenticateToken, async (req, res) => {
+  const result = await subscriptionController.cancelSubsPlan(req);
+  return res.send(result);
+});
+
+
+router.delete("/deleteSubsData",async(req,res)=>{
+  const result = await subscriptionController.deleteAllSub(req);
+  return res.send(result);
+})
 
 // router.get("/getLastYear", async (request, response) => {
 //   const result = await subscriptionController.getReportYear(request);

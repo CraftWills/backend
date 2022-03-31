@@ -518,3 +518,14 @@ return {
     data: updatePass,
   };
 };
+
+
+exports.getAllUsers = async(req,res)=>{
+  try{
+    const dta = await User.find().populate('Subscription')
+    return dta
+  }
+  catch(err){
+    return err.message
+  }
+}
