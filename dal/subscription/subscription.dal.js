@@ -165,11 +165,12 @@ const createProduct = async (req) => {
 
 const price = async (resp, req) => {
   const res = await stripe.prices.create({
-    unit_amount: 0, //req.body.planPrice,
+    unit_amount: 17.99 * 100, //req.body.planPrice,
     currency: "usd",
     recurring: { interval: "month" },
     product: resp.id,
   });
+  console.log(res.unit_amount)
   return res;
 };
 
@@ -249,7 +250,7 @@ catch(err){
 
 const chargeCustomerThroughTokenID = async function (req,res) {
   try{ var param = {
-    amount:"1799",
+    amount:"17.99",
     currency : 'usd',
     source: req.body.customerTOken
 }

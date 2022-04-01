@@ -199,7 +199,8 @@ exports.cancelSubsPlan = async(req,res)=>{
     if (deleted){
       const sub= await subHistory.findOne({_id : _id})
       if (sub){
-        sub.isCancelled = true
+        sub.isCancelled = true,
+        sub.isActive =false
       }
       const savedData = await sub.save();
       return {
