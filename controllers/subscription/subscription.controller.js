@@ -52,13 +52,14 @@ try{
 
   subData.subscriptionStartDate= moment().format("YYYY-MM-DD");
   subData.subscriptionEndDate= moment().format(`YYYY-${months}-DD`);
-  let newSub = await subHistory.create(subData);
+  const newSub = await subHistory.create(subData);
   // let dta = await  subHistory.find({userId : id});
-  // console.log(dta,'sub dta')
+  console.log(newSub,'sub dta')
   let id2 = req.token_data._id
   let usrdta = await users.findByIdAndUpdate(id2,{$set : {
-    Subscription : newSub._id
+    subscriptionData : newSub._id
   }},{new : true})
+  console.log('updated user',usrdta);
   let user= await users.findById(id);
   console.log( user,id, 'final output')
   return {

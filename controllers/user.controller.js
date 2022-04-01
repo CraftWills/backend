@@ -225,8 +225,7 @@ exports.uploadImage = async (req, res) => {
 exports.getUser = async (req, res) => {
   try{
   const users = await User.findById(req.token_data._id).populate('subscriptionData');
-  const userDta = await User.find().populate('subscriptionData')
-  console.log(userDta)
+
   console.log(users.profileImage)
   emailExixtance.check(users.email,function(err,res){
     console.log("res :"+res)
