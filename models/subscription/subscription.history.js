@@ -131,6 +131,10 @@ const subscriptionHistorySchema = new mongoose.Schema({
   isCancelled : {
     type : Boolean,
     default : false
+  },
+  Sub : {
+    type : mongoose.Schema.Types.ObjectId,
+    ref : "subscription"
   }
 },{
   timestamps : true

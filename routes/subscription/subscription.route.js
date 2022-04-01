@@ -29,7 +29,7 @@ router.post("/stripePayment",authenticateToken,async(req,res)=>{
   return res.json(result);
 })
 
-router.post("/product", authenticateToken,free.freePlan,async (req, res) => {
+router.post("/plan", authenticateToken,free.freePlan,async (req, res) => {
     const result = await subscriptionController.createProduct(req);
     return res.json(result);
 });

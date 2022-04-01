@@ -165,7 +165,7 @@ const createProduct = async (req) => {
 
 const price = async (resp, req) => {
   const res = await stripe.prices.create({
-    unit_amount: 17.99 * 100, //req.body.planPrice,
+    unit_amount: 0, //req.body.planPrice,
     currency: "usd",
     recurring: { interval: "month" },
     product: resp.id,

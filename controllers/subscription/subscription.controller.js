@@ -126,7 +126,6 @@ exports.deleteAllSub = async(req)=>{
 //              return error
 //         })
 //       }
-
 //     }else{
 //       return{
 //         status : 400,
@@ -200,7 +199,11 @@ exports.cancelSubsPlan = async(req,res)=>{
       const sub= await subHistory.findOne({_id : _id})
       if (sub){
         sub.isCancelled = true,
-        sub.isActive =false
+        sub.isActive = false
+        if (sub.amount === 0){
+          sub.isFreeTrial = false
+        }
+        
       }
       const savedData = await sub.save();
       return {
