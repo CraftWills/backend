@@ -74,8 +74,7 @@ catch(err){
     message : err.message
   }
 }
-  // return await subscriptionDataAccess.storeData(subData);
-  
+  // return await subscriptionDataAccess.storeData(subData);  
 };
 // };
   
@@ -201,11 +200,12 @@ exports.cancelSubsPlan = async(req,res)=>{
       if (sub){
         sub.isCancelled = true
       }
+      const savedData = await sub.save();
       return {
         success : true,
         error : false,
         message : "Data has been deleted",
-        data : sub
+        data : savedData
       }
     }
 
