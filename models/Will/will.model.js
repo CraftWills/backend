@@ -17,7 +17,7 @@ const WillSchema = new mongoose.Schema({
     id_number: {
         type: Number
     },
-    id_Type: {
+    id_type: {
         type: String
     },
     fullName: {

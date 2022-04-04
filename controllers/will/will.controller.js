@@ -23,7 +23,7 @@ exports.storeWill = async (req,res) => {
       // Personal Information
       DATE : date.format(now, 'MM-DD-YYYY | HH:mm:ss'),
       id_number : req.body.id_number,
-      id_Type :  req.body.id_Type,
+      id_type :  req.body.id_Type,
       fullName : req.body.fullName,
       gender : req.body.gender,
       willName : "My Will Version "+ count++,
@@ -155,7 +155,7 @@ exports.UpdateWillData = async (req, res) => {
     _id,
     toUpdate: {
       id_number : req.body.id_number,
-      id_Type :  req.body.id_Type,
+      id_type :  req.body.id_Type,
       fullName : req.body.fullName,
       willName : "My Will Version "+ count++,
       gender : req.body.gender,
