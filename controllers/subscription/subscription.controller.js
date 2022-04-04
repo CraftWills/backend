@@ -33,9 +33,9 @@ try{
   subData.createTime = moment().format("YYYY-MM-DD");
   subData.isoDate = moment().format("YYYY-MM-DD") + "T00:00:00Z";
   subData.amount=sub.plan.amount;
-  subData.userId=id
-  subData.subscription=true
-  subData.pricePlan=req.body.pricePlan
+  subData.userId=id;
+  subData.subscription=true;
+  subData.pricePlan=req.body.pricePlan;
   
     let months=parseInt(moment().format("MM"));
     months=months+1
@@ -190,18 +190,28 @@ exports.cancelSubsPlan = async(req,res)=>{
   try{
     const _id = req.body._id
     const subHist = await subHistory.findOne({_id:_id})
-    
-    const deleted = await stripe.subscriptions.update(
-      subHist.subId , {cancel_at_period_end: true}
-    );
-
-    if (deleted){
-      const sub= await subHistory.findOne({_id : _id})
-      if (sub){
-        sub.isCancelled = true
-        // sub.isActive = false    
+    if (subHist?.amount === 0){
+      const deletedDta = await stripe.subscriptions.del(
+        subHist.subId 
+      );
+      if (deletedDta){
+        subHist.isActive = false
+        subHist.isCancelled = true
       }
-      const savedData = await sub.save();
+   }
+   else{
+
+     const deleted = await stripe.subscriptions.update(
+       subHist.subId , {cancel_at_period_end: true}
+     );
+ 
+     if (deleted){
+       if (subHist){
+         subHist.isCancelled = true
+         
+       }
+   }
+      const savedData = await subHist.save();
       return {
         success : true,
         error : false,

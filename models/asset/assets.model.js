@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const AssetsSchema = new mongoose.Schema({
-
+    
     user_id: {
         type: String
     },
@@ -9,6 +9,9 @@ const AssetsSchema = new mongoose.Schema({
     },
     assetType : {
         type : String
+    },
+    estimateValue: {
+        type: Number
     },
     country: {
         type: String,
@@ -33,9 +36,6 @@ const AssetsSchema = new mongoose.Schema({
             type: String,
             unique: true,
             sparse : true
-        },
-        estimateValue: {
-            type: Number
         },
     },
     business : {

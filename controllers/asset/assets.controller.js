@@ -36,13 +36,13 @@ const storeAssets = async (req, res) => {
         user_id: user,
         country: req.body.country,
         specifyOwnershipType: req.body.specifyOwnershipType,
+        estimateValue: req.body.bankAccount?.estimateValue,
         type : req.body.type,
         isoDate: `${creatTime}`,
         bankAccount:
        {
             bankname: req.body.bankAccount?.bankname,
             accountNumber: req.body.bankAccount?.accountNumber,
-            estimateValue: req.body.bankAccount?.estimateValue,
         },
         business: {
             UEN_no: req.body.business?.UEN_no,
@@ -133,11 +133,11 @@ const updateAssets = async (req, res) => {
       toUpdate: {
         country: req.body.country,
         specifyOwnershipType: req.body.specifyOwnershipType,
+        estimateValue: req.body.bankAccount?.estimateValue,
         bankAccount:  
        {
           bankname: req.body.bankAccount?.bankname,
           accountNumber: req.body.bankAccount?.accountNumber,
-          estimateValue: req.body.bankAccount?.estimateValue
         },
         business: {
           businessName: req.body.business?.businessName,
@@ -299,13 +299,14 @@ const Statics = async(req,res)=>{
       { 
           $group: {
               _id: { "year_month": { $substrCP: [ "$isoDate", 0, 7 ] } }, 
-              count: { $sum: 1 },
+              $count: { $sum: 1 },
               total : {
                 $sum : "$estimateValue"
             }
           } 
 
       },
+      
       {
         $sort: { "_id.year_month": 1 }
     },
