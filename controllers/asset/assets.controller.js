@@ -36,7 +36,7 @@ const storeAssets = async (req, res) => {
         user_id: user,
         country: req.body.country,
         specifyOwnershipType: req.body.specifyOwnershipType,
-        estimateValue: req.body.bankAccount?.estimateValue,
+        estimateValue: req.body.estimateValue,
         type : req.body.type,
         isoDate: `${creatTime}`,
         bankAccount:
