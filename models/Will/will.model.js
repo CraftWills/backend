@@ -14,7 +14,7 @@ const WillSchema = new mongoose.Schema({
 
 /// Personal Information
 
-    id_Number: {
+    id_number: {
         type: Number
     },
     id_Type: {

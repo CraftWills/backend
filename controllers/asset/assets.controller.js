@@ -171,8 +171,8 @@ const updateAssets = async (req, res) => {
             address: req.body.realEstate?.address,
             safeDepositBox : {
         },
-            safe_Box_Location : req.body.safeDepositBox?.safe_Box_Location,
-            safe_No : req.body.safeDepositBox?.safe_No
+        safe_Box_Location : req.body.safeDepositBox?.safe_Box_Location,
+        safe_No : req.body.safeDepositBox?.safe_No
 
         }
       },
@@ -280,11 +280,12 @@ const Statics = async(req,res)=>{
     const FIRST_MONTH = 1
     const LAST_MONTH = 12
     var startOfToday = moment().format("YYYY-MM-DD");
+    console.log("start of today",startOfToday)
     var startOfYear = moment().startOf('year').format("YYYY-MM-DD");
     console.log("start of year"+startOfYear)
     // let startOfToday = new Date(now., now.getMonth(), now.getDate());
     let YEAR_BEFORE = moment().subtract(1, 'year').format("YYYY-MM-DD");
-    console.log(YEAR_BEFORE)
+    console.log(YEAR_BEFORE)  
 
     // req.body.fromDate
     // req.body.endDate
