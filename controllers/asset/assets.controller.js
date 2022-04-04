@@ -133,7 +133,7 @@ const updateAssets = async (req, res) => {
       toUpdate: {
         country: req.body.country,
         specifyOwnershipType: req.body.specifyOwnershipType,
-        estimateValue: req.body.bankAccount?.estimateValue,
+        estimateValue: req.body.estimateValue,
         bankAccount:  
        {
           bankname: req.body.bankAccount?.bankname,
