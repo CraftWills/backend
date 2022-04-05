@@ -56,7 +56,7 @@ router.post("/cancleSub",authenticateToken, async (req, res) => {
 
 router.post("/cancelSubPlan",authenticateToken, async (req, res) => {
   const result = await subscriptionController.cancelSubsPlan(req);
-  return res.send(result);
+  return res.json(result);
 });
 
 
