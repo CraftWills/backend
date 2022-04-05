@@ -262,7 +262,7 @@ exports.cancelSubsPlan = async(req,res)=>{
     const subHist = await subHistory.findOne({_id:_id})
     if (subHist?.amount === 0){
       const deletedDta = await stripe.subscriptions.del(
-        subHist.subId 
+        subHist?.subId 
       );
       if (deletedDta){
         subHist.isActive = false
