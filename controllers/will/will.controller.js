@@ -63,13 +63,12 @@ exports.storeWill = async (req,res) => {
     })
     const savedData = await data.save();
     if (savedData){
-      const dta = await member.find({user_id : _id})
-      
-      // dta.isMember = false
+      const dta = await member.find({"user_id": _id} )
       dta.forEach((item,index)=>{
           item.isMember = false
       })
-      console.log(dta)
+      const savedMemberData = await dta.save();
+      console.log(savedMemberData) 
     }
     // console.log(savedData);
     res.json({

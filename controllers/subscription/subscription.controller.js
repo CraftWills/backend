@@ -99,6 +99,60 @@ exports.deleteAllSub = async(req)=>{
   return await subHistory.remove()
 }
 
+exports.addSubDetails = async(req,res)=>{
+  try{
+    const data = await new Sub({
+      planName : 'month',
+      planDescription : "This is a monthly plan",
+      duration : "1 month",
+      price : "0",
+      priceId : "price_1Kl9BkJrEVeMChFE5aig9RyS",
+      planId : "price_1Kl9BkJrEVeMChFE5aig9RyS"
+   })
+
+   const dta = await data.save();
+   if (dta){
+     return {
+       success : true,
+       error : false,
+       message : "data has been saved",
+       data : dta
+     }
+   }
+  }
+  catch(err){
+    return {
+      success : false,
+      error : true,
+      message: err.message
+    }
+  }
+}
+exports.getPlanDetails = async(req,res)=>{
+  const freeId = "624c12983ae6c37624ca6dea"
+  const monthId = "624c139cba77196ea3aef18d"
+
+  try{
+    const data1 = await Sub.findById(freeId)
+    const data2 = await Sub.findById(monthId)
+    console.log(data1)
+    return ({
+      success : true,
+      error : false,
+      freePlanData : data1,
+      monthPlanData : data2
+    })
+  }
+  catch(err){
+    return{
+      success : false,
+      error : true,
+      message : err.message
+    }
+  }
+
+}
+
 // exports.cancelSubsPlan = async(req)=>{
 //   try{
 //   let subs= await subHistory.findOne({userId : req.token_data._id })
@@ -230,6 +284,15 @@ exports.cancelSubsPlan = async(req,res)=>{
   }
 }
 
+exports.findSubscription = async(req,res)=>{
+  try{
+    const data = await Sub.find();
+    return data
+  }
+  catch(err){
+    return err.message
+  }
+}
 // {
 // "fullName":"Singh Ankur",
 // "email":"ankur@gmail.com",

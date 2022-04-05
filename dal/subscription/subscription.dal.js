@@ -132,7 +132,7 @@ const subId = async (sub) => {
 const createPlan = async (data) => {
   const plan = await stripe.plans.create({
     // amount: data.planPrice,
-    amount: 20,
+    amount:17,
     currency: "usd",
     interval: "month",
     // interval_count: data.stripeDuration,
@@ -165,7 +165,7 @@ const createProduct = async (req) => {
 
 const price = async (resp, req) => {
   const res = await stripe.prices.create({
-    unit_amount: 0, //req.body.planPrice,
+    unit_amount: 17, //req.body.planPrice,
     currency: "usd",
     recurring: { interval: "month" },
     product: resp.id,

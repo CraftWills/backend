@@ -3,14 +3,14 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 // const ExpressError = require("../Errorgenerator/errorGenerator");
 const { generateAccessToken } = require("../../JsonWebToken/jwt");
-const will = require ("../../models/Will/will.model")
+const will = require("../../models/Will/will.model")
 const asset = require("../../models/asset/assets.model")
 const AssetsDataAccess = require("../../dal/asset/assets.dal")
 const usersDataAccess = require("../../dal/user.dal")
 const User = require("../../models/user.model")
-const moment = require ("moment-timezone")
+const moment = require("moment-timezone")
 const member = require("../../models/members.model")
-const liabilities = require ("../../models/liabilities/liabilities.model")
+const liabilities = require("../../models/liabilities/liabilities.model")
 const liabilitiesDataAccess = require("../../dal/liabilities/liabilities.dal")
 var _ = require('lodash');
 //"-" is not defined
@@ -27,184 +27,184 @@ var _ = require('lodash');
 const { myFunction } = require("../../nodemailer/nodemailer")
 
 const storeAssets = async (req, res) => {
-    const user = req.token_data._id
-    const creatTime = moment().format("YYYY-MM-DD");
-    // const creatTime ="2010-11-30";
-    try {
+  const user = req.token_data._id
+  const creatTime = moment().format("YYYY-MM-DD");
+  // const creatTime ="2010-11-30";
+  try {
 
     const Asset = new asset({
-        user_id: user,
-        country: req.body.country,
-        specifyOwnershipType: req.body.specifyOwnershipType,
-        estimateValue: req.body.estimateValue,
-        type : req.body.type,
-        isoDate: `${creatTime}`,
-        bankAccount:
-       {
-            bankname: req.body.bankAccount?.bankname,
-            accountNumber: req.body.bankAccount?.accountNumber,
-        },
-        business: {
-            UEN_no: req.body.business?.UEN_no,
-            businessName: req.body.business?.businessName
-        },
-        insurancePolicy: {
-            policyName: req.body.insurancePolicy?.policyName,
-            policyNumber: req.body.insurancePolicy?.policyNumber
-        },  
-        intellectualProperty: {
-            ip_Name: req.body.intellectualProperty?.ip_Name,
-            ip_No: req.body.intellectualProperty?.ip_No
-        },
-        investmentAccount: {
-            accountName: req.body.investmentAccount?.accountName,
-            accountNo: req.body.investmentAccount?.accountNo
-        },
-        motorVehicle : {
-            CarModel : req.body.motorVehicle?.CarModel,
-            plateNo : req.body.motorVehicle?.plateNo
-        },
-        otherAssets : {
-            asset_name : req.body.otherAssets?.asset_name,
-            id_No : req.body.otherAssets?.id_No
-        },
-        personalPossession : {
-            Name : req.body.personalPossession?.Name,
-            id_No : req.body.personalPossession?.id_No
-        },
-        realEstate : {
-            address: req.body.realEstate?.address,
-        },
-        safeDepositBox : {
-            safe_Box_Location : req.body.safeDepositBox?.safe_Box_Location,
-            safe_No: req.body.safeDepositBox?.safe_No
-        }
+      user_id: user,
+      country: req.body.country,
+      specifyOwnershipType: req.body.specifyOwnershipType,
+      estimateValue: req.body.estimateValue,
+      type: req.body.type,
+      isoDate: `${creatTime}`,
+      bankAccount:
+      {
+        bankname: req.body.bankAccount?.bankname,
+        accountNumber: req.body.bankAccount?.accountNumber,
+      },
+      business: {
+        UEN_no: req.body.business?.UEN_no,
+        businessName: req.body.business?.businessName
+      },
+      insurancePolicy: {
+        policyName: req.body.insurancePolicy?.policyName,
+        policyNumber: req.body.insurancePolicy?.policyNumber
+      },
+      intellectualProperty: {
+        ip_Name: req.body.intellectualProperty?.ip_Name,
+        ip_No: req.body.intellectualProperty?.ip_No
+      },
+      investmentAccount: {
+        accountName: req.body.investmentAccount?.accountName,
+        accountNo: req.body.investmentAccount?.accountNo
+      },
+      motorVehicle: {
+        CarModel: req.body.motorVehicle?.CarModel,
+        plateNo: req.body.motorVehicle?.plateNo
+      },
+      otherAssets: {
+        asset_name: req.body.otherAssets?.asset_name,
+        id_No: req.body.otherAssets?.id_No
+      },
+      personalPossession: {
+        Name: req.body.personalPossession?.Name,
+        id_No: req.body.personalPossession?.id_No
+      },
+      realEstate: {
+        address: req.body.realEstate?.address,
+      },
+      safeDepositBox: {
+        safe_Box_Location: req.body.safeDepositBox?.safe_Box_Location,
+        safe_No: req.body.safeDepositBox?.safe_No
+      }
 
     })
-  if (Asset.type === "bankAccount" || "investmentAccount" || "insurancePolicy" || "business" || "intellectualProperty" ){
+    if (Asset.type === "bankAccount" || "investmentAccount" || "insurancePolicy" || "business" || "intellectualProperty") {
       Asset.assetType = "liquid"
     }
-  if (Asset.type === "personalPossession" || Asset.type ==="realEsate" || Asset.type ==="motorVehicle" || Asset.type ==="safeDepositBox") {
+    if (Asset.type === "personalPossession" || Asset.type === "realEsate" || Asset.type === "motorVehicle" || Asset.type === "safeDepositBox") {
       Asset.assetType = "iliquid"
     }
 
-  const savedAsset = await Asset.save()
+    const savedAsset = await Asset.save()
     res.json({
-        success : true,
-        status : 200,
-        message : "Asset saved",
-        data : savedAsset    
+      success: true,
+      status: 200,
+      message: "Asset saved",
+      data: savedAsset
     })
-    }
-    catch (err) {
-        res.json({
-            success : true ,
-            message :err.message,
-            error : err.message
-        })
-        console.log(err)
-    }
+  }
+  catch (err) {
+    res.json({
+      success: true,
+      message: err.message,
+      error: err.message
+    })
+    console.log(err)
+  }
 }
 
-const getAssets = async (req,res)=> {
-    const _id = req.token_data._id
-    try{
-    const assetData = await asset.find({user_id : _id})
+const getAssets = async (req, res) => {
+  const _id = req.token_data._id
+  try {
+    const assetData = await asset.find({ user_id: _id })
     res.json({
-        success : true,
-        message : "Asset Data found successfully",
-        data : assetData
+      success: true,
+      message: "Asset Data found successfully",
+      data: assetData
     })
-    }
-    catch (err) {
-        res.json({
-            success : false,
-            message : "Something went wrong",
-            error : err
-        })
-    }
+  }
+  catch (err) {
+    res.json({
+      success: false,
+      message: "Something went wrong",
+      error: err
+    })
+  }
 }
 
 
 const updateAssets = async (req, res) => {
-    const _id = req.params.id
-    const updateData = {
-      _id,
-      toUpdate: {
-        country: req.body.country,
-        specifyOwnershipType: req.body.specifyOwnershipType,
-        estimateValue: req.body.estimateValue,
-        bankAccount:  
-       {
-          bankname: req.body.bankAccount?.bankname,
-          accountNumber: req.body.bankAccount?.accountNumber,
-        },
-        business: {
-          businessName: req.body.business?.businessName,
-          UEN_no: req.body.business?.UEN_no
-        },
-        insurancePolicy: {
-          policyName: req.body.insurancePolicy?.policyName,
-          policyNumber: req.body.insurancePolicy?.policyNumber
-        },
-        intellectualProperty: {
-          ip_Name: req.body.intellectualProperty?.ip_Name,
-          ip_No: req.body.intellectualProperty?.ip_No
-        },
-        investmentAccount: {
-            accountName: req.body.investmentAccount?.accountName,
-            accountNo: req.body.investmentAccount?.accountNo
-        },
-        motorVehicle : {
-            CarModel : req.body.motorVehicle?.CarModel,
-            plateNo : req.body.motorVehicle?.plateNo
-        },
-        otherAssets : {
-            asset_name : req.body.otherAssets?.asset_name,
-            id_No : req.body.otherAssets?.id_No
-        },
-        personalPossession : {
-            Name : req.body.personalPossession?.Name,
-            id_No : req.body.personalPossession?.id_No
-        },
-        realEstate : {
-            address: req.body.realEstate?.address,
-            safeDepositBox : {
-        },
-        safe_Box_Location : req.body.safeDepositBox?.safe_Box_Location,
-        safe_No : req.body.safeDepositBox?.safe_No
-
-        }
+  const _id = req.params.id
+  const updateData = {
+    _id,
+    toUpdate: {
+      country: req.body.country,
+      specifyOwnershipType: req.body.specifyOwnershipType,
+      estimateValue: req.body.estimateValue,
+      bankAccount:
+      {
+        bankname: req.body.bankAccount?.bankname,
+        accountNumber: req.body.bankAccount?.accountNumber,
       },
-    };
+      business: {
+        businessName: req.body.business?.businessName,
+        UEN_no: req.body.business?.UEN_no
+      },
+      insurancePolicy: {
+        policyName: req.body.insurancePolicy?.policyName,
+        policyNumber: req.body.insurancePolicy?.policyNumber
+      },
+      intellectualProperty: {
+        ip_Name: req.body.intellectualProperty?.ip_Name,
+        ip_No: req.body.intellectualProperty?.ip_No
+      },
+      investmentAccount: {
+        accountName: req.body.investmentAccount?.accountName,
+        accountNo: req.body.investmentAccount?.accountNo
+      },
+      motorVehicle: {
+        CarModel: req.body.motorVehicle?.CarModel,
+        plateNo: req.body.motorVehicle?.plateNo
+      },
+      otherAssets: {
+        asset_name: req.body.otherAssets?.asset_name,
+        id_No: req.body.otherAssets?.id_No
+      },
+      personalPossession: {
+        Name: req.body.personalPossession?.Name,
+        id_No: req.body.personalPossession?.id_No
+      },
+      realEstate: {
+        address: req.body.realEstate?.address,
+        safeDepositBox: {
+        },
+        safe_Box_Location: req.body.safeDepositBox?.safe_Box_Location,
+        safe_No: req.body.safeDepositBox?.safe_No
+
+      }
+    },
+  };
 
   try {
-const update = await AssetsDataAccess.updateAsset(updateData);
-  if (update){
-    res.send( {
-      error: false,
-      success: true,
-      message: "Assets data updated successfully",
-      data: update,
-    }); 
+    const update = await AssetsDataAccess.updateAsset(updateData);
+    if (update) {
+      res.send({
+        error: false,
+        success: true,
+        message: "Assets data updated successfully",
+        data: update,
+      });
+    }
+    else {
+      res.send({
+        error: true,
+        message: "something went wrong",
+        success: false
+      });
+    }
+  } catch (err) {
+    res.send({
+      error: true,
+      success: false,
+      message: err.message
+    })
   }
-  else {
-  res.send({
-    error : true,
-    message : "something went wrong",
-    success : false
-  });
-  }
-}catch (err){
-  res.send({
-    error : true,
-    success : false,
-    message : err.message
-  })
-}
 };
 
-  
+
 // const totalAssetsAmount = async(req,res)=>{
 //     const aggCursor = await asset.aggregate([
 //         {
@@ -220,7 +220,7 @@ const update = await AssetsDataAccess.updateAsset(updateData);
 //           }
 //         }
 //       ]);
-   
+
 // aggCursor.forEach(function (item, index) {
 // console.log(item.total)
 // res.json(item.total)   
@@ -275,271 +275,349 @@ const update = await AssetsDataAccess.updateAsset(updateData);
 //     console.log(b-a)    
 // }
 
-const Statics = async(req,res)=>{
-  try{
+const Statics = async (req, res) => {
+  try {
     const FIRST_MONTH = 1
     const LAST_MONTH = 12
     var startOfToday = moment().format("YYYY-MM-DD");
-    console.log("start of today",startOfToday)
+    console.log("start of today", startOfToday)
     var startOfYear = moment().startOf('year').format("YYYY-MM-DD");
-    console.log("start of year"+startOfYear)
+    console.log("start of year" + startOfYear)
     // let startOfToday = new Date(now., now.getMonth(), now.getDate());
     let YEAR_BEFORE = moment().subtract(1, 'year').format("YYYY-MM-DD");
-    console.log(YEAR_BEFORE)  
+    console.log(YEAR_BEFORE)
 
     // req.body.fromDate
     // req.body.endDate
-    const monthsArray = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]
-    
-    let data= await asset.aggregate([{ 
-      $match: { 
-      isoDate: {$gte: startOfYear, 
-        $lt: startOfToday}
-    }
+    const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    let sampledata = await asset.aggregate([{
+      $match: {
+        isoDate: {
+          $gte: startOfYear,
+          $lt: startOfToday
+        }
+      }
     },
-      { 
-          $group: {
-              _id: { "year_month": { $substrCP: [ "$isoDate", 0, 7 ] } }, 
-              $count: { $sum: 1 },
-              total : {
-                $sum : "$estimateValue"
+    {
+      $group: {
+        _id: { "year_month": { $substrCP: ["$isoDate", 0, 7] } },
+        count: { $sum: 1 },
+        total: {
+          $sum: "$bankAccount.estimateValue"
+        }
+      }
+
+    },
+
+    {
+      $sort: { "_id.year_month": 1 }
+    },
+    {
+      $project: {
+        _id: 0,
+        count: 1,
+        total: 1,
+        month_year: {
+          $concat: [
+            { $arrayElemAt: [monthsArray, { $subtract: [{ $toInt: { $substrCP: ["$_id.year_month", 5, 2] } }, 1] }] },
+            "-",
+            { $substrCP: ["$_id.year_month", 0, 4] }
+          ]
+        }
+      }
+    },
+
+    ]);
+
+    console.log("The SampleData is : ", sampledata)
+
+
+
+    // /////////////////////////
+    let data = await asset.aggregate([{
+      $match: {
+        isoDate: {
+          $gte: startOfYear,
+          $lt: startOfToday
+        }
+      }
+    },
+    {
+      $group: {
+        _id: { "year_month": { $substrCP: ["$isoDate", 0, 7] } },
+        count: { $sum: 1 },
+        total: {
+          $sum: "$bankAccount.estimateValue"
+        }
+      }
+
+    },
+
+    {
+      $sort: { "_id.year_month": 1 }
+    },
+    {
+      $project: {
+        _id: 0,
+        count: 1,
+        total: 1,
+        month_year: {
+          $concat: [
+            { $arrayElemAt: [monthsArray, { $subtract: [{ $toInt: { $substrCP: ["$_id.year_month", 5, 2] } }, 1] }] },
+            "-",
+            { $substrCP: ["$_id.year_month", 0, 4] }
+          ]
+        }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        data: { $push: { k: "$month_year", v: "$total", count: "$count" } },
+      }
+    },
+    {
+      $addFields: {
+        start_year: { $substrCP: [YEAR_BEFORE, 0, 4] },
+        end_year: { $substrCP: [startOfToday, 0, 4] },
+        months1: { $range: [{ $toInt: { $substrCP: [YEAR_BEFORE, 5, 2] } }, { $add: [LAST_MONTH, 1] }] },
+        months2: { $range: [FIRST_MONTH, { $add: [{ $toInt: { $substrCP: [startOfToday, 5, 2] } }, 1] }] }
+      }
+    },
+
+    {
+      $addFields: {
+        template_data: {
+          $concatArrays: [
+            {
+              $map: {
+                input: "$months1", as: "m1",
+                in: {
+                  count: 0,
+                  month_year: {
+                    $concat: [{ $arrayElemAt: [monthsArray, { $subtract: ["$$m1", 1] }] }, "-", "$start_year"]
+                  }
+                }
+              }
+            },
+            {
+              $map: {
+                input: "$months2", as: "m2",
+                in: {
+                  count: 0,
+                  month_year: {
+                    $concat: [{ $arrayElemAt: [monthsArray, { $subtract: ["$$m2", 1] }] }, "-", "$end_year"]
+                  }
+                }
+              }
             }
-          } 
-
-      },
-      
-      {
-        $sort: { "_id.year_month": 1 }
-    },
-    { 
-      $project: { 
-          _id: 0, 
-          count: 1, 
-          total:1,
-          month_year: { 
-              $concat: [ 
-                { $arrayElemAt: [ monthsArray, { $subtract: [ { $toInt: { $substrCP: [ "$_id.year_month", 5, 2 ] } }, 1 ] } ] },
-                "-", 
-                { $substrCP: [ "$_id.year_month", 0, 4 ] }
-              ] 
-          }
-      } 
-  },
-  { 
-    $group: { 
-        _id: null, 
-        data: { $push: { k: "$month_year", v: "$total" } }
-    } 
-  },
-  { 
-    $addFields: { 
-        start_year: { $substrCP: [ YEAR_BEFORE, 0, 4 ] }, 
-        end_year: { $substrCP: [ startOfToday, 0, 4 ] },
-        months1: { $range: [ { $toInt: { $substrCP: [ YEAR_BEFORE, 5, 2 ] } }, { $add: [ LAST_MONTH, 1 ] } ] },
-        months2: { $range: [ FIRST_MONTH, { $add: [ { $toInt: { $substrCP: [ startOfToday, 5, 2 ] } }, 1 ] } ] }
-    } 
-},
-
-{ 
-  $addFields: { 
-      template_data: { 
-          $concatArrays: [ 
-              { $map: { 
-                   input: "$months1", as: "m1",
-                   in: {
-                       count: 0,
-                       month_year: { 
-                           $concat: [ { $arrayElemAt: [ monthsArray, { $subtract: [ "$$m1", 1 ] } ] }, "-",  "$start_year" ] 
-                       }                                            
-                   }
-              } }, 
-              { $map: { 
-                   input: "$months2", as: "m2",
-                   in: {
-                       count: 0,
-                       month_year: { 
-                           $concat: [ { $arrayElemAt: [ monthsArray, { $subtract: [ "$$m2", 1 ] } ] }, "-",  "$end_year" ] 
-                       }                                            
-                   }
-              } }
-          ] 
-     }
-  }
-},
-{ 
-  $addFields: { 
-      data: { 
-         $map: { 
-             input: "$template_data", as: "t",
-             in: {   
-                 k: "$$t.month_year",
-                 v: { 
-                     $reduce: { 
-                         input: "$data", initialValue: 0, 
-                         in: {
-                             $cond: [ { $eq: [ "$$t.month_year", "$$this.k"] },
-                                          { $add: [ "$$this.v", "$$value" ] },
-                                          { $add: [ 0, "$$value" ] }
-                             ]
-                         }
-                     } 
-                 }
-             }
-          }
+          ]
+        }
       }
-  }
-},
-  {
-    $project: { 
-        data: { $arrayToObject: "$data" }, 
-        _id: 0 
-    } 
-  }
-    ]); 
-
-    let data2= await liabilities.aggregate([{ 
-      $match: { 
-      isoDate: {$gte: startOfYear, 
-        $lt: startOfToday}
-    }
     },
-      { 
-          $group: {
-              _id: { "year_month": { $substrCP: [ "$isoDate", 0, 7 ] } }, 
-              count: { $sum: 1 },
-              total : {
-                $sum : "$estimateValue"
+    {
+      $addFields: {
+        data: {
+          $map: {
+            input: "$template_data", as: "t",
+            in: {
+              k: "$$t.month_year",
+              v: {
+                $reduce: {
+                  input: "$data", initialValue: 0,
+                  in: {
+                    $cond: [
+                      { $eq: ["$$t.month_year", "$$this.k"] },
+                      { $add: ["$$this.v", "$$value"] },
+                      { $add: [0, "$$value"] },
+                    ]
+                  }
+                },
+              },
             }
-          } 
-
-      },
-      {
-        $sort: { "_id.year_month": 1 }
+          }
+        },
+        dataTwo: "$data"
+      }
     },
-    { 
-      $project: { 
-          _id: 0, 
-          count: 1, 
-          total:1,
-          month_year: { 
-              $concat: [ 
-                { $arrayElemAt: [ monthsArray, { $subtract: [ { $toInt: { $substrCP: [ "$_id.year_month", 5, 2 ] } }, 1 ] } ] },
-                "-", 
-                { $substrCP: [ "$_id.year_month", 0, 4 ] }
-              ] 
+    ]);
+
+    console.log("Dataaa", JSON.stringify(data))
+
+    let first = data[0].data.map((item) => ({ ...item, count: 0 }));
+    let second = first.map((item) => ({ ...item, count: data[0].dataTwo.find(el => el?.k === item?.k)?.count || 0 }))
+    console.log(second)
+
+
+
+    let arr3 = data[0].data.map((item, i) => Object.assign({}, item, data[0].dataTwo[i]));
+
+
+    // const groupedByMonth = _.groupBy(merged, 'k');
+
+    // console.log('Data', merged)
+
+
+    let data2 = await liabilities.aggregate([{
+      $match: {
+        isoDate: {
+          $gte: startOfYear,
+          $lt: startOfToday
+        }
+      }
+    },
+    {
+      $group: {
+        _id: { "year_month": { $substrCP: ["$isoDate", 0, 7] } },
+        count: { $sum: 1 },
+        total: {
+          $sum: "$current_Outstanding_Amount"
+        }
+      }
+
+    },
+    {
+      $sort: { "_id.year_month": 1 }
+    },
+    {
+      $project: {
+        _id: 0,
+        count: 1,
+        total: 1,
+        month_year: {
+          $concat: [
+            { $arrayElemAt: [monthsArray, { $subtract: [{ $toInt: { $substrCP: ["$_id.year_month", 5, 2] } }, 1] }] },
+            "-",
+            { $substrCP: ["$_id.year_month", 0, 4] }
+          ]
+        }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        data2: { $push: { k: "$month_year", v: "$total", c: "$count" } }
+      }
+    },
+    {
+      $addFields: {
+        start_year: { $substrCP: [YEAR_BEFORE, 0, 4] },
+        end_year: { $substrCP: [startOfToday, 0, 4] },
+        months1: { $range: [{ $toInt: { $substrCP: [YEAR_BEFORE, 5, 2] } }, { $add: [LAST_MONTH, 1] }] },
+        months2: { $range: [FIRST_MONTH, { $add: [{ $toInt: { $substrCP: [startOfToday, 5, 2] } }, 1] }] }
+      }
+    },
+
+    {
+      $addFields: {
+        template_data: {
+          $concatArrays: [
+            {
+              $map: {
+                input: "$months1", as: "m1",
+                in: {
+                  count: 0,
+                  month_year: {
+                    $concat: [{ $arrayElemAt: [monthsArray, { $subtract: ["$$m1", 1] }] }, "-", "$start_year"]
+                  }
+                }
+              }
+            },
+            {
+              $map: {
+                input: "$months2", as: "m2",
+                in: {
+                  count: 0,
+                  month_year: {
+                    $concat: [{ $arrayElemAt: [monthsArray, { $subtract: ["$$m2", 1] }] }, "-", "$end_year"]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      $addFields: {
+        data2: {
+          $map: {
+            input: "$template_data", as: "t",
+            in: {
+              k: "$$t.month_year",
+              v: {
+                $reduce: {
+                  input: "$data2", initialValue: 0,
+                  in: {
+                    $cond: [
+                      { $eq: ["$$t.month_year", "$$this.k"] },
+                      { $add: ["$$this.v", "$$value"] },
+                      { $add: [0, "$$value"] },
+                    ]
+                  }
+                },
+              },
+            }
           }
-      } 
-  },
-  { 
-    $group: { 
-        _id: null, 
-        data2: { $push: { k: "$month_year", v: "$total" } }
-    } 
-  },
-  { 
-    $addFields: { 
-        start_year: { $substrCP: [ YEAR_BEFORE, 0, 4 ] }, 
-        end_year: { $substrCP: [ startOfToday, 0, 4 ] },
-        months1: { $range: [ { $toInt: { $substrCP: [ YEAR_BEFORE, 5, 2 ] } }, { $add: [ LAST_MONTH, 1 ] } ] },
-        months2: { $range: [ FIRST_MONTH, { $add: [ { $toInt: { $substrCP: [ startOfToday, 5, 2 ] } }, 1 ] } ] }
-    } 
-},
+        },
+        dataThree: "$data2"
+      }
+    // {
+    //   $project: {
+    //     data: { $arrayToObject: "$data2" },
+    //     _id: 0
+    //   }
+    }
+    ]);
+    let FIrst = data2[0].data2.map((item) => ({ ...item, count: 0 }));
+    let SeCond = FIrst.map((item) => ({ ...item, count: data2[0].dataThree.find(el => el?.k === item?.k)?.count || 0 }))
+    console.log(SeCond)
 
-{ 
-  $addFields: { 
-      template_data: { 
-          $concatArrays: [ 
-              { $map: { 
-                   input: "$months1", as: "m1",
-                   in: {
-                       count: 0,
-                       month_year: { 
-                           $concat: [ { $arrayElemAt: [ monthsArray, { $subtract: [ "$$m1", 1 ] } ] }, "-",  "$start_year" ] 
-                       }                                            
-                   }
-              } }, 
-              { $map: { 
-                   input: "$months2", as: "m2",
-                   in: {
-                       count: 0,
-                       month_year: { 
-                           $concat: [ { $arrayElemAt: [ monthsArray, { $subtract: [ "$$m2", 1 ] } ] }, "-",  "$end_year" ] 
-                       }                                            
-                   }
-              } }
-          ] 
-     }
-  }
-},
-{ 
-  $addFields: { 
-      data2: { 
-         $map: { 
-             input: "$template_data", as: "t",
-             in: {   
-                 k: "$$t.month_year",
-                 v: { 
-                     $reduce: { 
-                         input: "$data2", initialValue: 0, 
-                         in: {
-                             $cond: [ { $eq: [ "$$t.month_year", "$$this.k"] },
-                                          { $add: [ "$$this.v", "$$value" ] },
-                                          { $add: [ 0, "$$value" ] }
-                             ]
-                         }
-                     } 
-                 }
-             }
-          }
-      }
-  }
-},
-  {
-    $project: { 
-        data: { $arrayToObject: "$data2" }, 
-        _id: 0 
-    } 
-  }
-    ]); 
-      let finalResult ;
-      if(data.length>0){
-         finalResult=data[0].data
 
-      }else{
-         finalResult=[];
-      }
 
-      let finalResult2 ;
-      if (data2.length>0){
-         finalResult2=data2[0].data
-      }
-      else{
-        finalResult2=[];
-      }
-      res.json( {
-        status:200,
-        success:true,
-        assets:finalResult,
-        liabilities : finalResult2
-      })
-      
-  }catch(error){
+
+
+
+
+    let finalResult;
+    if (data.length > 0) {
+      finalResult = data[0].data
+
+    } else {
+      finalResult = [];
+    }
+
+    let finalResult2;
+    if (data2.length > 0) {
+      finalResult2 = data2[0].data
+    }
+    else {
+      finalResult2 = [];
+    }
+    res.json({
+      status: 200,
+      success: true,
+      assets: second,
+      liabilities: SeCond
+    })
+
+  } catch (error) {
     console.log(error)
-    res.send( error.message);
-    
+    res.send(error.message);
+
   }
 }
 
 
-const filterAssets = async(req,res)=>{
+const filterAssets = async (req, res) => {
   const _id = req.token_data._id
 
-  const data = await asset.find({user_id : _id})
+  const data = await asset.find({ user_id: _id })
   const filters = {};
   if (req.body.type) {
     filters.type = req.body.type;
   }
-  if (req.body.specifyOwnershipType){
+  if (req.body.specifyOwnershipType) {
     filters.specifyOwnershipType = req.body.specifyOwnershipType;
   }
   if (req.body.isoDate) {
@@ -560,69 +638,69 @@ const filterAssets = async(req,res)=>{
 }
 
 
-const deleteAssets = async (req,res)=>{
-  try{
-  const data = await asset.remove({})
-  res.json({
-    message : "Asset data has been deleted successfully",
-    success : true,
-    data : data
-  })
+const deleteAssets = async (req, res) => {
+  try {
+    const data = await asset.remove({})
+    res.json({
+      message: "Asset data has been deleted successfully",
+      success: true,
+      data: data
+    })
   }
   catch (err) {
     res.json({
-      message : "something went wrong",
-      success : false,
-      error : err.message
+      message: "something went wrong",
+      success: false,
+      error: err.message
     })
   }
 }
 
 /// deleteAssetById
 
-const deleteAssetById = async(req,res)=>{
-  try{
+const deleteAssetById = async (req, res) => {
+  try {
     const _id = req.params.id
-    const deletedData = await asset.findByIdAndRemove({_id});
-    if (deletedData){
-        res.json({
-            success : true,
-            message : "Data has been removed successfully"
-        })
+    const deletedData = await asset.findByIdAndRemove({ _id });
+    if (deletedData) {
+      res.json({
+        success: true,
+        message: "Data has been removed successfully"
+      })
     }
-    else{
-        res.json({
-            success : false,
-            message : "something went wrong"
-        })
+    else {
+      res.json({
+        success: false,
+        message: "something went wrong"
+      })
     }
-    }
-    catch(err){
-        res.send(err.message)
-    }
+  }
+  catch (err) {
+    res.send(err.message)
+  }
 }
 
-const countLiquidAndiliquid = async (req,res)=>{
+const countLiquidAndiliquid = async (req, res) => {
   var liquid = 0;
   var iliquid = 0;
-  const _id = req.token_data._id ;
-  const data = await asset.find({user_id : _id})
+  const _id = req.token_data._id;
+  const data = await asset.find({ user_id: _id })
   data.forEach(function (item, index) {
-    const data= item.assetType;
-    if (data=="liquid"){
-      liquid+=1
+    const data = item.assetType;
+    if (data == "liquid") {
+      liquid += 1
     }
-    if (data=="iliquid"){
-      iliquid+=1
+    if (data == "iliquid") {
+      iliquid += 1
     }
   })
   res.json({
-    liquidCount : liquid,
-    iliquidCount : iliquid
-  })  
+    liquidCount: liquid,
+    iliquidCount: iliquid
+  })
 }
 
-const quickStats = async(req,res)=>{
+const quickStats = async (req, res) => {
   const _id = req.token_data._id
   const aggCursor1 = await asset.aggregate([
     {
@@ -631,21 +709,21 @@ const quickStats = async(req,res)=>{
       }
     }, {
       $group: {
-        _id: '$user_id', 
+        _id: '$user_id',
         total: {
-          $sum : '$bankAccount.estimateValue'
+          $sum: '$bankAccount.estimateValue'
         }
       }
     }
   ])
-const aggCursor2 = await liabilities.aggregate([
+  const aggCursor2 = await liabilities.aggregate([
     {
       $match: {
         user_id: _id
       }
     }, {
       $group: {
-        _id: '$user_id', 
+        _id: '$user_id',
         total: {
           $sum: '$privateDept.current_Outstanding_Amount'
         }
@@ -653,27 +731,27 @@ const aggCursor2 = await liabilities.aggregate([
     }
   ])
 
- var a=0;
- var b=0;
- aggCursor1.forEach(function (item, index) {
-     const agg1= item.total;
-     a+=agg1;
- });
- aggCursor2.forEach(function(item,index){
-     const agg2 = item.total;
-     b+=agg2;
- })  
- console.log(a-b)  
- const totalAssets = await asset.aggregate([
-   {
-     $match: {
-       user_id: _id
+  var a = 0;
+  var b = 0;
+  aggCursor1.forEach(function (item, index) {
+    const agg1 = item.total;
+    a += agg1;
+  });
+  aggCursor2.forEach(function (item, index) {
+    const agg2 = item.total;
+    b += agg2;
+  })
+  console.log(a - b)
+  const totalAssets = await asset.aggregate([
+    {
+      $match: {
+        user_id: _id
       }
     }, {
       $group: {
-        _id: '$user_id', 
+        _id: '$user_id',
         total: {
-          $sum : '$bankAccount.estimateValue'
+          $sum: '$bankAccount.estimateValue'
         }
       }
     }
@@ -681,127 +759,127 @@ const aggCursor2 = await liabilities.aggregate([
   var totalAst = 0
   totalAssets.forEach(function (item, index) {
     console.log(item.total)
-    totalAst+=item.total 
+    totalAst += item.total
   });
   res.json({
-     totalNetWorth : {
-       amount : a-b
-     },
-     totalAssets : {
-       amount : totalAst
-     },
-     totalLiabilities : {
-       amount : b
-     }, 
-     totalAssetsInTrust: {    ///total assets in trust should be valid
-       amount : totalAst
-     }     
+    totalNetWorth: {
+      amount: a - b
+    },
+    totalAssets: {
+      amount: totalAst
+    },
+    totalLiabilities: {
+      amount: b
+    },
+    totalAssetsInTrust: {    ///total assets in trust should be valid
+      amount: totalAst
+    }
 
   })
 }
 
 
 
-const averageDistributionRate = async (req,res)=>{
+const averageDistributionRate = async (req, res) => {
 
-try{
+  try {
     const _id = req.token_data._id
     const Assetdata = await will.aggregate([
       {
-          $match: {
-              "user_id" : _id
-          }
-      },
-      {
-          $unwind: {
-              path: "$assets"
-          }
-      },
-      {
-         $unwind: {
-              path: "$assets.membersData"
-          }
-      },
-      {
-          $project: {
-              "assets.membersData.member":1,
-              "assets.membersData.specify_Shares":1
-          }
-      }
-      ])
-
-const residualData  = await will.aggregate([
-      {
-          $match: {
-              "user_id": _id
-          }
-      },
-      {
-          $unwind: {
-              path : "$specifyResidualAssetBenificiary"
-          }
-      },
-      {
-         $project: {
-             "specifyResidualAssetBenificiary.member" : 1,
-             "specifyResidualAssetBenificiary.specifyShares" : 1
-         }  
-      }
-      
-      ])
-
-const trustFallbackData = await will.aggregate([
-        {
-            $match: {
-                "user_id": _id
-            }
-        },
-        {
-            $unwind: {
-                path : "$trustFallback.memberData"
-            }
-        },
-        {
-            $project: {
-                "trustFallback.memberData.members": 1,
-                "trustFallback.memberData.specifyShares" : 1
-            }
+        $match: {
+          "user_id": _id
         }
-        
-      ])
+      },
+      {
+        $unwind: {
+          path: "$assets"
+        }
+      },
+      {
+        $unwind: {
+          path: "$assets.membersData"
+        }
+      },
+      {
+        $project: {
+          "assets.membersData.member": 1,
+          "assets.membersData.specify_Shares": 1
+        }
+      }
+    ])
 
-res.send(Assetdata)
+    const residualData = await will.aggregate([
+      {
+        $match: {
+          "user_id": _id
+        }
+      },
+      {
+        $unwind: {
+          path: "$specifyResidualAssetBenificiary"
+        }
+      },
+      {
+        $project: {
+          "specifyResidualAssetBenificiary.member": 1,
+          "specifyResidualAssetBenificiary.specifyShares": 1
+        }
+      }
+
+    ])
+
+    const trustFallbackData = await will.aggregate([
+      {
+        $match: {
+          "user_id": _id
+        }
+      },
+      {
+        $unwind: {
+          path: "$trustFallback.memberData"
+        }
+      },
+      {
+        $project: {
+          "trustFallback.memberData.members": 1,
+          "trustFallback.memberData.specifyShares": 1
+        }
+      }
+
+    ])
+
+    res.send(Assetdata)
 
 
-function mapper() {
-  const newassets = Assetdata.map(el => {
-    return el.assets.membersData
-  })
-  
-
-const data2 = _.groupBy (newassets,'member');
-  gettotalPerMember(data2);
-}
-
-function gettotalPerMember(data){
-  Object.keys().forEach(el=>{
-      const totalShare = data[el].reduce((prev,curr)=>{
-        data[el]=totalShare
+    function mapper() {
+      const newassets = Assetdata.map(el => {
+        return el.assets.membersData
       })
-    })
-  // console.log(data)
-  res.send(data)
-}
-mapper();
+
+
+      const data2 = _.groupBy(newassets, 'member');
+      gettotalPerMember(data2);
+    }
+
+    function gettotalPerMember(data) {
+      Object.keys().forEach(el => {
+        const totalShare = data[el].reduce((prev, curr) => {
+          data[el] = totalShare
+        })
+      })
+      // console.log(data)
+      res.send(data)
+    }
+    mapper();
   }
 
-catch(err){
+  catch (err) {
     res.json({
-      success : false,
-      error : true,
-      message : err.message
+      success: false,
+      error: true,
+      message: err.message
     })
   }
 }
-          
-module.exports = {storeAssets,updateAssets,getAssets,filterAssets,deleteAssets,countLiquidAndiliquid,quickStats,Statics,averageDistributionRate,deleteAssetById}
+
+module.exports = { storeAssets, updateAssets, getAssets, filterAssets, deleteAssets, countLiquidAndiliquid, quickStats, Statics, averageDistributionRate, deleteAssetById }

@@ -38,6 +38,10 @@ router.get("/getSubDetails",authenticateToken , async (req,res)=>{
   const result = await subscriptionController.getSubsDetails(req);
   return res.send(result);
 })
+router.get("/findSubdetails",authenticateToken , async (req,res)=>{
+  const result = await subscriptionController.findSubscription(req);
+  return res.send(result);
+})
 
 // router.get("/getAllSubDetails", async (req,res)=>{
 //   const result = await subscriptionController.getSubsDetails(req);
@@ -58,6 +62,14 @@ router.post("/cancelSubPlan",authenticateToken, async (req, res) => {
 
 router.delete("/deleteSubsData",async(req,res)=>{
   const result = await subscriptionController.deleteAllSub(req);
+  return res.send(result);
+})
+router.post("/addNew",async(req,res)=>{
+  const result = await subscriptionController.addSubDetails(req);
+  return res.send(result);
+})
+router.get("/getPlanDetails",async(req,res)=>{
+  const result = await subscriptionController.getPlanDetails(req);
   return res.send(result);
 })
 

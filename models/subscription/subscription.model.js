@@ -24,20 +24,24 @@ const subscriptionSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-  stripeData : {
-    productId : {
-      type : String,
-      default : ''
+  planName : {
+      type : String
+    },
+    planDescription : {
+      type : String
+    },
+    duration : {
+      type : String
+    },
+    price : {
+      type : String
     },
     priceId : {
-      type : String,
-      default : ''
+      type : String
     },
     planId : {
-      type : String,
-      default : ''
-    }
-  },
+      type : String
+    },
   stripeEmail:{
     type:String
   },
