@@ -36,7 +36,12 @@ try{
   subData.userId=id;
   subData.subscription=true;
   subData.pricePlan=req.body.pricePlan;
-  
+  if (subData.amount===0){
+    subData.subscriptionId = "624c12983ae6c37624ca6dea"
+  }
+  else{
+    subData.subscriptionId = "624c139cba77196ea3aef18d"
+  }
     let months=parseInt(moment().format("MM"));
     months=months+1
     if (months < 10){
@@ -53,7 +58,19 @@ try{
   subData.subscriptionStartDate= moment().format("YYYY-MM-DD");
   subData.subscriptionEndDate= moment().format(`YYYY-${months}-DD`);
   const newSub = await subHistory.create(subData);
-  // let dta = await  subHistory.find({userId : id});
+  
+  // const planUpdation = await subHistory.find({userId :id});
+  // console.log(planUpdation)
+  // planUpdation.forEach((item,index)=>{
+  //     if(item?.amount===0){
+  //       item.subscriptionId ="624c12983ae6c37624ca6dea"
+  //     }
+  //     else{
+  //       item.subscriptionId = "624c139cba77196ea3aef18d"
+  //     }
+  // })
+
+// let dta = await  subHistory.find({userId : id});
   console.log(newSub,'sub dta')
   let id2 = req.token_data._id
   let usrdta = await users.findByIdAndUpdate(id2,{$set : {
@@ -105,7 +122,7 @@ exports.addSubDetails = async(req,res)=>{
       planName : 'month',
       planDescription : "This is a monthly plan",
       duration : "1 month",
-      price : "0",
+      price : "17",
       priceId : "price_1Kl9BkJrEVeMChFE5aig9RyS",
       planId : "price_1Kl9BkJrEVeMChFE5aig9RyS"
    })
@@ -130,17 +147,17 @@ exports.addSubDetails = async(req,res)=>{
 }
 exports.getPlanDetails = async(req,res)=>{
   const freeId = "624c12983ae6c37624ca6dea"
-  const monthId = "624c139cba77196ea3aef18d"
+  const monthId = "624c264285d370570674e0ed"
 
   try{
     const data1 = await Sub.findById(freeId)
     const data2 = await Sub.findById(monthId)
     console.log(data1)
-    return ([{
+    return ({
       success : true,
       error : false,
       data :[data1,data2]
-    }])
+    })
   }
   catch(err){
     return{
@@ -158,7 +175,7 @@ exports.getPlanDetails = async(req,res)=>{
 //   if (subs){
 //     let subId = subs.subscription.subId;
 //     if (subs.subscription.isActive){
-//       const subscriptionDelete = await stripe.subscription.del(subs.subscription.subId);
+//      const subscriptionDelete = await stripe.subscription.del(subs.subscription.subId);
 //       if (subscriptionDelete.status ==="canceled"){
 //         subs.subscription.subId = null;
 //         subs.clientId = '';

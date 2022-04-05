@@ -54,6 +54,9 @@ const subscriptionHistorySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UserData'
     },
+  subscriptionId : {
+     type : mongoose.Schema.Types.ObjectId
+  },
   address: {
     type: String,
   },
