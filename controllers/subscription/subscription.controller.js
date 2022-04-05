@@ -136,12 +136,11 @@ exports.getPlanDetails = async(req,res)=>{
     const data1 = await Sub.findById(freeId)
     const data2 = await Sub.findById(monthId)
     console.log(data1)
-    return ({
+    return ([{
       success : true,
       error : false,
-      freePlanData : data1,
-      monthPlanData : data2
-    })
+      data :[data1,data2]
+    }])
   }
   catch(err){
     return{
