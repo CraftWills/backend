@@ -10,7 +10,7 @@ const { subscription } = require("../dal/subscription/subscription.dal");
 const upload = require("../middleware/multer");
 
 router.post("/storeAdmin",adminController.createAdmin);
-router.post("/adminLogin",adminController.adminLogin);
+router.post("/login",adminController.adminLogin);
 router.put("/forgotAdmin",adminController.forgotAdmin);
 router.put("/resetAdminPassword",adminController.resetAdminPassword);
 // router.get("/allUsers",dashboardController.allUsers);

@@ -848,7 +848,9 @@ const averageDistributionRate = async (req, res) => {
 
     ])
 
-    res.send(Assetdata)
+    console.log("assets Data :",JSON.stringify(Assetdata))
+    console.log("residual Data :",JSON.stringify(residualData))
+    console.log("trust FallbackData :",JSON.stringify(trustFallbackData))
 
 
     function mapper() {
