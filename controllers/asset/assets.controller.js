@@ -847,16 +847,23 @@ const averageDistributionRate = async (req, res) => {
       }
 
     ])
+    // res.json({
+    //   "assetsData" : Assetdata,
+    //   "residualData" : residualData,
+    //   "trustFallBack" : trustFallbackData
+    // })
 
-    console.log("assets Data :",JSON.stringify(Assetdata))
-    console.log("residual Data :",JSON.stringify(residualData))
-    console.log("trust FallbackData :",JSON.stringify(trustFallbackData))
+    // console.log("assets Data :",JSON.stringify(Assetdata))
+    // console.log("residual Data :",JSON.stringify(residualData))
+    // console.log("trust FallbackData :",JSON.stringify(trustFallbackData))
 
 
     function mapper() {
       const newassets = Assetdata.map(el => {
-        return el.assets.membersData
-      })
+        return el?.assets?.membersData
+      }
+      )
+      // console.log(newassets)
 
 
       const data2 = _.groupBy(newassets, 'member');
@@ -869,8 +876,9 @@ const averageDistributionRate = async (req, res) => {
           data[el] = totalShare
         })
       })
+      console.log(totalShare)
       // console.log(data)
-      res.send(data)
+     
     }
     mapper();
   }
