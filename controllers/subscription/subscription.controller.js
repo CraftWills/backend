@@ -284,15 +284,15 @@ exports.cancelSubsPlan = async(req,res)=>{
          
        }
    }
-const savedData = await subHist.save();
-      return {
-        success : true,
-        error : false,
-        message : "Data has been deleted",
-        data : savedData
-      }
-    }
-
+   
+  }
+  const savedData = await subHist.save();
+        return {
+          success : true,
+          error : false,
+          message : "Data has been deleted",
+          data : savedData
+        }
   }
   catch(err){
     return {
