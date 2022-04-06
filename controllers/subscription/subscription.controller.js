@@ -21,6 +21,7 @@ exports.payment = async (req) => {
 try{
   const id = req.token_data._id;
   const customer = await subscriptionDataAccess.customers(req);
+  const customerName = customer?.name
   req.body.customerId = customer.id
   console.log(customer)
   // const result = await subscriptionDataAccess.card(customer, req);
@@ -28,6 +29,7 @@ try{
   // console.log("tokennn",subscription)
   const sub = await subscriptionDataAccess.subscriptionData(req);
   const subData = await subscriptionDataAccess.subId(sub);
+  console.log("subData would be : ",subData)
   console.log(new Date(sub.current_period_start), new Date(sub.current_period_end), 'sub');
   // console.log(moment(sub.current_period_start).format(),moment(current_period_end).format());
   subData.createTime = moment().format("YYYY-MM-DD");
@@ -36,6 +38,7 @@ try{
   subData.userId=id;
   subData.subscription=true;
   subData.pricePlan=req.body.pricePlan;
+  subData.name = customerName;
   if (subData.amount===0){
     subData.subscriptionId = "624c12983ae6c37624ca6dea"
   }
@@ -71,14 +74,14 @@ try{
   // })
 
 // let dta = await  subHistory.find({userId : id});
-  console.log(newSub,'sub dta')
+  // console.log(newSub,'sub dta')
   let id2 = req.token_data._id
   let usrdta = await users.findByIdAndUpdate(id2,{$set : {
     subscriptionData : newSub._id
   }},{new : true})
-  console.log('updated user',usrdta);
+  // console.log('updated user',usrdta);
   let user= await users.findById(id);
-  console.log( user,id, 'final output')
+  // console.log( user,id, 'final output')
   return {
     success : true,
     error : false,

@@ -122,6 +122,7 @@ const subId = async (sub) => {
   console.log(sub.latest_invoice)
   var data = {};
   data.priceId = sub.plan.id;
+  data.name = sub.name
   data.subId = sub.id;
   data.periodStart = sub.current_period_start;
   data.periodEnd = sub.current_period_end;
