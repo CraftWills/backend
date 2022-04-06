@@ -40,7 +40,7 @@ try{
     subData.subscriptionId = "624c12983ae6c37624ca6dea"
   }
   else{
-    subData.subscriptionId = "624c33f8f185788024e7ed01"
+    subData.subscriptionId = "624d26ac563a38879d0359ba"
   }
     let months=parseInt(moment().format("MM"));
     months=months+1
@@ -122,7 +122,7 @@ exports.addSubDetails = async(req,res)=>{
       planName : 'month',
       planDescription : "This is a monthly plan",
       duration : "1 month",
-      price : "17",
+      price : "1700",
       priceId : "price_1Kj18mJrEVeMChFE8FQtb5bm",
       planId : "price_1Kj18mJrEVeMChFE8FQtb5bm"
    })
@@ -147,7 +147,7 @@ exports.addSubDetails = async(req,res)=>{
 }
 exports.getPlanDetails = async(req,res)=>{
   const freeId = "624c12983ae6c37624ca6dea"
-  const monthId = "624c33f8f185788024e7ed01"
+  const monthId = "624d26ac563a38879d0359ba"
 
   try{
     const data1 = await Sub.findById(freeId)
@@ -270,6 +270,8 @@ exports.cancelSubsPlan = async(req,res)=>{
         subHist.isCancelled = true
       }
    }
+   
+
    else{
 
      const deleted = await stripe.subscriptions.update(
@@ -282,7 +284,7 @@ exports.cancelSubsPlan = async(req,res)=>{
          
        }
    }
-      const savedData = await subHist.save();
+const savedData = await subHist.save();
       return {
         success : true,
         error : false,

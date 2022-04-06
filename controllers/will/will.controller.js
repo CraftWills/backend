@@ -13,7 +13,7 @@ const date = require ("date-and-time");
 var todayDate=(date.format(new Date(), 'MM-DD-YYYY'));
 const member = require("../../models/members.model");
 var count = 0
-
+var ObjectId = require('mongodb').ObjectID;
 exports.storeWill = async (req,res) => {
   const _id = req.token_data._id
   const now = new Date()
@@ -59,19 +59,21 @@ exports.storeWill = async (req,res) => {
       specifyResidualAssetBenificiary : req.body.specifyResidualAssetBenificiary,
       trustFallback : req.body?.trustFallback,
       // Clauses 
-      clauses : req.body.clauses
+      clauses : req.body.clauses,
     })
-    const savedData = await data.save();
-    if (savedData){
-      const dta = await member.find({"user_id": _id} )
-      dta.forEach((item,index)=>{
-          item.isMember = false
-      })
-      const savedMemberData = await dta.save();
-      console.log(savedMemberData) 
-    }
+
+const savedData = await data.save();
+  if (savedData){
+    const memberData = await member.updateMany({
+      user_id: ObjectId(_id)
+    },{$set : {
+      isMember : false
+    }}, { new: true })
+  console.log(memberData)
+  }
+ 
     // console.log(savedData);
-    res.json({
+   res.json({
       message : "Data has been saved successfully",
       success : true,
       data : savedData
