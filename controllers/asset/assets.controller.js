@@ -84,7 +84,7 @@ const storeAssets = async (req, res) => {
     if (Asset.type === "bankAccount" ||Asset.type === "investmentAccount" ||Asset.type === "insurancePolicy" ) {
       Asset.assetType = "liquid"
     }
-    if (Asset.type === "personalPossession" || Asset.type === "realEsate" || Asset.type === "motorVehicle" || Asset.type === "safeDepositBox" || Asset.type === "business" || Asset.type === "intellectualProperty") {
+    if (Asset.type === "personalPossession" || Asset.type === "realEstate" || Asset.type === "motorVehicle" || Asset.type === "safeDepositBox" || Asset.type === "business" || Asset.type === "intellectualProperty") {
       Asset.assetType = "iliquid"
     }
 
