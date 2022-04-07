@@ -40,7 +40,7 @@ const LiabilitiesSchema = mongoose.Schema({
             type: String,
         },
         loan_Id_Number: {
-            type: Number,
+            type: String,
         },
         description: {
             type: String
@@ -62,7 +62,7 @@ const LiabilitiesSchema = mongoose.Schema({
             type: String,
         },
         loan_Id_Number: {
-            type: Number,
+            type: String,
         },
         description: {
             type: String

@@ -63,13 +63,17 @@ exports.storeWill = async (req,res) => {
     })
 
 const savedData = await data.save();
+  // if (savedData){
+  //   const memberData = await member.updateMany({
+  //     user_id: _id
+  //   },{$set : {
+  //     isMember : false
+  //   }}, { new: true })
+  // console.log(memberData)
+  // }
   if (savedData){
-    const memberData = await member.updateMany({
-      user_id: ObjectId(_id)
-    },{$set : {
-      isMember : false
-    }}, { new: true })
-  console.log(memberData)
+    let memberData = await member.updateMany({"user_id":_id },{$set : {"isMember": false}},{acknowledged:true})
+    console.log(memberData)
   }
  
     // console.log(savedData);
