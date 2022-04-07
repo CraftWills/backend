@@ -57,7 +57,7 @@ exports.storeWill = async (req,res) => {
       trust : req.body.trust,
       // Distribute Residual Assets
       specifyResidualAssetBenificiary : req.body.specifyResidualAssetBenificiary,
-      trustFallback : req.body?.trustFallback,
+      trustFallback : req.body.trustFallback,
       // Clauses 
       clauses : req.body.clauses,
     })

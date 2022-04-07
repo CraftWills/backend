@@ -81,10 +81,10 @@ const storeAssets = async (req, res) => {
       }
 
     })
-    if (Asset.type === "bankAccount" || "investmentAccount" || "insurancePolicy" || "business" || "intellectualProperty") {
+    if (Asset.type === "bankAccount" ||Asset.type === "investmentAccount" ||Asset.type === "insurancePolicy" ) {
       Asset.assetType = "liquid"
     }
-    if (Asset.type === "personalPossession" || Asset.type === "realEsate" || Asset.type === "motorVehicle" || Asset.type === "safeDepositBox") {
+    if (Asset.type === "personalPossession" || Asset.type === "realEsate" || Asset.type === "motorVehicle" || Asset.type === "safeDepositBox" || Asset.type === "business" || Asset.type === "intellectualProperty") {
       Asset.assetType = "iliquid"
     }
 
@@ -784,103 +784,147 @@ const averageDistributionRate = async (req, res) => {
 
   try {
     const _id = req.token_data._id
-    const Assetdata = await will.aggregate([
+    const newData = await will.aggregate([
       {
-        $match: {
-          "user_id": _id
-        }
-      },
-      {
-        $unwind: {
-          path: "$assets"
-        }
-      },
-      {
-        $unwind: {
-          path: "$assets.membersData"
-        }
-      },
-      {
-        $project: {
-          "assets.membersData.member": 1,
-          "assets.membersData.specify_Shares": 1
-        }
+          $facet:
+              {
+                  "assets": [
+                      {
+                          $match: {
+                              "user_id": _id
+                          }
+                      },
+                      {
+                          $unwind: {
+                              path: '$assets'
+                          }
+                      },
+                      {
+                          $unwind: {
+                              path: '$assets.membersData'
+                          }
+                      },
+                      {
+                          $lookup: {
+                              from: "members",
+                              localField: "assets.membersData.member",
+                              foreignField: "_id",
+                              as: "memberData"
+                          }
+                      },
+                      {
+                          $project: {
+                              assets: 1,
+                              memberData: 1
+                          }
+                      },
+                      {
+                          $unwind: {
+                              path: "$memberData"
+                          }
+                      },
+                      {
+                          $project: {
+                              memberName: "$memberData.memberAsPerson.fullname",
+                              member: "$assets.membersData.member",
+                              asset: "$assets.assetData",
+                              share: "$assets.membersData.specify_Shares"
+                          }
+                      }
+                  ],
+                  "specifyResidualAssetBenificiary": [
+                      {
+                          $match: {
+                              "user_id": _id
+                          }
+                      },
+                      {
+                          $unwind: {
+                              path: '$specifyResidualAssetBenificiary'
+                          }
+                      },
+                      {
+                          $lookup: {
+                              from: "members",
+                              localField: "specifyResidualAssetBenificiary.member",
+                              foreignField: "_id",
+                              as: "memberData"
+                          }
+                      },
+                      {
+                          $unwind: {
+                              path: '$memberData'
+                          }
+                      },
+                      {
+                          $project: {
+                              specifyResidualAssetBenificiary: 1,
+                              memberData: 1
+                          }
+                      },
+                      {
+                          $project: {
+                              memberName: "$memberData.memberAsPerson.fullname",
+                              member: "$specifyResidualAssetBenificiary.member",
+                              share: "$specifyResidualAssetBenificiary.specifyShares"
+                          }
+                      }
+                  ],
+                  "trustFallback": [
+                      {
+                          $match: {
+                              "user_id": _id
+                          }
+                      },
+                      {
+                          $unwind: {
+                              path: '$trustFallback.memberData'
+                          }
+                      },
+                      {
+                          $lookup: {
+                              from: "members",
+                              localField: "trustFallback.memberData.members",
+                              foreignField: "_id",
+                              as: "memberData"
+                          }
+                      },
+                      {
+                          $unwind: {
+                              path: '$memberData'
+                          }
+                      },
+                      {
+                          $project: {
+                              trustFallback: 1,
+                              memberData: 1
+                          }
+                      },
+                      {
+                          $project: {
+                              memberName: "$memberData.memberAsPerson.fullname",
+                              member: "$trustFallback.memberData.members",
+                              share: "$trustFallback.memberData.specifyShares"
+                          }
+                      }
+                  ]
+              }
       }
-    ])
+  ])
 
-    const residualData = await will.aggregate([
-      {
-        $match: {
-          "user_id": _id
-        }
-      },
-      {
-        $unwind: {
-          path: "$specifyResidualAssetBenificiary"
-        }
-      },
-      {
-        $project: {
-          "specifyResidualAssetBenificiary.member": 1,
-          "specifyResidualAssetBenificiary.specifyShares": 1
-        }
-      }
 
-    ])
-
-    const trustFallbackData = await will.aggregate([
-      {
-        $match: {
-          "user_id": _id
-        }
-      },
-      {
-        $unwind: {
-          path: "$trustFallback.memberData"
-        }
-      },
-      {
-        $project: {
-          "trustFallback.memberData.members": 1,
-          "trustFallback.memberData.specifyShares": 1
-        }
-      }
-
-    ])
-    // res.json({
-    //   "assetsData" : Assetdata,
-    //   "residualData" : residualData,
-    //   "trustFallBack" : trustFallbackData
-    // })
+    res.json({
+      "newData" : newData
+      // "residualData" : residualData,
+      // "trustFallBack" : trustFallbackData
+    })
 
     // console.log("assets Data :",JSON.stringify(Assetdata))
     // console.log("residual Data :",JSON.stringify(residualData))
     // console.log("trust FallbackData :",JSON.stringify(trustFallbackData))
 
 
-    function mapper() {
-      const newassets = Assetdata.map(el => {
-        return el?.assets?.membersData
-      }
-      )
-      // console.log(newassets)
 
-
-      const data2 = _.groupBy(newassets, 'member');
-      gettotalPerMember(data2);
-    }
-
-    function gettotalPerMember(data) {
-      Object.keys().forEach(el => {
-        const totalShare = data[el].reduce((prev, curr) => {
-          data[el] = totalShare
-        })
-      })
-      console.log(totalShare)
-      // console.log(data)
-     
-    }
-    mapper();
   }
 
   catch (err) {
