@@ -23,7 +23,7 @@ exports.createUser = async (req) => {
 
   const data = {
     fullName : req.body.fullName,
-    email: req.body.email,
+    email: req.body.email.toLowerCase(),
     id_type : req.body.id_type,
     id_number : req.body.id_number,
     password: passwordHash,
@@ -127,7 +127,7 @@ exports.loginUser = async (req, res) => {
     // );
   }
   const userData = await usersDataAccess.findUserByUsername({
-    email: req.body.email,
+    email: req.body.email.toLowerCase(),
   });
   if (!userData) {
     return {
