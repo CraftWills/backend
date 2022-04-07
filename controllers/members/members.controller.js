@@ -189,11 +189,23 @@ const deleteMemberById = async(req,res)=>{
 
 }
 
+const getMemberById = async(req,res)=>{
+    try{
+        const data = await members.findById(req.params.id)
+        res.send(data)
+
+    }
+    catch(err){
+        res.send(err.message)
+    }
+}
+
 module.exports = {
     createMember,
     membersFilter,
     getMembers,
     updateMember,
     deleteMembers,
-    deleteMemberById
+    deleteMemberById,
+    getMemberById
 }

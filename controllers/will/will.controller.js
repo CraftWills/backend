@@ -72,10 +72,9 @@ const savedData = await data.save();
   // console.log(memberData)
   // }
   if (savedData){
-    let memberData = await member.updateMany({"user_id":_id },{$set : {"isMember": false}},{acknowledged:true})
+    let memberData = await member.updateMany({"user_id":_id },{$set : {"isMember": false}})
     console.log(memberData)
   }
- 
     // console.log(savedData);
    res.json({
       message : "Data has been saved successfully",

@@ -784,147 +784,76 @@ const averageDistributionRate = async (req, res) => {
 
   try {
     const _id = req.token_data._id
-    const newData = await will.aggregate([
+    const assets = await will.aggregate([
       {
-          $facet:
-              {
-                  "assets": [
-                      {
-                          $match: {
-                              "user_id": _id
-                          }
-                      },
-                      {
-                          $unwind: {
-                              path: '$assets'
-                          }
-                      },
-                      {
-                          $unwind: {
-                              path: '$assets.membersData'
-                          }
-                      },
-                      {
-                          $lookup: {
-                              from: "members",
-                              localField: "assets.membersData.member",
-                              foreignField: "_id",
-                              as: "memberData"
-                          }
-                      },
-                      {
-                          $project: {
-                              assets: 1,
-                              memberData: 1
-                          }
-                      },
-                      {
-                          $unwind: {
-                              path: "$memberData"
-                          }
-                      },
-                      {
-                          $project: {
-                              memberName: "$memberData.memberAsPerson.fullname",
-                              member: "$assets.membersData.member",
-                              asset: "$assets.assetData",
-                              share: "$assets.membersData.specify_Shares"
-                          }
-                      }
-                  ],
-                  "specifyResidualAssetBenificiary": [
-                      {
-                          $match: {
-                              "user_id": _id
-                          }
-                      },
-                      {
-                          $unwind: {
-                              path: '$specifyResidualAssetBenificiary'
-                          }
-                      },
-                      {
-                          $lookup: {
-                              from: "members",
-                              localField: "specifyResidualAssetBenificiary.member",
-                              foreignField: "_id",
-                              as: "memberData"
-                          }
-                      },
-                      {
-                          $unwind: {
-                              path: '$memberData'
-                          }
-                      },
-                      {
-                          $project: {
-                              specifyResidualAssetBenificiary: 1,
-                              memberData: 1
-                          }
-                      },
-                      {
-                          $project: {
-                              memberName: "$memberData.memberAsPerson.fullname",
-                              member: "$specifyResidualAssetBenificiary.member",
-                              share: "$specifyResidualAssetBenificiary.specifyShares"
-                          }
-                      }
-                  ],
-                  "trustFallback": [
-                      {
-                          $match: {
-                              "user_id": _id
-                          }
-                      },
-                      {
-                          $unwind: {
-                              path: '$trustFallback.memberData'
-                          }
-                      },
-                      {
-                          $lookup: {
-                              from: "members",
-                              localField: "trustFallback.memberData.members",
-                              foreignField: "_id",
-                              as: "memberData"
-                          }
-                      },
-                      {
-                          $unwind: {
-                              path: '$memberData'
-                          }
-                      },
-                      {
-                          $project: {
-                              trustFallback: 1,
-                              memberData: 1
-                          }
-                      },
-                      {
-                          $project: {
-                              memberName: "$memberData.memberAsPerson.fullname",
-                              member: "$trustFallback.memberData.members",
-                              share: "$trustFallback.memberData.specifyShares"
-                          }
-                      }
-                  ]
-              }
-      }
+        $match: {
+            "user_id": _id
+        }
+    },
+    {
+        $unwind: {
+            path: '$assets'
+        }
+    },
+    {
+        $unwind: {
+            path: '$assets.membersData'
+        }
+    },
+    {
+        $lookup: {
+            from: "members",
+            localField: "assets.membersData.member",
+            foreignField: "_id",
+            as: "memberData"
+        }
+    },
+    {
+        $project: {
+            assets: 1,
+            memberData: 1
+        }
+    },
+    {
+        $unwind: {
+            path: "$memberData"
+        }
+    },
+    {
+        $project: {
+            memberName: "$memberData.memberAsPerson.fullname",
+            member: "$assets.membersData.member",
+            asset: "$assets.assetData",
+            share: "$assets.membersData.specify_Shares"
+        }
+    }
   ])
+//  console.log(assetsTwo)
+  const assetIds = assets.map(asset => asset.asset);
+    let totalAssets = [...new Set(assetIds)].length;
+    console.log("TotalAssets : ",totalAssets)
+    let grouped =  _.groupBy(assets, 'member');
+    grouped = Object.keys(grouped).map(member => {
+      console.log(member, grouped[member]);
+      return {
+        member: member,
+        memberName: assets.find(asset => asset?.member == member)?.memberName,
+        assetCount: grouped[member].length
+      }
+  })
 
-
-    res.json({
-      "newData" : newData
-      // "residualData" : residualData,
-      // "trustFallBack" : trustFallbackData
+    grouped = grouped.map(member => {
+      return {
+        ...member,
+        share: Number(((member?.assetCount / totalAssets) * 100).toFixed(2))
+      }
     })
-
-    // console.log("assets Data :",JSON.stringify(Assetdata))
-    // console.log("residual Data :",JSON.stringify(residualData))
-    // console.log("trust FallbackData :",JSON.stringify(trustFallbackData))
-
-
-
+    res.json({
+      success : true,
+      error : false,
+      data : grouped
+    })
+  
   }
 
   catch (err) {
@@ -935,5 +864,6 @@ const averageDistributionRate = async (req, res) => {
     })
   }
 }
+
 
 module.exports = { storeAssets, updateAssets, getAssets, filterAssets, deleteAssets, countLiquidAndiliquid, quickStats, Statics, averageDistributionRate, deleteAssetById }
