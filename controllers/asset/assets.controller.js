@@ -842,7 +842,7 @@ const averageDistributionRate = async (req, res) => {
       }
   })
 
-    grouped = grouped.map(member => {
+  grouped = grouped.map(member => {
       return {
         ...member,
         share: Number(((member?.assetCount / totalAssets) * 100).toFixed(2))
