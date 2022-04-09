@@ -72,21 +72,25 @@ const savedData = await data.save();
   // console.log(memberData)
   // }
 
-  if (savedData){
+if (savedData){
 
     const memberIds = []
      
     const data = await member.find({user_id:_id})
-    data.forEach((el)=>{
+    data.forEach(async(el)=>{
       memberIds.push(el._id)
+      const Willdata = await Will.find({"member":el._id});
+      console.log(Willdata)
     })
+
     console.log(memberIds)
-    const Willdata = await Will.find({"member":id})
-    console.log("willdata via Member:   ",Willdata)
-    data.forEach((el)=>{
-      memberIds.push(el._id)
-    })
-    console.log(memberIds)
+    // const Willdata = await Will.find({"member":memberIds})
+    // console.log(Willdata)
+    // console.log("willdata via Member:   ",Willdata)
+    // data.forEach((el)=>{
+    //   memberIds.push(el._id)
+    // })
+    // console.log(memberIds)
   }
     // console.log(savedData);
    res.json({
@@ -245,9 +249,9 @@ exports.deleteWillById = async(req,res)=>{
   try{
     const _id = req.params.id
     const id = req.token_data._id
-    const deleteWill = await Will.findByIdAndRemove({_id})
+    const deleteWill = await Will.findByIdAndRemove({_id});
     if (deleteWill){
-      const dta = await member.find({user_id : id})
+      const dta = await member.find({user_id : id});
       dta.forEach((item,index)=>{
           item.isMember = true
       })

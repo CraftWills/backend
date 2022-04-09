@@ -270,7 +270,10 @@ const WillSchema = new mongoose.Schema({
                 appointBeneficiaries :[{
                     type : mongoose.Schema.Types.ObjectId,
                     ref : "Members"
-                }]
+                }],
+                age : {
+                    type : Number
+                }
 
             },
             recommendedAdvisor : [
