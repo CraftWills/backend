@@ -17,4 +17,5 @@ router.get("/findDataCount",authenticateToken,AssetsController.countLiquidAndili
 router.get("/averageDistributionRate",authenticateToken,AssetsController.averageDistributionRate);
 router.delete("/deleteAssetById/:id",authenticateToken,AssetsController.deleteAssetById);
 
-module.exports = router; 
+module.exports = router;
+    

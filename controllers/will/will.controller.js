@@ -71,9 +71,22 @@ const savedData = await data.save();
   //   }}, { new: true })
   // console.log(memberData)
   // }
+
   if (savedData){
-    let memberData = await member.updateMany({"user_id":_id },{$set : {"isMember": false}})
-    console.log(memberData)
+
+    const memberIds = []
+     
+    const data = await member.find({user_id:_id})
+    data.forEach((el)=>{
+      memberIds.push(el._id)
+    })
+    console.log(memberIds)
+    const Willdata = await Will.find({"member":id})
+    console.log("willdata via Member:   ",Willdata)
+    data.forEach((el)=>{
+      memberIds.push(el._id)
+    })
+    console.log(memberIds)
   }
     // console.log(savedData);
    res.json({
