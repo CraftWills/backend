@@ -119,6 +119,18 @@ const WillSchema = new mongoose.Schema({
             //// What is to happen if the benificiary does not survive the testator?
         },
         ],
+        replacementMemberData: [{
+            member: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Members",
+            },
+            specify_Shares: {
+                type: Number
+            }
+            //// What is to happen if the benificiary does not survive the testator?
+        },
+        ],
+
         assetsResidualType : {
             type : String
         },
