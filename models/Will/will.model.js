@@ -275,7 +275,7 @@ const WillSchema = new mongoose.Schema({
 
     clauses : {
         additionalClauses : {
-            delayed_payout : {
+            delayed_payout : [{
                 beneficiaryManagedBy : {
                     type : String
                 },
@@ -287,7 +287,7 @@ const WillSchema = new mongoose.Schema({
                     type : Number
                 }
 
-            },
+            }],
             recommendedAdvisor : [
                  {
                     advisorName : {
