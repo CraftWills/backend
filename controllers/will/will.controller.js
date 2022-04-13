@@ -58,6 +58,10 @@ exports.storeWill = async (req,res) => {
       // Distribute Residual Assets
       specifyResidualAssetBenificiary : req.body.specifyResidualAssetBenificiary,
       trustFallback : req.body.trustFallback,
+      residualAssetsId : req.body.residualAssetsId,
+      manualAssets : req.body.manualAssets,
+      residualFallbackRadio : req.body.residualFallbackRadio,
+      replacementResidualMemberId : req.body.replacementResidualMemberId,
       // Clauses 
       clauses : req.body.clauses,
     })
@@ -210,6 +214,10 @@ exports.UpdateWillData = async (req, res) => {
       // Distribute Residual Assets
       specifyResidualAssetBenificiary : req.body.specifyResidualAssetBenificiary,
       trustFallback : req.body.trustFallback,
+      residualAssetsId : req.body.residualAssetsId,
+      manualAssets : req.body.manualAssets,
+      residualFallbackRadio : req.body.residualFallbackRadio,
+      replacementResidualMemberId : req.body.replacementResidualMemberId,
       // Clauses 
       clauses : req.body.clauses
     },

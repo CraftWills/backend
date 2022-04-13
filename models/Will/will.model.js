@@ -253,13 +253,21 @@ const WillSchema = new mongoose.Schema({
       },
       specifyShares : {
           type : Number
-      },
-      residualAssetsId : {
-      type : String
-       },
-      manualAssets : {
-          type : String
-      },
+      }
+    
+    }],
+    residualAssetsId : [{
+        type : String
+         }],
+     manualAssets : [{
+            type : String
+        }],
+
+    residualFallbackRadio: {
+        type : String
+    },
+    replacementResidualMemberId  : [{
+        type : String
     }],
     trustFallback : {
         trustType : {
