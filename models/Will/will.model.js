@@ -266,9 +266,16 @@ const WillSchema = new mongoose.Schema({
     residualFallbackRadio: {
         type : String
     },
-    replacementResidualMemberId  : [{
-        type : String
-    }],
+    replacementResidualMemberId  :[{
+        member :{
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "Members"
+        },
+        specifyShares : {
+            type : Number
+        }
+      
+      }],
     trustFallback : {
         trustType : {
             type : String
