@@ -255,6 +255,12 @@ const WillSchema = new mongoose.Schema({
           type : Number
       }
     }],
+    residualAssetsId : {
+    type : String
+     },
+    manualAssets : {
+        type : String
+    },
     trustFallback : {
         trustType : {
             type : String

@@ -155,8 +155,6 @@ exports.loginUser = async (req, res) => {
 };
 
 
-
-
 // // Update 
 
 exports.updateUser = async (req, res) => {
