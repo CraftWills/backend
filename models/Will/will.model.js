@@ -253,14 +253,14 @@ const WillSchema = new mongoose.Schema({
       },
       specifyShares : {
           type : Number
-      }
+      },
+      residualAssetsId : {
+      type : String
+       },
+      manualAssets : {
+          type : String
+      },
     }],
-    residualAssetsId : {
-    type : String
-     },
-    manualAssets : {
-        type : String
-    },
     trustFallback : {
         trustType : {
             type : String
@@ -278,10 +278,9 @@ const WillSchema = new mongoose.Schema({
             }
         }]
     },
-
-    clauses : {
-        additionalClauses : {
-            delayed_payout : [{
+clauses : {
+    additionalClauses : {
+        delayed_payout : [{
                 beneficiaryManagedBy : {
                     type : String
                 },
