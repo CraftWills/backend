@@ -234,14 +234,14 @@ const WillSchema = new mongoose.Schema({
             fallBackType : {
                 type : String
             },
-            description : {
+            description : [{
                 type : String
-            }
+            }]
             
         },
-        additionalClauses : {
+        additionalClauses : [{
             type : String
-        }
+        }]
     }
    ],
    
