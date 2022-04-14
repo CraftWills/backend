@@ -245,7 +245,16 @@ const WillSchema = new mongoose.Schema({
         },
         additionalClauses : [{
             type : String
-        }]
+        }],
+        beneficiariesAge : {
+            type : String
+        },
+        trustAge : {
+            type : String
+        },
+        trustFunds : {
+            type : String
+        }
     }
    ],
    
