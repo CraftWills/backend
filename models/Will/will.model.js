@@ -219,6 +219,10 @@ const WillSchema = new mongoose.Schema({
             appointBenificiaries : [{
                 type : mongoose.Schema.Types.ObjectId,
                 ref : "Members"
+            }],
+            replacementBenificiaries : [{
+                type : mongoose.Schema.Types.ObjectId,
+                ref : "Members"
             }]
         },}],
         trustFallback : {
@@ -300,10 +304,6 @@ clauses : {
                     type : String
                 },
                 appointBeneficiaries :[{
-                    type : mongoose.Schema.Types.ObjectId,
-                    ref : "Members"
-                }],
-                replacementBenificiaries: [{
                     type : mongoose.Schema.Types.ObjectId,
                     ref : "Members"
                 }],
