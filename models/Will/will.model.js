@@ -263,9 +263,9 @@ const WillSchema = new mongoose.Schema({
     residualAssetsId : [{
         type : String
          }],
-     manualAssets : [{
+     manualAssets : {
             type : String
-        }],
+        },
 
     residualFallbackRadio: {
         type : String
