@@ -303,6 +303,10 @@ clauses : {
                     type : mongoose.Schema.Types.ObjectId,
                     ref : "Members"
                 }],
+                replacementBenificiaries: [{
+                    type : mongoose.Schema.Types.ObjectId,
+                    ref : "Members"
+                }],
                 age : {
                     type : Number
                 }
