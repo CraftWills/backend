@@ -288,7 +288,7 @@ const WillSchema = new mongoose.Schema({
             type : Number
         }
       
-      }],
+}],
     trustFallback : {
         trustType : {
             type : String
