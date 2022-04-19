@@ -9,6 +9,7 @@ const promocodeController = require("../controllers/admin/promocodes.controller"
 const { subscription } = require("../dal/subscription/subscription.dal");
 const upload = require("../middleware/multer");
 
+//
 router.post("/storeAdmin",adminController.createAdmin);
 router.post("/login",adminController.adminLogin);
 router.put("/forgotAdmin",adminController.forgotAdmin);
