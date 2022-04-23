@@ -9,7 +9,6 @@ exports.totalSubscribedUsers = async(req,res)=>{
         let totalMonthPlanSub = 0;
         let totalFreePlanSub = 0;
         let totalEarning = 0;
-        console.log(data);
         const data =await subscription.find();
         data.forEach((item,index)=>{
 
