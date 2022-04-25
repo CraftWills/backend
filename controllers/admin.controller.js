@@ -4,6 +4,7 @@ const { generateAccessToken } = require("../JsonWebToken/jwt");
 const {myFunction} = require ("../nodemailer/nodemailer");
 require("dotenv").config();
 const admin = require ("../models/admin.model");
+const usersDataAccess = require("../dal/user.dal")
 
 exports.createAdmin = async(req,res)=>{
     adminData = {
@@ -329,3 +330,29 @@ exports.getProfilepic = async (req, res) => {
     return err.message;
   }
 };
+
+exports.updatePassword = async (req, res) => {
+  const _id = req.token_data._id;
+  const { password, newPassword } = req.body;
+  if (!password || !newPassword) {
+    return "please enter password or new password"
+  }
+  const userData = await usersDataAccess.findUser({
+    _id: _id,
+  });
+const match = bcrypt.compareSync(password, userData.password);
+if (!match) {
+    return {
+      error : true,
+      success : false,
+      message : "your old password is invalid"
+    }
+  }
+const passwordd = bcrypt.hashSync(newPassword, 10);
+const updateData = {
+    _id,
+    toUpdate: {
+      password: passwordd,
+    },
+  };
+const updatePass = await usersDataAccess.updateUser(updateData);}

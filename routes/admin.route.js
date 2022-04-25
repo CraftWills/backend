@@ -39,6 +39,7 @@ router.get("/quickStats",async(req,res)=>{
 //     const result = await userManagementController.sortByAllUsers(req);
 //     res.send(result);
 // })
+///
 router.get("/sortByUser",userManagementController.sortByAllUsers);
 router.get("/sortBySubscribers",userManagementController.sortBySubscribedUsers);
 router.delete("/deleteUser/:id",userManagementController.deleteUser)
@@ -67,6 +68,10 @@ router.get("/getProfilepic",authenticateToken,async (request, response) => {
     return response.json(result);
   });
 
+router.put("/updatePassword", authenticateToken, async (req, res) => {
+    const result = await adminController.updatePassword(req);
+    return res.send(result);
+  });
 module.exports = router;
 
 
