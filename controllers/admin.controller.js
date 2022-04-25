@@ -218,7 +218,6 @@ exports.forgotAdmin = async(req,res)=>{
             text: `https://craftwill-m2.vercel.app/resetpassword/${data._id}`,
             html :HTML
           };
-
       myFunction(otpSend);
         res.json( {
             error: false,
@@ -258,8 +257,6 @@ exports.uploadImage = async (req, res) => {
 };
 
 
-
-
 exports.resetAdminPassword = async (req, res) => {
   try{
   const { _id, newPassword} = req.body;
@@ -286,7 +283,6 @@ exports.resetAdminPassword = async (req, res) => {
 };
 };
 
-
 exports.updateAdmin = async(req,res)=>{
   try{
     let _id = req.token_data._id
@@ -304,15 +300,15 @@ exports.updateAdmin = async(req,res)=>{
     console.log(updateData)
     // const updatePass = await usersDataAccess.updateUser(updateData);
   
-    res.json( {
+    return( {
       error: false,
       success: true,
       message: "admin updated  successfully",
       data: updateData,
     });
+
   }catch(err){
-    res.send(err.message)
-    console.log(err.message)
+    return (err.message)
   };
 }
 
@@ -330,7 +326,7 @@ exports.getProfilepic = async (req, res) => {
     return err.message;
   }
 };
-
+/// password update
 exports.updatePassword = async (req, res) => {
   const _id = req.token_data._id;
   const { password, newPassword } = req.body;
