@@ -45,7 +45,7 @@ router.get("/sortBySubscribers",userManagementController.sortBySubscribedUsers);
 router.delete("/deleteUser/:id",userManagementController.deleteUser)
 router.put("/blockUser",userManagementController.blockUser)
 router.post("/filterUsers",userManagementController.filterUsers)
-router.get("/updateAdmin", async(req,res)=>{
+router.get("/updateAdmin",authenticateToken , async(req,res)=>{
     const result = await adminController.updateAdmin(req);
     res.send(result);
 })

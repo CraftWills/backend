@@ -289,8 +289,9 @@ exports.resetAdminPassword = async (req, res) => {
 
 exports.updateAdmin = async(req,res)=>{
   try{
-    const { _id, firstName , lastName, gender} = req.body;
-    if (!_id || !firstName , !lastName , !gender) {
+    let _id = req.token_data._id
+    const { firstName , lastName, gender , email} = req.body;
+    if ( !firstName , !lastName , !gender,!email) {
       return ("plz enter the  firstName or lastName or gender")
     }
     const updateData = await admin.findByIdAndUpdate(_id,  { $set: {
@@ -298,7 +299,6 @@ exports.updateAdmin = async(req,res)=>{
       lastName : req.body.lastName,
       gender : req.body.gender,
       email : req.body.email,
-      password : req.body.password
     }},
       { new: true })
     console.log(updateData)
