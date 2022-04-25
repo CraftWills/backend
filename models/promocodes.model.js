@@ -12,7 +12,14 @@ const promocodeSchema = new mongoose.Schema({
     },
     discountValue : {
         type : String
-    }
+    },
+    expireOn : {
+        type : String
+    },
+    appliesTo : {
+        type : String
+    },
+    
 })
 
 

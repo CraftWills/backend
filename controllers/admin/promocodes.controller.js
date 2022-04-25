@@ -4,13 +4,19 @@ const { date } = require("joi");
 
 exports.createPromocode = async(req,res)=>{
     try{
+
+       let count = 0;
        const data = await new promocodeModel({
            discountPromocode : req.body.discountPromocode,
            createdOn : moment().format("YYYY-MM-DD"),
            discountType : req.body.discountType,
            discountValue : req.body.discountValue,
+           expireOn : req.body.expireOn,
+           appliesTo : req.body.appliesTo,
+           usage : count
        })
        if (data){
+           count+=1
            const savedData = await data.save();
            res.json({
                message : "promocode stored successfully",
