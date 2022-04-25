@@ -90,8 +90,9 @@ exports.getPromocode = async(req,res)=>{
 exports.updatePromocode = async(req,res)=>{
     try{
        
-       const data = await promocodeModel.findByIdAndUpdate(req.params.id,{set : {
+       const data = await promocodeModel.findByIdAndUpdate(req.params.id,{$set : {
         discountPromocode : req.body.discountPromocode,
+        createdOn : moment().format("YYYY-MM-DD"),
         discountType : req.body.discountType,
         discountValue : req.body.discountValue,
         expireOn : req.body.expireOn,
