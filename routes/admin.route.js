@@ -60,6 +60,8 @@ router.put("/upload",
     return res.send(result);
   }
 );
+
+router.put("updatePromocode/:id",promocodeController.updatePromocode)
 router.get("/getProfilepic",async (request, response) => {
     const result = await adminController.getProfilepic(request);
     return response.json(result);
