@@ -54,7 +54,7 @@ router.get("/subscriptionHistory",subscriptionController.subscriptionHistory)
 router.post("/createPromocode",promocodeController.createPromocode)
 router.delete("/deletePromocode/:id",promocodeController.deletePromocode)
 router.get("/getPromocode",promocodeController.getPromocode)
-router.put("/upload",
+router.put("/upload",authenticateToken,
   upload.single("attachments"),
   async (req, res) => {
     const result = await adminController.uploadImage(req);
