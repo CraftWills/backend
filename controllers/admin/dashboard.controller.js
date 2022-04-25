@@ -178,14 +178,14 @@ exports.getUsersMonthly = async(req,res)=>{
 
 exports.allSubscriptionUsers =  async (req,res)=>{
 try{
-  const users = await subscription.find({subscription : true});
+  const users = await subscriptionHistory.find();
   console.log(users)
   return users.map(getUserDetails);
   
   function getUserDetails(item) {
-    console.log([
-      item.name,item.stripeEmail,item.subscriptionStartDate,item.subscriptionEndDate,item.updatedAt
-    ])
+    return({
+      name :item.name,email:item?.stripeEmail,subDate:item.subscriptionStartDate, expDate : item.subscriptionEndDate,  price:item.amount,status:item.isActive,subPlan: item.pricePlan
+    })
     }
 }catch(err){
   res.json({
