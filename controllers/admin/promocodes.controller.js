@@ -37,7 +37,7 @@ exports.createPromocode = async(req,res)=>{
         })
     }
 }
-/////
+///////
 exports.deletePromocode = async(req,res)=>{
     try{
         const id = req.params.id
