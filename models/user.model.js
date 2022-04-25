@@ -59,6 +59,9 @@ const UserSchema = new mongoose.Schema({
   },
   isVerified : {
     type : Boolean
+  },
+  promoId : {
+    type : mongoose.Schema.Types.ObjectId
   }
 });
 

@@ -238,7 +238,7 @@ exports.forgotAdmin = async(req,res)=>{
 
 
 exports.uploadImage = async (req, res) => {
-  const id = req.body.id;
+  const id = req.token_data._id;
   let profileImage;
   if (!req.file) {
     profileImage = null;
@@ -319,7 +319,7 @@ exports.updateAdmin = async(req,res)=>{
 
 exports.getProfilepic = async (req, res) => {
   try{
-  const _id =  req.body.id
+  const _id =  req.token_data._id
   const users = await admin.findById(_id);
   
   return { 

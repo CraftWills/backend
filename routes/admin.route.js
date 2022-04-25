@@ -61,8 +61,8 @@ router.put("/upload",
   }
 );
 
-router.put("/updatePromocode/:id",promocodeController.updatePromocode)
-router.get("/getProfilepic",async (request, response) => {
+router.put("/updatePromocode/:id",authenticateToken,promocodeController.updatePromocode)
+router.get("/getProfilepic",authenticateToken,async (request, response) => {
     const result = await adminController.getProfilepic(request);
     return response.json(result);
   });
