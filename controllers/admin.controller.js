@@ -295,7 +295,9 @@ exports.updateAdmin = async(req,res)=>{
     const updateData = await admin.findByIdAndUpdate(_id,  { $set: {
       firstName : req.body.firstName,
       lastName : req.body.lastName,
-      gender : req.body.gender
+      gender : req.body.gender,
+      email : req.body.email,
+      password : req.body.password
     }},
       { new: true })
     console.log(updateData)

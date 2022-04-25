@@ -184,7 +184,7 @@ try{
   
   function getUserDetails(item) {
     return({
-      name :item.name,email:item?.stripeEmail,subDate:item.subscriptionStartDate, expDate : item.subscriptionEndDate,  price:item.amount,status:item.isActive,subPlan: item.pricePlan
+      name :item.name,email:item?.stripeEmail,subDate:item.subscriptionStartDate, expDate : item.subscriptionEndDate,  price:item.amount,status:item.isActive,subPlan: item.pricePlan, userId : item.userId
     })
     }
 }catch(err){
