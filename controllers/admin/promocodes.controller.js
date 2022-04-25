@@ -90,14 +90,14 @@ exports.getPromocode = async(req,res)=>{
 exports.updatePromocode = async(req,res)=>{
     try{
        
-       const data = await promocodeModel.findByIdAndUpdate(req.body.id,{set : {
+       const data = await promocodeModel.findByIdAndUpdate(req.params.id,{set : {
         discountPromocode : req.body.discountPromocode,
         discountType : req.body.discountType,
         discountValue : req.body.discountValue,
         expireOn : req.body.expireOn,
         appliesTo : req.body.appliesTo,
         usage : req.body.usage
-       }});
+       }},{new:true});
        if (data){
            res.json({
                message : "promocode updated successfully",
