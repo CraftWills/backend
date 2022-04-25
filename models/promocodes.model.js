@@ -19,7 +19,10 @@ const promocodeSchema = new mongoose.Schema({
     appliesTo : {
         type : String
     },
-    
+    usage : {
+        type : String
+    }
+
 })
 
 
