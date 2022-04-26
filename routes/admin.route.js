@@ -43,11 +43,15 @@ router.get("/quickStats",async(req,res)=>{
 router.get("/sortByUser",userManagementController.sortByAllUsers);
 router.get("/sortBySubscribers",userManagementController.sortBySubscribedUsers);
 router.delete("/deleteUser/:id",userManagementController.deleteUser)
-router.put("/blockUser",userManagementController.blockUser)
+router.put("/blockUser/:id",userManagementController.blockUser)
 router.post("/filterUsers",userManagementController.filterUsers)
 router.put("/updateAdmin",authenticateToken , async(req,res)=>{
     const result = await adminController.updateAdmin(req);
     res.send(result);
+})
+router.get("/getProfile",authenticateToken , async(req,res)=>{
+  const result = await adminController.getProfile(req);
+  res.send(result);
 })
 router.get("/totalSubscribedUser",subscriptionController.totalSubscribedUsers)
 router.get("/subscriptionHistory",subscriptionController.subscriptionHistory)

@@ -375,3 +375,28 @@ return{
   }
 
 }
+
+
+exports.getProfile =  async (req, res) => {
+  try{
+  const _id =  req.token_data._id
+  const users = await admin.findById(_id);
+  console.log(users);
+  return { 
+    success : true,
+    error : false,
+    data : {_id : users._id,
+    email : users.email,
+  password : users.password,
+firstName : users.firstName,
+gender : users.gender,
+lastName : users.lastName}
+}
+  }catch(err){
+    return {
+      success : false,
+      error : true,
+      message : err.message
+    };
+  }
+};

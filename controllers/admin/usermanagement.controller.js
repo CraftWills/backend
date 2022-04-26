@@ -60,7 +60,7 @@ exports.deleteUser = async(req,res)=>{
 exports.blockUser =async(req,res)=>{
     try {
         const id = req.params.id
-        const a = await users.find().populate("Subscription");
+        const a = await users.find().populate("subscriptionData");
         console.log(a)
         const data =await users.findByIdAndUpdate(id,{$set : {
             isBlocked : true
