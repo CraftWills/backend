@@ -326,7 +326,7 @@ exports.getProfilepic = async (req, res) => {
     return err.message;
   }
 };
-/// password update
+/// password updation
 exports.updatePassword = async (req, res) => {
   const _id = req.token_data._id;
   const { password, newPassword } = req.body;

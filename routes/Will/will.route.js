@@ -29,4 +29,5 @@ router.get("/getWill/:id",authenticateToken,WillController.getWill)
 
 router.delete("/deleteWill",authenticateToken,WillController.deleteWills)
 router.delete("/deleteWillById/:id",authenticateToken,WillController.deleteWillById)
+router.post("/generatePdf",authenticateToken,WillController.generatePdf)
 module.exports  = router
