@@ -207,7 +207,7 @@ exports.quickStatistics = async(req,res)=>{
     var willCount = 0 
     var currentSubscribedUsers = 0
     const willData = await wills.find();
-    const users = await subscription.find({subscription : true});
+    const users = await subscriptionHistory.find({subscription : true});
     willData.forEach((item,index)=>{
         willCount+=1
     })
@@ -230,3 +230,25 @@ exports.quickStatistics = async(req,res)=>{
   }
 }
 
+exports.earnings = async(req,res)=>{
+  
+  try{
+
+    users.forEach((item,index)=>{
+        currentSubscribedUsers+=1
+    })
+
+  return({
+      success : true,
+      error : false,
+      totalWill : willCount,
+      totalActiveWills : willCount,
+      currentSubscribedUsers : currentSubscribedUsers
+    })
+  }catch(err){
+    return {
+      success : false,
+      message : err.message
+    }
+  }
+}

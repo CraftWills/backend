@@ -36,8 +36,9 @@ exports.adminLogin = async (req, res) => {
     if (!email || !password) {
       return ("Invalid email or password")
     }
-    const adminData = await admin.findOne({email : process.env.adminEmail});
-    console.log(adminData)
+    const adminData = await admin.findOne({email : process.env.adminEmail
+});
+    console.log(adminData,'admin')
 
    if (req.body.email=== adminData.email && req.body.password === adminData.password){
      const token = generateAccessToken({ _id: adminData._id });
@@ -328,15 +329,18 @@ exports.getProfilepic = async (req, res) => {
 };
 /// password updation
 exports.updatePassword = async (req, res) => {
+  try{
   const _id = req.token_data._id;
   const { password, newPassword } = req.body;
   if (!password || !newPassword) {
     return "please enter password or new password"
   }
-  const userData = await usersDataAccess.findUser({
+  const userData = await admin.findById({
     _id: _id,
   });
-const match = bcrypt.compareSync(password, userData.password);
+  console.log("user is + ",userData)
+// const match = bcrypt.compareSync(password, userData.password);
+const match = (password === userData.password);
 if (!match) {
     return {
       error : true,
@@ -344,11 +348,30 @@ if (!match) {
       message : "your old password is invalid"
     }
   }
-const passwordd = bcrypt.hashSync(newPassword, 10);
+// const passwordd = bcrypt.hashSync(newPassword, 10);
+const passwordd = newPassword
 const updateData = {
     _id,
     toUpdate: {
       password: passwordd,
     },
   };
-const updatePass = await usersDataAccess.updateUser(updateData);}
+const updatePass = await admin.findByIdAndUpdate(_id, {$set :{
+  password : passwordd
+}});
+return{
+  success : true,
+  error : false,
+  message : "password has been updated successfully",
+
+}
+  }
+  catch(err){
+    return {
+      success: false,
+      error : true,
+      message : err.message
+    }
+  }
+
+}
