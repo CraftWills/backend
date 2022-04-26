@@ -47,119 +47,120 @@ exports.getUsersMonthly = async(req,res)=>{
   try{
     const FIRST_MONTH = 1
     const LAST_MONTH = 12
-    var now = new Date();
-
-    let startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    let YEAR_BEFORE = new Date()
+    var startOfToday = moment().format("YYYY-MM-DD");
+    console.log("start of today", startOfToday)
+    var startOfYear = moment().startOf('year').format("YYYY-MM-DD");
+    console.log("start of year" + startOfYear)
+    // let startOfToday = new Date(now., now.getMonth(), now.getDate());
+    let YEAR_BEFORE = moment().subtract(1, 'year').format("YYYY-MM-DD");
     console.log(YEAR_BEFORE)
 
 
     const monthsArray = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]
     
-    let data= await subscriptionHistory.aggregate([{ 
-      $match: { 
-      createdAt: {$gte: new Date(req.body.fromDate), 
-        $lt: new Date(req.body.endDate)}
-    }
-    },
-      { 
-          $group: {
-              _id: { "year_month": { $substrCP: [ "$createdAt", 0, 7 ] } }, 
-              count: { $sum: 1 },
-              total : {
-                $sum : "$planPrice"
-            }
-          } 
-
+    let data= await subscriptionHistory.aggregate([
+      {
+          $match: {
+              "createTime": { $gte: "2022-04-10", $lt: "2022-04-26"}
+          }
+      },
+         {
+        $group: {
+          _id: { "year_month": { $substrCP: ["$createTime", 0, 7] } },
+          count: { $sum: 1 },
+        }
+         },
+         {
+            $sort: { "_id.year_month": 1 }
+         },
+             {
+        $project: {
+          _id: 0,
+          count: 1,
+          total: 1,
+          month_year: {
+            $concat: [
+              { $arrayElemAt: [monthsArray, { $subtract: [{ $toInt: { $substrCP: ["$_id.year_month", 5, 2] } }, 1] }] },
+              "-",
+              { $substrCP: ["$_id.year_month", 0, 4] }
+            ]
+          }
+        }
+      },
+         {
+        $group: {
+          _id: null,
+          data: { $push: { k: "$month_year", count: "$count" } },
+        }
+      },
+          {
+        $addFields: {
+          start_year: { $substrCP: [YEAR_BEFORE, 0, 4] },
+          end_year: { $substrCP: [startOfToday, 0, 4] },
+          months1: { $range: [{ $toInt: { $substrCP: [YEAR_BEFORE, 5, 2] } }, { $add: [LAST_MONTH, 1] }] },
+          months2: { $range: [FIRST_MONTH, { $add: [{ $toInt: { $substrCP: [startOfToday, 5, 2] } }, 1] }] }
+        }
       },
       {
-        $sort: { "_id.year_month": 1 }
-    },
-    { 
-      $project: { 
-          _id: 0, 
-          count: 1, 
-          total:1,
-          month_year: { 
-              $concat: [ 
-                { $arrayElemAt: [ monthsArray, { $subtract: [ { $toInt: { $substrCP: [ "$_id.year_month", 5, 2 ] } }, 1 ] } ] },
-                "-", 
-                { $substrCP: [ "$_id.year_month", 0, 4 ] }
-              ] 
+        $addFields: {
+          template_data: {
+            $concatArrays: [
+              {
+                $map: {
+                  input: "$months1", as: "m1",
+                  in: {
+                    count: 0,
+                    month_year: {
+                      $concat: [{ $arrayElemAt: [monthsArray, { $subtract: ["$$m1", 1] }] }, "-", "$start_year"]
+                    }
+                  }
+                }
+              },
+              {
+                $map: {
+                  input: "$months2", as: "m2",
+                  in: {
+                    count: 0,
+                    month_year: {
+                      $concat: [{ $arrayElemAt: [monthsArray, { $subtract: ["$$m2", 1] }] }, "-", "$end_year"]
+                    }
+                  }
+                }
+              }
+            ]
           }
-      } 
-  },
-  { 
-    $group: { 
-        _id: null, 
-        data: { $push: { k: "$month_year", v: "$total" } }
-    } 
-  },
-  { 
-    $addFields: { 
-        start_year: { $substrCP: [ YEAR_BEFORE, 0, 4 ] }, 
-        end_year: { $substrCP: [ startOfToday, 0, 4 ] },
-        months1: { $range: [ { $toInt: { $substrCP: [ YEAR_BEFORE, 5, 2 ] } }, { $add: [ LAST_MONTH, 1 ] } ] },
-        months2: { $range: [ FIRST_MONTH, { $add: [ { $toInt: { $substrCP: [ startOfToday, 5, 2 ] } }, 1 ] } ] }
-    } 
-},
-
-{ 
-  $addFields: { 
-      template_data: { 
-          $concatArrays: [ 
-              { $map: { 
-                   input: "$months1", as: "m1",
-                   in: {
-                       count: 0,
-                       month_year: { 
-                           $concat: [ { $arrayElemAt: [ monthsArray, { $subtract: [ "$$m1", 1 ] } ] }, "-",  "$start_year" ] 
-                       }                                            
-                   }
-              } }, 
-              { $map: { 
-                   input: "$months2", as: "m2",
-                   in: {
-                       count: 0,
-                       month_year: { 
-                           $concat: [ { $arrayElemAt: [ monthsArray, { $subtract: [ "$$m2", 1 ] } ] }, "-",  "$end_year" ] 
-                       }                                            
-                   }
-              } }
-          ] 
-     }
-  }
-},
-{ 
-  $addFields: { 
-      data: { 
-         $map: { 
-             input: "$template_data", as: "t",
-             in: {   
-                 k: "$$t.month_year",
-                 v: { 
-                     $reduce: { 
-                         input: "$data", initialValue: 0, 
-                         in: {
-                             $cond: [ { $eq: [ "$$t.month_year", "$$this.k"] },
-                                          { $add: [ "$$this.v", "$$value" ] },
-                                          { $add: [ 0, "$$value" ] }
-                             ]
-                         }
-                     } 
-                 }
-             }
-          }
+        }
+      },
+       {
+        $addFields: {
+          data: {
+            $map: {
+              input: "$template_data", as: "t",
+              in: {
+                k: "$$t.month_year",
+                v: {
+                  $reduce: {
+                    input: "$data", initialValue: 0,
+                    in: {
+                      $cond: [
+                        { $eq: ["$$t.month_year", "$$this.k"] },
+                        { $add: ["$$this.v", "$$value"] },
+                        { $add: [0, "$$value"] },
+                      ]
+                    }
+                  },
+                },
+              }
+            }
+          },
+          dataTwo: "$data"
+        }
       }
-  }
-},
-  {
-    $project: { 
-        data: { $arrayToObject: "$data" }, 
-        _id: 0 
-    } 
-  }
-    ]); 
+      ]);
+      let first = data[0].data.map((item) => ({ ...item, count: 0 }));
+      let second = first.map((item) => ({ ...item, count: data[0].dataTwo.find(el => el?.k === item?.k)?.count || 0 }))
+      console.log(second)
+   
       let finalResult ;
       if(data.length>0){
          finalResult=data[0].data
@@ -170,7 +171,7 @@ exports.getUsersMonthly = async(req,res)=>{
       res.json( {
         status:200,
         success:true,
-        data:finalResult
+        data: second
       })
   }catch(error){
     console.log(error)
