@@ -249,14 +249,19 @@ exports.getUser = async (req, res) => {
     profileImage : users.profileImage,
     subscriptionData : users.subscriptionData
     }
-    
   };
+
 }catch(err){
-  return err.message
+  return {
+    status : false,
+    error : true,
+    success : false,
+    message : err.message
+  }
 }
 };
 
-
+////
 exports.getProfilepic = async (req, res) => {
   const users = await usersDataAccess.findUser(req.token_data._id);
   
