@@ -183,17 +183,19 @@ exports.getUsersMonthly = async(req,res)=>{
 
 exports.allSubscriptionUsers =  async (req,res)=>{
 try{
-  const users = await subscriptionHistory.find();
-  console.log(users)
-  return users.map(getUserDetails);
-  
+  // const user = await users.find({subscriptionData:{$exists:true}}).populate('subscription');
+  const user = await users.find().populate('subscriptionData');
+  console.log(user)
+  return user.map(getUserDetails);
+
   function getUserDetails(item) {
+    console.log(item)
     return({
-      name :item.name,email:item?.stripeEmail,subDate:item.subscriptionStartDate, expDate : item.subscriptionEndDate,  price:item.amount,status:item.isActive,subPlan: item.pricePlan, userId : item._id
+      name :item?.fullName,email:item?.email,sub:item?.subscriptionData,subDate:item?.subscriptionData?.subscriptionStartDate, expDate : item?.subscriptionData?.subscriptionEndDate,  price:item?.subscriptionData?.amount,status:item.subscriptionData?.isActive,subPlan: item.subscriptionData?.pricePlan, userId : item._id
     })
     }
 }catch(err){
-  res.json({
+  return({
     message : err.message
   })
 }

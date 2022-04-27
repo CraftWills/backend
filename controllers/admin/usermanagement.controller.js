@@ -2,6 +2,7 @@ const moment = require("moment-timezone");
 const subscription = require ("../../models/subscription/subscription.model")
 const users = require ("../../models/user.model");
 const wills = require("../../models/Will/will.model");
+const {ObjectId} = require("mongoose").Types;
 
 exports.sortByAllUsers = async(req,res)=>{
     try{
@@ -41,7 +42,7 @@ exports.sortBySubscribedUsers = async (req,res)=>{
 exports.deleteUser = async(req,res)=>{
     try {
         const id = req.params.id
-        const data =await users.findByIdAndRemove(id);
+        const data =await users.findByIdAndRemove(ObjectId(id));
         if (data){
             res.send( "data has been removed successfully");
         }
