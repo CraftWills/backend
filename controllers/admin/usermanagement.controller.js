@@ -44,10 +44,21 @@ exports.deleteUser = async(req,res)=>{
         const id = req.params.id
         const data =await users.findByIdAndRemove(ObjectId(id));
         if (data){
-            res.send( "data has been removed successfully");
+            res.json({
+                success : true,
+                error : false,
+                message : "Data has been removed successfully",
+                data : data
+
+            });
         }
         else{
-            res.send('something went wrong')
+            res.json({
+                success : false,
+                error : true,
+                message : "Something went wrong"
+
+            })
         }
     }
     catch(err){

@@ -29,5 +29,10 @@ router.get("/getWill/:id",authenticateToken,WillController.getWill)
 
 router.delete("/deleteWill",authenticateToken,WillController.deleteWills)
 router.delete("/deleteWillById/:id",authenticateToken,WillController.deleteWillById)
-router.post("/generatePdf",authenticateToken,WillController.generatePdf)
+// router.get("/generatePdf",authenticateToken,WillController.generatePdf)
+router.get("/generatePdf" ,async (request, response) => {
+  const result = await WillController.generatePdf(request);
+  return response.json(result);
+});
+
 module.exports  = router
