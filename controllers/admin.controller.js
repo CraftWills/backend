@@ -8,8 +8,8 @@ const usersDataAccess = require("../dal/user.dal")
 
 exports.createAdmin = async(req,res)=>{
     adminData = {
-        email : "admin@craftwill.com",
-        password : "craftwill"
+        email : "a.craftwill@gmail.com",
+        password : "braininventory@123"
     }
     try {
         const data = new admin({
@@ -28,7 +28,7 @@ exports.createAdmin = async(req,res)=>{
         res.send(err.message)
     }
 }
-
+///
 
 exports.adminLogin = async (req, res) => {
     try{

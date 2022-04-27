@@ -40,6 +40,7 @@ router.get("/quickStats",async(req,res)=>{
 //     res.send(result);
 // })
 ///
+///
 router.get("/sortByUser",userManagementController.sortByAllUsers);
 router.get("/sortBySubscribers",userManagementController.sortBySubscribedUsers);
 router.delete("/deleteUser/:id",userManagementController.deleteUser)
