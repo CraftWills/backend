@@ -4,7 +4,7 @@ const { date } = require("joi");
 
 exports.createPromocode = async(req,res)=>{
     try{
-
+       let count = 0
        const data = await new promocodeModel({
            discountPromocode : req.body.discountPromocode,
            createdOn : moment().format("YYYY-MM-DD"),
@@ -12,7 +12,7 @@ exports.createPromocode = async(req,res)=>{
            discountValue : req.body.discountValue,
            expireOn : req.body.expireOn,
            appliesTo : req.body.appliesTo,
-           usage : req.body.usage
+           usage : count
        })
        if (data){
            count+=1

@@ -26,12 +26,17 @@ router.get("/getWillDetails",authenticateToken ,async (request, response) => {
 router.get("/pastVersions",authenticateToken, WillController.pastVersions);
 
 router.get("/getWill/:id",authenticateToken,WillController.getWill)
+router.get("/getWillInfo",WillController.getWillInfo)
 
 router.delete("/deleteWill",authenticateToken,WillController.deleteWills)
 router.delete("/deleteWillById/:id",authenticateToken,WillController.deleteWillById)
 // router.get("/generatePdf",authenticateToken,WillController.generatePdf)
 router.get("/generatePdf" ,async (request, response) => {
   const result = await WillController.generatePdf(request);
+  return response.json(result);
+});
+router.get("/createWillData/:id" ,async (request, response) => {
+  const result = await WillController.createWillData(request);
   return response.json(result);
 });
 
