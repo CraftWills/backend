@@ -202,7 +202,6 @@ try{
 }
 
 
-
 exports.quickStatistics = async(req,res)=>{
   
   try{

@@ -36,9 +36,6 @@ router.get("/generatePdf/:id" , createWillData, async (request, response) => {
   const result = await WillController.generatePdf(request);
   return response.json(result);
 });
-// router.get("/createWillData/:id" ,async (request, response) => {
-//   const result = await WillController.createWillData(request);
-//   return response.json(result);
-// });
+
 
 module.exports  = router

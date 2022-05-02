@@ -15,6 +15,9 @@ var todayDate=(date.format(new Date(), 'MM-DD-YYYY'));
 const member = require("../../models/members.model");
 var count = 0
 const ObjectId = require('mongoose').Types.ObjectId;
+var pdf = require("pdf-creator-node");
+var fs = require("fs");
+
 exports.storeWill = async (req,res) => {
   const _id = req.token_data._id
   const now = new Date()
@@ -295,16 +298,307 @@ exports.generatePdf = async(req,res)=>{
   try{
     const willData = req?.body?.formattedData;
     const {executors, trust, residualAsset} = willData;
+    
     const executor = `
     <tr>
             <td class="sub-heading  heading-style">EXECUTOR</td>
           </tr>
           <tr>
-            <td  class="para para-style"> I APPOINT ${executor?.primaryExecutor?.name} (${executor?.primaryExecutor?.id_type} No. ${executor?.primaryExecutor?.id_number}), of ${executor?.primaryExecutor?.address?.unitNumber + ' ' + executor?.primaryExecutor?.address?.streetName}, ${executor?.primaryExecutor?.address?.country}
-                ${executor?.primaryExecutor?.address?.postalCode}, ${executor?.primaryExecutor?.address?.country} to be the ${executor?.primaryTrusteeType} executor of this my Will (hereinafter
+            <td  class="para para-style"> I APPOINT ${executors?.primaryExecutor?.name} (${executors?.primaryExecutor?.id_type} No. ${executors?.primaryExecutor?.id_number}), of ${executors?.primaryExecutor?.address?.unitNumber + ' ' + executors?.primaryExecutor?.address?.streetName}, ${executors?.primaryExecutor?.address?.country}
+                ${executors?.primaryExecutor?.address?.postalCode}, ${executors?.primaryExecutor?.address?.country} to be the ${executors?.primaryTrusteeType} executor of this my Will (hereinafter
                 called “my Executor”). </td>
           </tr>
     `
+
+    const guardian = `
+    <tr>
+    <td class="sub-heading  heading-style">GUARDIAN</td>
+  </tr>
+  <tr>
+    <td  class="para para-style"> If the other parent of my child/ren has predeceased me or shall not
+        survive me, I APPOINT ${executors?.guardianExecutor?.name} (${executors?.guardianExecutor?.id_Type} No. ${executors?.guardianExecutor?.id_number}), of ${executors?.guardianExecutor?.address?.unitNumber + ' ' + executors?.guradianExecutor?.address?.streetName}, ${executors?.guardianExecutor?.address?.country} to be the guardian/s of my child/ren
+        during their minority to act solely.</td>
+  </tr>
+    `
+  const Trust = 
+  `
+  <tr>
+  <td class="sub-heading  heading-style">TRUST</td>
+</tr>
+
+
+<tr>
+  <td class="s3" style="padding-left: 5pt; text-indent: 0pt; text-align: left">Tsang&#39;s Family TRUST</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+  <td class="signature-box">
+      <div>
+          <p>Signature of Testator </p>
+      </div>
+      <div>    <p>Signature of Testator </p></div>
+      <div>    <p>Signature of Testator </p></div>
+  </td>
+</tr>
+</tfoot>
+<tr>
+    <td>
+        I APPOINT 
+    </td>
+</tr>
+<tr>
+        <td  class="para para-style">  ${trust[0]?.primaryTrustee?.members?.name} (${trust[0]?.primaryTrustee?.type} No. ${trust[0]?.primaryTrustee?.members?.id_number}), of ${trust[0]?.primaryTrustee?.members?.address?.streetName},${trust[0]?.primaryTrustee?.members?.address?.floorNumber} ${trust[0]?.primaryTrustee?.members?.address?.country}
+               ${trust[0]?.primaryTrustee?.members?.address?.postalCode}, ${trust[0]?.primaryTrustee?.members?.address?.country} to be the ${trust[0]?.primaryTrustee?.type} Trustee of this my Will (“${trust[0]?.primaryTrustee?.members?.name}”).</td>
+  </tr>
+
+
+<tr>
+  <td  style="
+  padding-top: 11pt;
+  padding-left: 5pt;
+  text-indent: 0pt;
+  line-height: 152%;
+  text-align: justify;
+" > <p>
+
+    I GIVE my immovable property known as ${trust[0]?.trustDetails?.trustName}, ${trust[0]?.primaryTrustee?.members?.address?.country} 
+    ("${trust[0]?.trustDetails?.description}") to my Trustee/s to
+    hold UPON Trust (the “${trust[0]?.trustDetails?.trustName}”) for the
+    following Trust beneficiary/ies in the following proportion/s:</td>
+  </p>
+</tr>
+<tr>
+  <td  >  <ol id="l1">
+  <li data-list-text="i.">
+    <p
+      class=""
+    >
+      100% to my son, TIMOTHY TSANG (NRIC No. S9714999B).
+    </p>
+    
+    <p
+      style="
+        padding-left: 5pt;
+        text-indent: 0pt;
+        line-height: 152%;
+        text-align: justify;
+      "
+    >
+      The Trust Period of the Tsang&#39;s Family Property Trust shall be
+      from the date of my death to the earlier of (i) the date when the
+      Trustee/s sell or dispose of the Tsang&#39;s Family Property with the
+      consent of TIMOTHY TSANG (NRIC No. S9714999B), of 8 Taman Siglap,
+      Singapore 455669, Singapore or (ii) 99 years from the date of my death
+      (the “Tsang&#39;s Family Property Trust Period”).
+    </p>
+    <p
+      style="
+        padding-top: 12pt;
+        padding-left: 5pt;
+        text-indent: 0pt;
+        line-height: 151%;
+        text-align: justify;
+      "
+    >
+      At the expiry of the Tsang&#39;s Family Property Trust Period, the
+      Tsang&#39;s Family Property may be transferred to or may be sold with
+      the sale proceeds distributed to the aforesaid beneficiary/ies in the
+      aforesaid proportion/s.
+    </p>
+    
+    <p
+      style="
+        padding-left: 5pt;
+        text-indent: 0pt;
+        line-height: 151%;
+        text-align: justify;
+      "
+    >
+      If any of the aforesaid Trust beneficiaries shall die before the
+      expiry of the Tsang&#39;s Family Property Trust Period, then my
+      surviving Trust beneficiary/ies shall take proportionately.
+    </p>
+    
+    <p
+    class="para-style"
+   >
+      A Trustee is entitled to remunerated out of the income and property of
+      this Trust for any and all of the Trustee’s fees, which shall be
+      reasonable.
+    </p>
+    
+    <p style="padding-left: 5pt; text-indent: 0pt; text-align: justify">
+      I EMPOWER my Trustee/s to use their discretion to:
+    </p>
+    
+    <ul id="l2">
+      <li data-list-text="-">
+        <p
+         class="para-style"
+        >
+          employ and rely on the advice of experts including legal counsel,
+          accountants and investment advisors to assist in the management of
+          the Trust and to be reimbursed out of the income and property of
+          the Trust for any and all expenses where such expense is
+          reasonably and properly incurred in the management of the Trust.
+        </p>
+        
+      </li>
+      <li data-list-text="-">
+        <p
+        class="para-style"
+        >
+          appoint a suitable replacement Trustee at any time where the
+          Trustee is no longer able to act as Trustee for any reason.
+        </p>
+        
+      </li>
+      <li data-list-text="-">
+        <p
+        class="para-style"
+        >
+          purchase, maintain, convert and liquidate investments or
+          securities, at reasonable risk, and for the purpose of generating
+          income and growth, or exercise any option concerning any
+          investments or securities, as the Trustee deems reasonable and in
+          the best overall interest of the Trust, without liability for loss
+          or depreciation.
+        </p>
+        
+      </li>
+      <li data-list-text="-">
+        <p
+        class="para-style"
+        >
+          insure, repair, improve, or add to or otherwise deal with any and
+          all property belonging to the Trust, both movable and immovable,
+          as the Trustee deems reasonable and in the best overall interest
+          of the Trust, without liability for loss or depreciation.
+        </p>
+        
+      </li>
+      <li data-list-text="-">
+        <p
+        class="para-style"
+        >
+          sell, call in and convert into money any and all property
+          belonging to the Trust, both movable and immovable, with the power
+          to postpone the sale, calling in and conversion as the Trustee
+          deems reasonable and in the best overall interest of the Trust,
+          without liability for loss or depreciation.
+        </p>
+        
+      </li>
+      <li data-list-text="-">
+        <p
+        class="para-style"
+        >
+          deposit monies into safe bank accounts but shall not make any
+          investments.
+        </p>
+        
+      </li>
+      <li data-list-text="-">
+        <p
+        class="para-style"
+        >
+          apply the Trust assets towards the emergency or reasonable medical
+          expenses of my Trust beneficiary/ies within the relevant Trust
+          period.
+        </p>
+        
+      </li>
+      <li data-list-text="-">
+        <p
+        class="para-style"
+        >
+          apply the Trust assets towards the educational needs of my Trust
+          beneficiary/ies within the relevant Trust period.
+        </p>
+        
+      </li>
+      <li data-list-text="-">
+        <p
+        class="para-style"
+        >
+          apply the Trust assets towards purchasing life insurance policies
+          on behalf of my Trust beneficiary/ies within the relevant Trust
+          period.
+        </p>
+        
+      </li>
+      <li data-list-text="-">
+        <p
+        class="para-style"
+        >
+          adjust each payout made to a Trust beneficiary from the Trust,
+          taking into account inflation rates from the date of the signing
+          of this Will.
+        </p>
+        
+      </li>
+      <li data-list-text="-">
+        <p
+        class="para-style">
+          withhold or advance any payouts from the Trust to any of my Trust
+          beneficiaries
+        </p>
+      </li>
+    </ul>
+  </li>
+</ol></td>
+</tr>
+  `
+const residualEstate = `
+<tr>
+<td class="sub-heading heading-style">
+    RESIDUAL ESTATE</td>
+</tr>
+<tr>
+<td  class="para para-style"> Subject to the above legacies and in respect of my residuary estate, I
+    GIVE, DEVISE AND BEQUEATH all my movable and immovable property
+    whatsoever and wheresoever situate which I may be possessed of or
+    entitled to at my death (including any property over which I may have
+    a power of appointment or disposition by will) to the following
+    beneficiary/ies in the following proportion/s:</td>
+</tr>
+
+<tr>
+
+`
+
+const ending = `
+<tr>
+<td class="sub-heading heading-style">
+   ENDING</td>
+</tr>
+<tr>
+<td  class="para para-style"> Subject to the above legacies and in respect of my residuary estate, I
+    GIVE, DEVISE AND BEQUEATH all my movable and immovable property
+    whatsoever and wheresoever situate which I may be possessed of or
+    entitled to at my death (including any property over which I may have
+    a power of appointment or disposition by will) to the following
+    beneficiary/ies in the following proportion/s:</td>
+</tr>
+
+<tr> <td class="para para-style">I DIRECT that my Executor/s and/or Trustee/s may procure clarifications
+and/or assistance from LUCAS SOH of Characterist LLC (email:<a href="mailto:lucas@characterist.com" class="a" target="_blank"
+
+>lucas@characterist.com </a>/ hp: 97396586) who has assisted me with financial
+planning.</td>
+</tr>
+
+<tr> <td class="para para-style">I DECLARE that I am not making any provision for any other person(s) not
+named herein, as it is not my wish and/ or intention to give any share or
+interest to any person(s) not named herein.</td>
+</tr>
+<tr>
+  <td>
+      <br>
+  </td>
+</tr>`
+  
     let html = `<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -510,10 +804,8 @@ exports.generatePdf = async(req,res)=>{
                 any property over which I may have a power of appointment or disposition
                 by will).</td>
           </tr>
-          ${
-            ex
-          }
-          
+          ${executor} <br>
+       
           
           <tr>
             <td class="sub-heading  heading-style">PROVISION FOR DEBTS AND EXPENSES</td>
@@ -524,280 +816,14 @@ exports.generatePdf = async(req,res)=>{
                 reasonably incurred upon or by reason of my death, be paid out of my
                 estate.</td>
           </tr>
+        
+        ${guardian}<br
+        ${Trust} <br>
+        ${residualEstate} <br>
+        ${ending}
+
           
-          <tr>
-            <td class="sub-heading  heading-style">GUARDIAN</td>
-          </tr>
-          <tr>
-            <td  class="para para-style"> If the other parent of my child/ren has predeceased me or shall not
-                survive me, I APPOINT TIMOTHY TSANG (NRIC No. S9714999B), of 8 Taman
-                Siglap, Singapore 455669, Singapore to be the guardian/s of my child/ren
-                during their minority to act solely.</td>
-          </tr>
-          
-          <tr>
-            <td class="sub-heading  heading-style">TRUST</td>
-          </tr>
-          
-    
-          <tr>
-            <td class="s3" style="padding-left: 5pt; text-indent: 0pt; text-align: left">Tsang&#39;s Family TRUST</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td class="signature-box">
-                <div>
-                    <p>Signature of Testator </p>
-                </div>
-                <div>    <p>Signature of Testator </p></div>
-                <div>    <p>Signature of Testator </p></div>
-            </td>
-          </tr>
-        </tfoot>
-    
-          <tr>
-            <td  class="para para-style">   I APPOINT TIMOTHY TSANG (NRIC No. S9714999B), of 8 Taman Siglap, Singapore
-                455669, Singapore to be the sole Trustee of this my Will (“my Trustee”).</td>
-          </tr>
-          <tr>
-            <td  style="
-            padding-top: 11pt;
-            padding-left: 5pt;
-            text-indent: 0pt;
-            line-height: 152%;
-            text-align: justify;
-          " > <p>
-    
-              I GIVE my immovable property known as 3 Taman Siglap, Singapore 123456
-              (hereinafter called the “Tsang&#39;s Family Property”) to my Trustee/s to
-              hold UPON Trust (the “Tsang&#39;s Family Property Trust”) for the
-              following Trust beneficiary/ies in the following proportion/s:</td>
-            </p>
-          </tr>
-          <tr>
-            <td  >  <ol id="l1">
-            <li data-list-text="i.">
-              <p
-                class=""
-              >
-                100% to my son, TIMOTHY TSANG (NRIC No. S9714999B).
-              </p>
-              
-              <p
-                style="
-                  padding-left: 5pt;
-                  text-indent: 0pt;
-                  line-height: 152%;
-                  text-align: justify;
-                "
-              >
-                The Trust Period of the Tsang&#39;s Family Property Trust shall be
-                from the date of my death to the earlier of (i) the date when the
-                Trustee/s sell or dispose of the Tsang&#39;s Family Property with the
-                consent of TIMOTHY TSANG (NRIC No. S9714999B), of 8 Taman Siglap,
-                Singapore 455669, Singapore or (ii) 99 years from the date of my death
-                (the “Tsang&#39;s Family Property Trust Period”).
-              </p>
-              <p
-                style="
-                  padding-top: 12pt;
-                  padding-left: 5pt;
-                  text-indent: 0pt;
-                  line-height: 151%;
-                  text-align: justify;
-                "
-              >
-                At the expiry of the Tsang&#39;s Family Property Trust Period, the
-                Tsang&#39;s Family Property may be transferred to or may be sold with
-                the sale proceeds distributed to the aforesaid beneficiary/ies in the
-                aforesaid proportion/s.
-              </p>
-              
-              <p
-                style="
-                  padding-left: 5pt;
-                  text-indent: 0pt;
-                  line-height: 151%;
-                  text-align: justify;
-                "
-              >
-                If any of the aforesaid Trust beneficiaries shall die before the
-                expiry of the Tsang&#39;s Family Property Trust Period, then my
-                surviving Trust beneficiary/ies shall take proportionately.
-              </p>
-              
-              <p
-              class="para-style"
-             >
-                A Trustee is entitled to remunerated out of the income and property of
-                this Trust for any and all of the Trustee’s fees, which shall be
-                reasonable.
-              </p>
-              
-              <p style="padding-left: 5pt; text-indent: 0pt; text-align: justify">
-                I EMPOWER my Trustee/s to use their discretion to:
-              </p>
-              
-              <ul id="l2">
-                <li data-list-text="-">
-                  <p
-                   class="para-style"
-                  >
-                    employ and rely on the advice of experts including legal counsel,
-                    accountants and investment advisors to assist in the management of
-                    the Trust and to be reimbursed out of the income and property of
-                    the Trust for any and all expenses where such expense is
-                    reasonably and properly incurred in the management of the Trust.
-                  </p>
-                  
-                </li>
-                <li data-list-text="-">
-                  <p
-                  class="para-style"
-                  >
-                    appoint a suitable replacement Trustee at any time where the
-                    Trustee is no longer able to act as Trustee for any reason.
-                  </p>
-                  
-                </li>
-                <li data-list-text="-">
-                  <p
-                  class="para-style"
-                  >
-                    purchase, maintain, convert and liquidate investments or
-                    securities, at reasonable risk, and for the purpose of generating
-                    income and growth, or exercise any option concerning any
-                    investments or securities, as the Trustee deems reasonable and in
-                    the best overall interest of the Trust, without liability for loss
-                    or depreciation.
-                  </p>
-                  
-                </li>
-                <li data-list-text="-">
-                  <p
-                  class="para-style"
-                  >
-                    insure, repair, improve, or add to or otherwise deal with any and
-                    all property belonging to the Trust, both movable and immovable,
-                    as the Trustee deems reasonable and in the best overall interest
-                    of the Trust, without liability for loss or depreciation.
-                  </p>
-                  
-                </li>
-                <li data-list-text="-">
-                  <p
-                  class="para-style"
-                  >
-                    sell, call in and convert into money any and all property
-                    belonging to the Trust, both movable and immovable, with the power
-                    to postpone the sale, calling in and conversion as the Trustee
-                    deems reasonable and in the best overall interest of the Trust,
-                    without liability for loss or depreciation.
-                  </p>
-                  
-                </li>
-                <li data-list-text="-">
-                  <p
-                  class="para-style"
-                  >
-                    deposit monies into safe bank accounts but shall not make any
-                    investments.
-                  </p>
-                  
-                </li>
-                <li data-list-text="-">
-                  <p
-                  class="para-style"
-                  >
-                    apply the Trust assets towards the emergency or reasonable medical
-                    expenses of my Trust beneficiary/ies within the relevant Trust
-                    period.
-                  </p>
-                  
-                </li>
-                <li data-list-text="-">
-                  <p
-                  class="para-style"
-                  >
-                    apply the Trust assets towards the educational needs of my Trust
-                    beneficiary/ies within the relevant Trust period.
-                  </p>
-                  
-                </li>
-                <li data-list-text="-">
-                  <p
-                  class="para-style"
-                  >
-                    apply the Trust assets towards purchasing life insurance policies
-                    on behalf of my Trust beneficiary/ies within the relevant Trust
-                    period.
-                  </p>
-                  
-                </li>
-                <li data-list-text="-">
-                  <p
-                  class="para-style"
-                  >
-                    adjust each payout made to a Trust beneficiary from the Trust,
-                    taking into account inflation rates from the date of the signing
-                    of this Will.
-                  </p>
-                  
-                </li>
-                <li data-list-text="-">
-                  <p
-                  class="para-style">
-                    withhold or advance any payouts from the Trust to any of my Trust
-                    beneficiaries
-                  </p>
-                </li>
-              </ul>
-            </li>
-          </ol></td>
-          </tr>
-          <tr>
-            <td class="sub-heading heading-style">
-                RESIDUAL ESTATE</td>
-          </tr>
-          <tr>
-            <td  class="para para-style"> Subject to the above legacies and in respect of my residuary estate, I
-                GIVE, DEVISE AND BEQUEATH all my movable and immovable property
-                whatsoever and wheresoever situate which I may be possessed of or
-                entitled to at my death (including any property over which I may have
-                a power of appointment or disposition by will) to the following
-                beneficiary/ies in the following proportion/s:</td>
-          </tr>
-          
-          <tr>
-            <td class="sub-heading heading-style">
-               ENDING</td>
-          </tr>
-          <tr>
-            <td  class="para para-style"> Subject to the above legacies and in respect of my residuary estate, I
-                GIVE, DEVISE AND BEQUEATH all my movable and immovable property
-                whatsoever and wheresoever situate which I may be possessed of or
-                entitled to at my death (including any property over which I may have
-                a power of appointment or disposition by will) to the following
-                beneficiary/ies in the following proportion/s:</td>
-          </tr>
-          
-          <tr> <td class="para para-style">I DIRECT that my Executor/s and/or Trustee/s may procure clarifications
-            and/or assistance from LUCAS SOH of Characterist LLC (email:<a href="mailto:lucas@characterist.com" class="a" target="_blank"
-            
-          >lucas@characterist.com </a>/ hp: 97396586) who has assisted me with financial
-          planning.</td>
-          </tr>
-          
-          <tr> <td class="para para-style">I DECLARE that I am not making any provision for any other person(s) not
-            named herein, as it is not my wish and/ or intention to give any share or
-            interest to any person(s) not named herein.</td>
-          </tr>
-          <tr>
-              <td>
-                  <br>
-              </td>
-          </tr>
+        
           <tr> <td class="para para-style"> ------------------ THE REST OF THE PAGE IS INTENTIONALLY LEFT BLANK
             -----------------------</td>
           </tr> 
@@ -915,9 +941,40 @@ exports.generatePdf = async(req,res)=>{
       </body>
     </html>
      `
-  return {
-      html
-    };
+ var options = {
+      format: "A3",
+      orientation: "portrait",
+      border: "10mm",
+      header: {
+          height: "45mm",
+          contents: '<div style="text-align: center;">Author: Lucas liao </div>'
+      },
+      footer: {
+          height: "28mm",
+          contents: {
+              first: 'Cover page',
+              2: 'Second page', // Any page number is working. 1-based index
+              default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
+              last: 'Last Page'
+          }
+      }
+  };
+
+  var document = {
+    html: html,
+    path: "./output.pdf",
+    type: "",
+    data: {}
+  };
+
+  return pdf.create(document , options).then(async res =>{
+    console.log('...',res)
+    return  (res)
+  }).catch(error =>{
+      console.log("Error creating pdf",error)
+      return reject(error);
+  })
+
   }
   catch(err){
     return err.message
