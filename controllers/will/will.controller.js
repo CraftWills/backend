@@ -292,8 +292,9 @@ exports.deleteWillById = async(req,res)=>{
       })
   }
 }
-///
-
+//////
+/////
+//.
 exports.generatePdf = async(req,res)=>{
   try{
     const willData = req?.body?.formattedData;
