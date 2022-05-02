@@ -293,11 +293,18 @@ exports.deleteWillById = async(req,res)=>{
 
 exports.generatePdf = async(req,res)=>{
   try{
-    const user = "62024fe88ae810371198893f"
-    const users = await Will.find({user_id : user});
-    console.log(users)   
-    console.log(users[0].fullName)
-    console.log(users[0].id_number)
+    const willData = req?.body?.formattedData;
+    const {executors, trust, residualAsset} = willData;
+    const executor = `
+    <tr>
+            <td class="sub-heading  heading-style">EXECUTOR</td>
+          </tr>
+          <tr>
+            <td  class="para para-style"> I APPOINT ${executor?.primaryExecutor?.name} (${executor?.primaryExecutor?.id_type} No. ${executor?.primaryExecutor?.id_number}), of ${executor?.primaryExecutor?.address?.unitNumber + ' ' + executor?.primaryExecutor?.address?.streetName}, ${executor?.primaryExecutor?.address?.country}
+                ${executor?.primaryExecutor?.address?.postalCode}, ${executor?.primaryExecutor?.address?.country} to be the ${executor?.primaryTrusteeType} executor of this my Will (hereinafter
+                called “my Executor”). </td>
+          </tr>
+    `
     let html = `<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -503,15 +510,10 @@ exports.generatePdf = async(req,res)=>{
                 any property over which I may have a power of appointment or disposition
                 by will).</td>
           </tr>
+          ${
+            ex
+          }
           
-          <tr>
-            <td class="sub-heading  heading-style">EXECUTOR</td>
-          </tr>
-          <tr>
-            <td  class="para para-style"> I APPOINT TIMOTHY TSANG (NRIC No. S9714999B), of 8 Taman Siglap, Singapore
-                455669, Singapore to be the sole executor of this my Will (hereinafter
-                called “my Executor”). </td>
-          </tr>
           
           <tr>
             <td class="sub-heading  heading-style">PROVISION FOR DEBTS AND EXPENSES</td>
@@ -946,151 +948,3 @@ console.log(guardianReplacementExecutorData)
     })
   }
 }
-
-
-async function memberDatas(id){
-  let data=  await member.findById(id);
-  if (data.type==="memberAsPerson"){
-     return {
-       name : data?.memberAsPerson?.fullname,
-       id_number : data?.memberAsPerson?.id_number,
-       address : {
-         streetName : data?.memberAsPerson?.streetName,
-         floorNumber : data?.memberAsPerson?.floorNumber,
-         unitNumber : data?.memberAsPerson?.unitNumber,
-         postalCode : data?.memberAsPerson?.postalCode,
-         country : data?.country
-         
-       }
-     }
-  }
-  if (data.type ==="memberAsOrganisation"){
-    return {
-      organisationName  : data?.memberAsOrganisation?.organisationName ,
-      registration_number : data?.memberAsOrganisation?.registration_number,
-      address : {
-        streetName : data?.memberAsOrganisation?.streetName,
-        floorNumber : data?.memberAsOrganisation?.floorNumber,
-        unitNumber : data?.memberAsOrganisation?.unitNumber,
-        postalCode : data?.memberAsOrganisation?.postalCode,
-        country : data?.country
-      }
-    }
-  }
-
-}
-
-async function userDatas(id){
-    try{
-      let data = await User.findOne({_id:ObjectId(id)})
-      return {
-        fullName : data.fullName,
-        email : data.email,
-        id_type : data.id_type,
-        id_number : data.id_number,
-        gender : data.gender,
-        floorNumber : data.floorNumber,
-        unitNumber : data.unitNumber,
-        streetName : data.streetName,
-        postalCode : data.postalCode,
-        id_country : data.id_country,
-        Citizenship : data.Citizenship
-      }
-    } 
-    catch(err){
-      return err.message
-    } 
-
-}
-
-async function trustData(id){
-  try{
-    let data = await Trust.findById(id)
-    return {
-      trustName : data?.trustName,
-      description : data?.description
-    }
-
-  } 
-  catch(err){
-    return err.message
-  } 
-
-}
-
-
-
-
-
-
-
-
-exports.createWillData = async(req, res, next) => {
-    try {
-        const will = await Will.findById(req.params.id);
-        if(will){
-          let userID = will?.user_id;
-          let newUser = await userDatas(userID);
-          let P_E = will.primaryExecutors
-          let peData = await memberDatas(P_E)
-          let R_E = will.replacementExecutors
-          let reData = await memberDatas(R_E)
-          let G_E = will.guardianExecutor
-          let geData = await memberDatas(G_E)
-          let G_R_E = will.guardianReplacementExecutor
-          let greData = await memberDatas(G_R_E)
-          let primaryTrusteeType = will.trust[0].addTrust?.appointPrimaryTrustee?.specifyOwnershipType
-          let primaryTrusteeId = will.trust[0].addTrust?.appointPrimaryTrustee?.trustMembers
-          let primaryTrustee = await memberDatas(primaryTrusteeId)
-          let replacementTrusteeType = will.trust[0].addTrust?.appointReplacementTrustee?.specifyOwnershipType
-          let replacementTrusteeId = will.trust[0].addTrust?.appointReplacementTrustee?.trustMembers
-          let replacementTrustee = await memberDatas(replacementTrusteeId)
-          let trustId = will.trust[0].trustData
-          let trustDetails = await trustData(trustId)
-          let trusteePow= will.trust[0].addTrust?.specifyTrusteePowers
-          let trusteePowers =  trusteePow.filter(el => el.isSelected=true)
-          let residualId = will?.specifyResidualAssetBenificiary[0]?.member
-          let residualAssetMem = await memberDatas(residualId)
-          let residualShares = will?.specifyResidualAssetBenificiary[0]?.specifyShares
-
-          let formattedData = {
-            user : newUser,
-            executors : {
-                primaryExecutor : peData,
-                replacementExecutor : reData,
-                guardianExecutor  : geData,
-                guardianReplacementExecutor : greData
-            },
-            trust : {
-              TrustDetails : trustDetails,
-
-              TrusteePowers : trusteePowers,
-
-              primaryTrustee : {
-                type : primaryTrusteeType,
-                member : primaryTrustee
-              },
-              replacementTrustee : {
-                type : replacementTrusteeType,
-                member : replacementTrustee
-
-              }
-            },
-            residualAsset : {
-              member : residualAssetMem,
-              shares : residualShares
-            }
-          }
-          return formattedData 
-        }
-        else {
-            throw new Error('Will not found');
-        }
-    } catch (error) {
-      return error.message
-    }
-}
-
-
-
-
