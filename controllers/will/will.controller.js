@@ -292,9 +292,8 @@ exports.deleteWillById = async(req,res)=>{
       })
   }
 }
-//////
-/////
-//.
+
+
 exports.generatePdf = async(req,res)=>{
   try{
     const willData = req?.body?.formattedData;
@@ -348,11 +347,12 @@ exports.generatePdf = async(req,res)=>{
         I APPOINT 
     </td>
 </tr>
-<tr>
-        <td  class="para para-style">  ${trust[0]?.primaryTrustee?.members?.name} (${trust[0]?.primaryTrustee?.type} No. ${trust[0]?.primaryTrustee?.members?.id_number}), of ${trust[0]?.primaryTrustee?.members?.address?.streetName},${trust[0]?.primaryTrustee?.members?.address?.floorNumber} ${trust[0]?.primaryTrustee?.members?.address?.country}
-               ${trust[0]?.primaryTrustee?.members?.address?.postalCode}, ${trust[0]?.primaryTrustee?.members?.address?.country} to be the ${trust[0]?.primaryTrustee?.type} Trustee of this my Will (“${trust[0]?.primaryTrustee?.members?.name}”).</td>
-  </tr>
-
+${trust.map((el) => {
+  return `<tr>
+            <td  class="para para-style">  ${el?.primaryTrustee?.members?.name} (${el?.primaryTrustee?.type} No. ${el?.primaryTrustee?.members?.id_number}), of ${el?.primaryTrustee?.members?.address?.streetName},${el?.primaryTrustee?.members?.address?.floorNumber} ${el?.primaryTrustee?.members?.address?.country}
+               ${el?.primaryTrustee?.members?.address?.postalCode}, ${el?.primaryTrustee?.members?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${el?.primaryTrustee?.members?.name}”).</td>
+          </tr>`
+}).join(',')}
 
 <tr>
   <td  style="
