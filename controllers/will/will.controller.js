@@ -17,6 +17,7 @@ var count = 0
 const ObjectId = require('mongoose').Types.ObjectId;
 var pdf = require("pdf-creator-node");
 var fs = require("fs");
+const axios = require('axios');
 
 exports.storeWill = async (req,res) => {
   const _id = req.token_data._id
@@ -296,7 +297,16 @@ exports.deleteWillById = async(req,res)=>{
 //////
 exports.generatePdf = async(req,res)=>{
   try{
+
+    let image = 'https://craftwill.vercel.app/assets/Image/Logo/Craftwills..png';
+    if (image && image.startsWith('http')) {
+      const base64 = Buffer.from((await axios.get(image, {
+        responseType: "arraybuffer"
+      })).data, "utf-8").toString("base64");
+      image = `data:image/png;base64,${base64}`;
+    }
     const willData = req?.body?.formattedData;
+    console.log(willData)
     const {executors, trust, residualAsset} = willData;
     
     const executor = `
@@ -322,26 +332,9 @@ exports.generatePdf = async(req,res)=>{
     `
   const Trust = 
   `
-  <tr>
-  <td class="sub-heading  heading-style">TRUST</td>
-</tr>
-
-
-<tr>
-  <td class="s3" style="padding-left: 5pt; text-indent: 0pt; text-align: left">Tsang&#39;s Family TRUST</td>
-</tr>
-</tbody>
-<tfoot>
-<tr>
-  <td class="signature-box">
-      <div>
-          <p>Signature of Testator </p>
-      </div>
-      <div>    <p>Signature of Testator </p></div>
-      <div>    <p>Signature of Testator </p></div>
-  </td>
-</tr>
-</tfoot>
+  <tr><td class="sub-heading  heading-style">TRUST</td></tr>
+  <tr><td class="s3" style="padding-left: 5pt; text-indent: 0pt; text-align: left">Tsang&#39;s Family TRUST</td></tr>
+  </tbody>
 <tr>
     <td>
         I APPOINT 
@@ -761,39 +754,13 @@ interest to any person(s) not named herein.</td>
     
         </style>
       </head>
-    
-      <body class="mat-typography">
-        <table>
-            <thead>
-                <tr>
-                    <td>
-                      <hr style="height:2px;border-width:0;color:#000;background-color:#000">
-                    </td>
-                </tr>
-                <tr>
-                    <tr>
-                        <td  style="padding-top: 0;display: flex;justify-content: space-between; align-items: center;">
-                            <div class="sub-heading heading-style" style="padding-top: 0;">
-                                THE LAST WILL AND TESTEMENT OF <br> <span style="font-size: 15px;margin-top: 3px;">TIMOTHY TSANG WEI SHAN</span>
-                            </div>  
-                            <div>Craftwills logo</div>
-                        </td>
-                      <td>
-                          
-                      </td>
-                      </tr>
-                </tr>
-                <tr>
-                    <td>
-                        <hr style="height:2px;border-width:0;color:#000;background-color:#000">
-                    </td>
-                </tr>
-              </thead>
-              <tbody>
+      
+      <body style='margin-top: 0px; padding: 0px;' class="mat-typography">
+      
+      <table style="margin-top: 0px; padding-top: 0px;">
+      <tbody>
           <tr>
-            <td class="sub-heading heading-style">
-          INTRODUCTION</td>
-          
+            <td class="sub-heading heading-style" style="padding-top: 0px;">INTRODUCTION</td>
           </tr>
           <tr>
             <td  class="para para-style">I, TIMOTHY TSANG WEI SHAN (NRIC No. S9905831E), of 8 Taman Siglap,
@@ -806,8 +773,6 @@ interest to any person(s) not named herein.</td>
                 by will).</td>
           </tr>
           ${executor} <br>
-       
-          
           <tr>
             <td class="sub-heading  heading-style">PROVISION FOR DEBTS AND EXPENSES</td>
           </tr>
@@ -939,29 +904,50 @@ interest to any person(s) not named herein.</td>
            </td>
            </tr> 
         </table>
-      </body>
+
+        <div><img src="${image}" style="display: none; width: 0px; height: 0px;"></div>
+        </body>
     </html>
      `
  var options = {
       format: "A3",
       orientation: "portrait",
-      border: "10mm",
+      border: "0mm",
       header: {
           height: "45mm",
-          contents: '<div style="text-align: center;">Author: Lucas liao </div>'
+          contents: `
+            <div style='padding-left: 42px; padding-right: 42px;'>
+            <hr style="height:2px;border-width:0;color:#000;background-color:#000">
+              <table style='width: 100%; margin: 0; padding: 0;'>
+                  <tr>
+                    <td align='left' vAlign='top'>
+                      <div class="" style="padding: 0;"> THE LAST WILL AND TESTEMENT OF <br> <span style="font-size: 15px;margin-top: 3px;">TIMOTHY TSANG WEI SHAN</span></div>
+                    </td>
+                    <td align='right' vAlign='center'>
+                      <img src="${image}" style="width: 140px;">
+                    </td>
+                  </tr>
+              </table>
+              <hr style="height:2px;border-width:0;color:#000;background-color:#000">
+            </div>`
       },
       footer: {
-          height: "28mm",
+          height: "40mm",
           contents: {
-              first: 'Cover page',
-              2: 'Second page', // Any page number is working. 1-based index
-              default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
-              last: 'Last Page'
+              default: `<div style='padding-left: 42px; padding-right: 42px; padding-top: 16px;'>
+                  <table style='border-collapse: collapse; width: 100%; height: 95px; page-break-inside: avoid;'>
+                      <tr>
+                          <td style='height: 95px; padding-right: 16px;'><div style="border: 1px solid black; padding: 16px; padding-top: 4px; height:100%;">Signature of Testator </div></td>
+                          <td style='height: 95px; padding-right: 16px; padding-left: 16px;'><div style="border: 1px solid black; padding: 16px; padding-top: 4px; height:100%;">Signature of Testator </div></td>
+                          <td style='height: 95px; padding-left: 16px;'><div style="border: 1px solid black; padding: 16px; padding-top: 4px; height:100%;">Signature of Testator </div></td>
+                      </tr>
+                  </table>
+              </div>`
           }
       }
   };
 
-  var document = {
+var document = {
     html: html,
     path: "./output.pdf",
     type: "",

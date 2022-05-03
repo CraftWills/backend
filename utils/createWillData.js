@@ -88,6 +88,7 @@ const Will = require("../models/Will/will.model");
 async function memberDatas(id){
   let member = null;
     let data=  await Members.findById(id);
+    console.log("something",data)
     if (data.type==="memberAsPerson"){
        member = {
          name : data?.memberAsPerson?.fullname,
