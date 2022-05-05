@@ -2,6 +2,7 @@ const Members = require("../models/members.model");
 const Trust = require("../models/trust.model");
 const User = require("../models/user.model");
 const Will = require("../models/Will/will.model");
+const ObjectId = require('mongoose').Types.ObjectId;
  async function createWillData (req, res, next){
     try {
         const will = await Will.findById(req.params.id);
@@ -23,6 +24,7 @@ const Will = require("../models/Will/will.model");
           // let replacementTrusteeId = will.trust[0].addTrust?.appointReplacementTrustee?.trustMembers
           // let replacementTrustee = await memberDatas(replacementTrusteeId)
           // let trustId = will.trust[0].trustData
+        
           const trustDetails = await new Promise((res,rej) => {
             const arr = []
             will.trust.forEach(async(singleTrust, index) => {
@@ -33,26 +35,22 @@ const Will = require("../models/Will/will.model");
               }
             }); 
           })
-          console.log(trustDetails);
 
           const specifyResidualAssetBenificiary =  await new Promise((res, rej) => {
             const array = []
             will?.specifyResidualAssetBenificiary?.forEach( async(asset, index) => {
+              console.log('specific -> asset', asset?.member)
               const member = await memberDatas(asset?.member);
               array.push({
                 member,
                 share: asset?.specifyShares
               });
 
-
               if ((index + 1) === will?.specifyResidualAssetBenificiary.length) {
                 res(array);
               }
             })
-
-
           })
-          console.log(specifyResidualAssetBenificiary, 'benefici');
           // let trusteePow= will.trust[0].addTrust?.specifyTrusteePowers
           // let trusteePowers =  trusteePow.filter(el => el.isSelected=true)
           // let residualId = will?.specifyResidualAssetBenificiary[0]?.member
@@ -72,6 +70,7 @@ const Will = require("../models/Will/will.model");
             trust : trustDetails,
             residualAsset : specifyResidualAssetBenificiary
           }
+          console.log("foesnkjvkj    ",formattedData)
           req.body['formattedData'] = formattedData;
           // return formattedData 
         }
@@ -86,10 +85,11 @@ const Will = require("../models/Will/will.model");
 }
 
 async function memberDatas(id){
+  console.log('id', id)
   let member = null;
     let data=  await Members.findById(id);
     console.log("something",data)
-    if (data.type==="memberAsPerson"){
+    if (data?.type==="memberAsPerson"){
        member = {
          name : data?.memberAsPerson?.fullname,
          id_type: data?.memberAsPerson?.id_type,
@@ -104,7 +104,7 @@ async function memberDatas(id){
          }
        }
     }
-    if (data.type ==="memberAsOrganisation"){
+    if (data?.type ==="memberAsOrganisation"){
       member = {
         name  : data?.memberAsOrganisation?.organisationName ,
         id_number : data?.memberAsOrganisation?.registration_number,
@@ -125,7 +125,18 @@ async function memberDatas(id){
       try{
         const data = await User.findOne({_id:ObjectId(id)})
         return {
-          ...data
+          fullname : data?._doc?.fullName,
+          id_type : data?._doc?.id_type,
+          id_number : data?._doc?.id_number,
+          gender : data?._doc?.gender,
+          dob : data?._doc?.dob,
+          address : {
+            floorNumber : data?._doc?.floorNumber,
+            streetName : data?._doc?.unitNumber,
+            postalCode : data?._doc?.postalCode,
+            country : data?._doc?.id_country
+            }
+
         }
       } 
       catch(err){

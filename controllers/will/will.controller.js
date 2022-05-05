@@ -297,7 +297,7 @@ exports.deleteWillById = async(req,res)=>{
 //////
 exports.generatePdf = async(req,res)=>{
   try{
-
+    
     let image = 'https://craftwill.vercel.app/assets/Image/Logo/Craftwills..png';
     if (image && image.startsWith('http')) {
       const base64 = Buffer.from((await axios.get(image, {
@@ -306,7 +306,8 @@ exports.generatePdf = async(req,res)=>{
       image = `data:image/png;base64,${base64}`;
     }
     const willData = req?.body?.formattedData;
-    console.log(willData)
+    console.log("final data :=== ",willData)
+    
     const {executors, trust, residualAsset} = willData;
     
     const executor = `
@@ -326,7 +327,7 @@ exports.generatePdf = async(req,res)=>{
   </tr>
   <tr>
     <td  class="para para-style"> If the other parent of my child/ren has predeceased me or shall not
-        survive me, I APPOINT ${executors?.guardianExecutor?.name} (${executors?.guardianExecutor?.id_Type} No. ${executors?.guardianExecutor?.id_number}), of ${executors?.guardianExecutor?.address?.unitNumber + ' ' + executors?.guradianExecutor?.address?.streetName}, ${executors?.guardianExecutor?.address?.country} to be the guardian/s of my child/ren
+        survive me, I APPOINT ${executors?.guardianExecutor?.name} (${executors?.guardianExecutor?.id_type} No. ${executors?.guardianExecutor?.id_number}), of ${executors?.guardianExecutor?.address?.unitNumber}  ${executors?.guardianExecutor?.address?.streetName}, ${executors?.guardianExecutor?.address?.country} to be the guardian/s of my child/ren
         during their minority to act solely.</td>
   </tr>
     `
@@ -763,8 +764,8 @@ interest to any person(s) not named herein.</td>
             <td class="sub-heading heading-style" style="padding-top: 0px;">INTRODUCTION</td>
           </tr>
           <tr>
-            <td  class="para para-style">I, TIMOTHY TSANG WEI SHAN (NRIC No. S9905831E), of 8 Taman Siglap,
-                Singapore 455669, HEREBY REVOKE all former wills, codicils and
+            <td  class="para para-style">I, ${willData?.user?.fullname} (${willData?.user?.id_type} No. ${willData?.user?.id_number}), of ${willData?.user?.address?.streetName},${willData?.user?.address?.floorNumber}
+    ${willData?.user?.address?.country} ${willData?.user?.address?.postalCode}, HEREBY REVOKE all former wills, codicils and
                 testamentary dispositions hereinbefore made by me AND DECLARE this to be
                 my Last Will and Testament (hereinafter called my “Will”). This Will
                 covers all my movable and immovable property whatsoever and wheresoever
@@ -956,7 +957,7 @@ var document = {
 
   return pdf.create(document , options).then(async res =>{
     console.log('...',res)
-    return  (res)
+    return  (willData)
   }).catch(error =>{
       console.log("Error creating pdf",error)
       return reject(error);
@@ -975,10 +976,10 @@ exports.getWillInfo = async(req,res)=>{
 let replacementExecutorsData = data.map(el=>el.replacementExecutors)
 let guardianExecutorData = data.map(el=>el.guardianExecutor)
 let guardianReplacementExecutorData = data.map(el=>el.guardianReplacementExecutor)
-console.log(primaryExecutorData)
-console.log(replacementExecutorsData)
-console.log(guardianExecutorData)
-console.log(guardianReplacementExecutorData)
+// console.log(primaryExecutorData)
+// console.log(replacementExecutorsData)
+// console.log(guardianExecutorData)
+// console.log(guardianReplacementExecutorData)
   res.json({
     message : "data found successfully",
     success : true,
