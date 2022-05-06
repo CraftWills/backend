@@ -752,6 +752,12 @@ interest to any person(s) not named herein.</td>
                 margin-bottom: 0;
                 margin-top: 22px;
               }
+
+              html {
+                zoom: 0.753;
+                margin: 0;
+                padding: 0;
+              }
     
         </style>
       </head>
@@ -915,7 +921,7 @@ interest to any person(s) not named herein.</td>
       orientation: "portrait",
       border: "0mm",
       header: {
-          height: "45mm",
+          height: "40mm",
           contents: `
             <div style='padding-left: 42px; padding-right: 42px;'>
             <hr style="height:2px;border-width:0;color:#000;background-color:#000">
@@ -933,14 +939,14 @@ interest to any person(s) not named herein.</td>
             </div>`
       },
       footer: {
-          height: "40mm",
+          height: "35mm",
           contents: {
-              default: `<div style='padding-left: 42px; padding-right: 42px; padding-top: 16px;'>
-                  <table style='border-collapse: collapse; width: 100%; height: 95px; page-break-inside: avoid;'>
+              default: `<div style='padding-left: 42px; padding-right: 42px; padding-top: 8px;'>
+                  <table style='border-collapse: collapse; width: 100%; height: 110px; page-break-inside: avoid;'>
                       <tr>
-                          <td style='height: 95px; padding-right: 16px;'><div style="border: 1px solid black; padding: 16px; padding-top: 4px; height:100%;">Signature of Testator </div></td>
-                          <td style='height: 95px; padding-right: 16px; padding-left: 16px;'><div style="border: 1px solid black; padding: 16px; padding-top: 4px; height:100%;">Signature of Testator </div></td>
-                          <td style='height: 95px; padding-left: 16px;'><div style="border: 1px solid black; padding: 16px; padding-top: 4px; height:100%;">Signature of Testator </div></td>
+                          <td style='height: 110px; padding-right: 16px;'><div style="border: 1px solid black; padding: 16px; padding-top: 4px; height:100%;">Signature of Testator </div></td>
+                          <td style='height: 110px; padding-right: 16px; padding-left: 16px;'><div style="border: 1px solid black; padding: 16px; padding-top: 4px; height:100%;">Signature of Testator </div></td>
+                          <td style='height: 110px; padding-left: 16px;'><div style="border: 1px solid black; padding: 16px; padding-top: 4px; height:100%;">Signature of Testator </div></td>
                       </tr>
                   </table>
               </div>`
@@ -952,12 +958,14 @@ var document = {
     html: html,
     path: "./output.pdf",
     type: "",
+    // type: 'buffer',
     data: {}
   };
 
   return pdf.create(document , options).then(async res =>{
     console.log('...',res)
     return  (willData)
+    // return  (res)
   }).catch(error =>{
       console.log("Error creating pdf",error)
       return reject(error);

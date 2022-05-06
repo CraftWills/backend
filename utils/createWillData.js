@@ -35,9 +35,12 @@ const ObjectId = require('mongoose').Types.ObjectId;
               }
             }); 
           })
-
+          
           const specifyResidualAssetBenificiary =  await new Promise((res, rej) => {
             const array = []
+            if (will?.specifyResidualAssetBenificiary.length === 0) {
+              res(array);
+            }
             will?.specifyResidualAssetBenificiary?.forEach( async(asset, index) => {
               console.log('specific -> asset', asset?.member)
               const member = await memberDatas(asset?.member);
@@ -45,12 +48,14 @@ const ObjectId = require('mongoose').Types.ObjectId;
                 member,
                 share: asset?.specifyShares
               });
-
+              
+              // console.log('Data', (index + 1), will?.specifyResidualAssetBenificiary.length, (index + 1) === will?.specifyResidualAssetBenificiary.length)
               if ((index + 1) === will?.specifyResidualAssetBenificiary.length) {
                 res(array);
               }
             })
           })
+
           // let trusteePow= will.trust[0].addTrust?.specifyTrusteePowers
           // let trusteePowers =  trusteePow.filter(el => el.isSelected=true)
           // let residualId = will?.specifyResidualAssetBenificiary[0]?.member
@@ -70,7 +75,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
             trust : trustDetails,
             residualAsset : specifyResidualAssetBenificiary
           }
-          console.log("foesnkjvkj    ",formattedData)
+          console.log("foesnkjvkj    ", JSON.stringify(formattedData.trust))
           req.body['formattedData'] = formattedData;
           // return formattedData 
         }
@@ -85,10 +90,10 @@ const ObjectId = require('mongoose').Types.ObjectId;
 }
 
 async function memberDatas(id){
-  console.log('id', id)
+  // console.log('id', id)
   let member = null;
     let data=  await Members.findById(id);
-    console.log("something",data)
+    // console.log("something",data)
     if (data?.type==="memberAsPerson"){
        member = {
          name : data?.memberAsPerson?.fullname,
@@ -147,21 +152,50 @@ async function memberDatas(id){
   async function getTrustData(trust){
     try{
       if(trust){
+        console.log("newwwwww ..", trust._id, trust?.addTrust?.appointPrimaryTrustee?.trustMembers)
         let trustDetails = await Trust.findById(trust?.trustData);
         let primaryTrustee = {
           type: trust?.addTrust?.appointPrimaryTrustee?.specifyOwnershipType,
-          members: trust?.addTrust?.appointPrimaryTrustee?.trustMembers?.map(async(mem) =>  {
-            const memberData = await memberDatas(mem);
-            return memberData;
-          })
+          members: null
         }
+        primaryTrustee.members = await new Promise((res, rej) => {
+
+          const array = [];
+          if (!trust?.addTrust?.appointPrimaryTrustee?.trustMembers.length) {
+            res(array);
+            return;
+          }
+          trust?.addTrust?.appointPrimaryTrustee?.trustMembers?.forEach(async(mem, index) =>  {
+            const memberData = await memberDatas(mem);
+            array.push(memberData);
+            if ((index+1) == trust?.addTrust?.appointPrimaryTrustee?.trustMembers.length ) {
+              res(array);
+              return;
+            }
+          })
+        })
+
+        console.log(JSON.stringify(primaryTrustee))
         let replacementTrustee = {
           type: trust?.addTrust?.appointReplacementTrustee?.specifyOwnershipType,
-          members: trust?.addTrust?.appointReplacementTrustee?.trustMembers?.map(async(mem) =>  {
-            const memberData = await memberDatas(mem);
-            return memberData;
-          })
+          members: null
         }
+        replacementTrustee.members = await new Promise((res, rej) => {
+          const array1 = [];
+          if (!trust?.addTrust?.appointReplacementTrustee?.trustMembers.length) {
+            res(array1);
+            return;
+          }
+          trust?.addTrust?.appointReplacementTrustee?.trustMembers?.forEach(async(mem, index) =>  {
+            const memberData = await memberDatas(mem);
+            array1.push(memberData);
+            if ((index+1) == trust?.addTrust?.appointReplacementTrustee?.trustMembers.length ) {
+              res(array1);
+              return;
+            }
+          })
+        })
+
         let trusteePowers = trust?.addTrust?.specifyTrusteePowers?.map(power => power?.isSelected ? power?.name : null)?.filter(power => power)
         return {
           trustDetails,
