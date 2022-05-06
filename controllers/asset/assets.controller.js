@@ -286,12 +286,13 @@ const Statics = async (req, res) => {
     // let startOfToday = new Date(now., now.getMonth(), now.getDate());
     let YEAR_BEFORE = moment().subtract(1, 'year').format("YYYY-MM-DD");
     console.log(YEAR_BEFORE)
-
+    let _id = req.token_data._id
     // req.body.fromDate
     // req.body.endDate
     const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     let sampledata = await asset.aggregate([{
       $match: {
+        "user_id": _id,
         isoDate: {
           $gte: startOfYear,
           $lt: startOfToday
