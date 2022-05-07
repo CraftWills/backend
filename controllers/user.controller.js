@@ -193,6 +193,7 @@ if (update){
 };}
 
 
+////// image uploading
 
 exports.uploadImage = async (req, res) => {
   const _id = req.token_data._id;
@@ -228,7 +229,7 @@ exports.getUser = async (req, res) => {
   emailExixtance.check(users.email,function(err,res){
     console.log("res :"+res)
   })
-
+///
   return {
     error: false,
     success: true,
