@@ -543,7 +543,7 @@ const Statics = async (req, res) => {
     },
     {
       $addFields: {
-        data2: {
+        data: {
           $map: {
             input: "$template_data", as: "t",
             in: {
