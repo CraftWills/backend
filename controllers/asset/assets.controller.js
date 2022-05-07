@@ -462,7 +462,6 @@ const Statics = async (req, res) => {
 
     let data2 = await liabilities.aggregate([{
       $match: {
-        "user_id": _id,
         isoDate: {
           $gte: startOfYear,
           $lt: startOfToday
@@ -543,7 +542,7 @@ const Statics = async (req, res) => {
     },
     {
       $addFields: {
-        data: {
+        data2: {
           $map: {
             input: "$template_data", as: "t",
             in: {
