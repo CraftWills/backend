@@ -462,7 +462,7 @@ const Statics = async (req, res) => {
 
     let data2 = await liabilities.aggregate([{
       $match: {
-       
+        "user_id": _id,
         isoDate: {
           $gte: startOfYear,
           $lt: startOfToday
@@ -572,9 +572,10 @@ const Statics = async (req, res) => {
     //   }
     }
     ]);
-    let FIrst = data2[0].data2.map((item) => ({ ...item, count: 0 }));
-    let SeCond = FIrst.map((item) => ({ ...item, count: data2[0].dataThree.find(el => el?.k === item?.k)?.count || 0 }))
-    console.log(SeCond)
+    let First = data2[0].data2.map((item1) => ({ ...item1, count: 0 }));
+    let Second = First.map((item1) => ({ ...item1, count: data2[0].dataThree.find(el1 => el1?.k === item1?.k)?.count || 0 }))
+    console.log(Second)
+
 
 
 
@@ -601,7 +602,7 @@ const Statics = async (req, res) => {
       status: 200,
       success: true,
       assets: second,
-      liabilities: SeCond
+      liabilities: Second
     })
 
   } catch (error) {
