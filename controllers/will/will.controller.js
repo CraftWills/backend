@@ -957,15 +957,15 @@ interest to any person(s) not named herein.</td>
 var document = {
     html: html,
     path: "./output.pdf",
-    type: "",
-    // type: 'buffer',
+    // type: "",
+    type: 'buffer',
     data: {}
   };
 
   return pdf.create(document , options).then(async res =>{
     console.log('...',res)
-    return  (willData)
-    // return  (res)
+    // return  (willData)
+    return  (res)
   }).catch(error =>{
       console.log("Error creating pdf",error)
       return reject(error);
