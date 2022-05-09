@@ -17,20 +17,20 @@ const ObjectId = require('mongoose').Types.ObjectId;
           let geData = await memberDatas(G_E)
           let G_R_E = will.guardianReplacementExecutor
           let greData = await memberDatas(G_R_E)
-          let primaryTrusteeType = will.trust[0].addTrust?.appointPrimaryTrustee?.specifyOwnershipType
+          let primaryTrusteeType = will?.trust[0]?.addTrust?.appointPrimaryTrustee?.specifyOwnershipType
           // let primaryTrusteeId = will.trust[0].addTrust?.appointPrimaryTrustee?.trustMembers
           // let primaryTrustee = await memberDatas(primaryTrusteeId)
-          let replacementTrusteeType = will.trust[0].addTrust?.appointReplacementTrustee?.specifyOwnershipType
+          let replacementTrusteeType = will?.trust[0]?.addTrust?.appointReplacementTrustee?.specifyOwnershipType
           // let replacementTrusteeId = will.trust[0].addTrust?.appointReplacementTrustee?.trustMembers
           // let replacementTrustee = await memberDatas(replacementTrusteeId)
           // let trustId = will.trust[0].trustData
         
           const trustDetails = await new Promise((res,rej) => {
             const arr = []
-            will.trust.forEach(async(singleTrust, index) => {
+            will?.trust?.forEach(async(singleTrust, index) => {
               const newTrustData = await getTrustData(singleTrust);
               arr.push(newTrustData);
-              if ((index + 1) === will?.trust.length) {
+              if ((index + 1) === will?.trust?.length) {
                 res(arr);
               }
             }); 
@@ -84,8 +84,8 @@ const ObjectId = require('mongoose').Types.ObjectId;
         }
         next();
     } catch (error) {
-      next();
-      throw new Error(error.message);
+      next(error);
+      // throw new Error(error.message);
     }
 }
 
@@ -152,7 +152,7 @@ async function memberDatas(id){
   async function getTrustData(trust){
     try{
       if(trust){
-        console.log("newwwwww ..", trust._id, trust?.addTrust?.appointPrimaryTrustee?.trustMembers)
+        // console.log("newwwwww ..", trust._id, trust?.addTrust?.appointPrimaryTrustee?.trustMembers)
         let trustDetails = await Trust.findById(trust?.trustData);
         let primaryTrustee = {
           type: trust?.addTrust?.appointPrimaryTrustee?.specifyOwnershipType,
@@ -168,7 +168,7 @@ async function memberDatas(id){
           trust?.addTrust?.appointPrimaryTrustee?.trustMembers?.forEach(async(mem, index) =>  {
             const memberData = await memberDatas(mem);
             array.push(memberData);
-            if ((index+1) == trust?.addTrust?.appointPrimaryTrustee?.trustMembers.length ) {
+            if ((index+1) == trust?.addTrust?.appointPrimaryTrustee?.trustMembers?.length ) {
               res(array);
               return;
             }
@@ -182,7 +182,7 @@ async function memberDatas(id){
         }
         replacementTrustee.members = await new Promise((res, rej) => {
           const array1 = [];
-          if (!trust?.addTrust?.appointReplacementTrustee?.trustMembers.length) {
+          if (!trust?.addTrust?.appointReplacementTrustee?.trustMembers?.length) {
             res(array1);
             return;
           }
