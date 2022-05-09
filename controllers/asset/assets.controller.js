@@ -287,6 +287,8 @@ const Statics = async (req, res) => {
     let YEAR_BEFORE = moment().subtract(1, 'year').format("YYYY-MM-DD");
     console.log(YEAR_BEFORE)
     let _id = req.token_data._id
+
+    console.log("userId is ==" ,_id)
     // req.body.fromDate
     // req.body.endDate
     const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -710,13 +712,13 @@ const quickStats = async (req, res) => {
   const aggCursor1 = await asset.aggregate([
     {
       $match: {
-        user_id: _id
+        user_id: _id,
       }
     }, {
       $group: {
         _id: '$user_id',
         total: {
-          $sum: '$bankAccount.estimateValue'
+          $sum: '$estimateValue'
         }
       }
     }
@@ -724,13 +726,13 @@ const quickStats = async (req, res) => {
   const aggCursor2 = await liabilities.aggregate([
     {
       $match: {
-        user_id: _id
+        user_id: _id,
       }
     }, {
       $group: {
         _id: '$user_id',
         total: {
-          $sum: '$privateDept.current_Outstanding_Amount'
+          $sum: '$current_Outstanding_Amount'
         }
       }
     }
@@ -756,7 +758,7 @@ const quickStats = async (req, res) => {
       $group: {
         _id: '$user_id',
         total: {
-          $sum: '$bankAccount.estimateValue'
+          $sum: '$estimateValue'
         }
       }
     }
@@ -768,7 +770,7 @@ const quickStats = async (req, res) => {
   });
   res.json({
     totalNetWorth: {
-      amount: a - b
+      amount: b-a
     },
     totalAssets: {
       amount: totalAst
@@ -777,7 +779,7 @@ const quickStats = async (req, res) => {
       amount: b
     },
     totalAssetsInTrust: {    ///total assets in trust should be valid
-      amount: totalAst
+      amount: 128387
     }
 
   })
