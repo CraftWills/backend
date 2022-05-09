@@ -290,47 +290,47 @@ const Statics = async (req, res) => {
     // req.body.fromDate
     // req.body.endDate
     const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    let sampledata = await asset.aggregate([{
-      $match: {
-        "user_id": _id,
-        isoDate: {
-          $gte: startOfYear,
-          $lt: startOfToday
-        }
-      }
-    },
-    {
-      $group: {
-        _id: { "year_month": { $substrCP: ["$isoDate", 0, 7] } },
-        count: { $sum: 1 },
-        total: {
-          $sum: "$bankAccount.estimateValue"
-        }
-      }
+    // let sampledata = await asset.aggregate([{
+    //   $match: {
+    //     "user_id": _id,
+    //     isoDate: {
+    //       $gte: startOfYear,
+    //       $lt: startOfToday
+    //     }
+    //   }
+    // },
+    // {
+    //   $group: {
+    //     _id: { "year_month": { $substrCP: ["$isoDate", 0, 7] } },
+    //     count: { $sum: 1 },
+    //     total: {
+    //       $sum: "$bankAccount.estimateValue"
+    //     }
+    //   }
 
-    },
+    // },
 
-    {
-      $sort: { "_id.year_month": 1 }
-    },
-    {
-      $project: {
-        _id: 0,
-        count: 1,
-        total: 1,
-        month_year: {
-          $concat: [
-            { $arrayElemAt: [monthsArray, { $subtract: [{ $toInt: { $substrCP: ["$_id.year_month", 5, 2] } }, 1] }] },
-            "-",
-            { $substrCP: ["$_id.year_month", 0, 4] }
-          ]
-        }
-      }
-    },
+    // {
+    //   $sort: { "_id.year_month": 1 }
+    // },
+    // {
+    //   $project: {
+    //     _id: 0,
+    //     count: 1,
+    //     total: 1,
+    //     month_year: {
+    //       $concat: [
+    //         { $arrayElemAt: [monthsArray, { $subtract: [{ $toInt: { $substrCP: ["$_id.year_month", 5, 2] } }, 1] }] },
+    //         "-",
+    //         { $substrCP: ["$_id.year_month", 0, 4] }
+    //       ]
+    //     }
+    //   }
+    // },
 
-    ]);
+    // ]);
 
-    console.log("The SampleData is : ", sampledata)
+    // console.log("The SampleData is : ", sampledata)
 
 
 
@@ -444,15 +444,15 @@ const Statics = async (req, res) => {
     },
     ]);
 
-    console.log("Dataaa", JSON.stringify(data))
+    // console.log("Dataaa", JSON.stringify(data))
 
-    let first = data[0].data.map((item) => ({ ...item, count: 0 }));
-    let second = first.map((item) => ({ ...item, count: data[0].dataTwo.find(el => el?.k === item?.k)?.count || 0 }))
+    let first = data[0]?.data?.map((item) => ({ ...item, count: 0 }));
+    let second = first?.map((item) => ({ ...item, count: data[0]?.dataTwo?.find(el => el?.k === item?.k)?.count || 0 }))
     console.log(second)
 
 
 
-    let arr3 = data[0].data.map((item, i) => Object.assign({}, item, data[0].dataTwo[i]));
+    let arr3 = data[0]?.data?.map((item, i) => Object.assign({}, item, data[0]?.dataTwo[i]));
 
 
     // const groupedByMonth = _.groupBy(merged, 'k');
@@ -462,6 +462,7 @@ const Statics = async (req, res) => {
 
     let data2 = await liabilities.aggregate([{
       $match: {
+        "user_id": req.token_data._id,
         isoDate: {
           $gte: startOfYear,
           $lt: startOfToday
@@ -571,8 +572,9 @@ const Statics = async (req, res) => {
     //   }
     }
     ]);
-    let First = data2[0].data2.map((item1) => ({ ...item1, count: 0 }));
-    let Second = First.map((item1) => ({ ...item1, count: data2[0].dataThree.find(el1 => el1?.k === item1?.k)?.count || 0 }))
+    let First = data2[0]?.data2?.map((item1) => ({ ...item1, count: 0 }));
+    console.log("this is first =>",First)
+    let Second = First?.map((item1) => ({ ...item1, count: data2[0]?.dataThree?.find(el1 => el1?.k === item1?.k)?.count || 0 }))
     console.log(Second)
 
 
