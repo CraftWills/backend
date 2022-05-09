@@ -292,57 +292,15 @@ const Statics = async (req, res) => {
     // req.body.fromDate
     // req.body.endDate
     const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    // let sampledata = await asset.aggregate([{
-    //   $match: {
-    //     "user_id": _id,
-    //     isoDate: {
-    //       $gte: startOfYear,
-    //       $lt: startOfToday
-    //     }
-    //   }
-    // },
-    // {
-    //   $group: {
-    //     _id: { "year_month": { $substrCP: ["$isoDate", 0, 7] } },
-    //     count: { $sum: 1 },
-    //     total: {
-    //       $sum: "$bankAccount.estimateValue"
-    //     }
-    //   }
-
-    // },
-
-    // {
-    //   $sort: { "_id.year_month": 1 }
-    // },
-    // {
-    //   $project: {
-    //     _id: 0,
-    //     count: 1,
-    //     total: 1,
-    //     month_year: {
-    //       $concat: [
-    //         { $arrayElemAt: [monthsArray, { $subtract: [{ $toInt: { $substrCP: ["$_id.year_month", 5, 2] } }, 1] }] },
-    //         "-",
-    //         { $substrCP: ["$_id.year_month", 0, 4] }
-    //       ]
-    //     }
-    //   }
-    // },
-
-    // ]);
-
-    // console.log("The SampleData is : ", sampledata)
-
-
-
+   
     // /////////////////////////
+  
     let data = await asset.aggregate([{
       $match: {
-        "user_id": _id,
+        user_id : _id,
         isoDate: {
           $gte: startOfYear,
-          $lt: startOfToday
+          $lte: startOfToday 
         }
       }
     },
@@ -445,12 +403,12 @@ const Statics = async (req, res) => {
       }
     },
     ]);
-
+    console.log("data hai   ",data)
     // console.log("Dataaa", JSON.stringify(data))
 
     let first = data[0]?.data?.map((item) => ({ ...item, count: 0 }));
     let second = first?.map((item) => ({ ...item, count: data[0]?.dataTwo?.find(el => el?.k === item?.k)?.count || 0 }))
-    console.log(second)
+    console.log("sahi h", second)
 
 
 
@@ -466,10 +424,10 @@ const Statics = async (req, res) => {
       $match: {
         "user_id": req.token_data._id,
         isoDate: {
-          $gte: startOfYear,
-          $lt: startOfToday
+          $gte: '2021-01-01',
+          $lt: '2022-10-10'
         }
-      }
+      } 
     },
     {
       $group: {
@@ -575,16 +533,8 @@ const Statics = async (req, res) => {
     }
     ]);
     let First = data2[0]?.data2?.map((item1) => ({ ...item1, count: 0 }));
-    console.log("this is first =>",First)
-    let Second = First?.map((item1) => ({ ...item1, count: data2[0]?.dataThree?.find(el1 => el1?.k === item1?.k)?.count || 0 }))
-    console.log(Second)
-
-
-
-
-
-
-
+    let Second = First?.map((item1) => ({ ...item1, count: data2[0]?.dataThree?.find(el1 => el1?.k === item1?.k)?.c || 0 }))
+    
 
     let finalResult;
     if (data.length > 0) {
