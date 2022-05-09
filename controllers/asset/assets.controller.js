@@ -729,7 +729,7 @@ const quickStats = async (req, res) => {
       amount: b
     },
     totalAssetsInTrust: {    ///total assets in trust should be valid
-      amount: 128387
+      amount: a
     }
 
   })
