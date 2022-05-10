@@ -369,7 +369,7 @@ ${trust.map((el) => {
     <p
       class=""
     >
-      100% to my son,${trust[0]?.primaryTrustee?.members[0].name}  (${trust[0]?.primaryTrustee?.members[0].id_type} No. ${trust[0]?.primaryTrustee?.members[0].id_number}).
+      100% to my ${trust[0]?.primaryTrustee?.members[0]?.Relationship},${trust[0]?.primaryTrustee?.members[0]?.name}  (${trust[0]?.primaryTrustee?.members[0]?.id_type} No. ${trust[0]?.primaryTrustee?.members[0]?.id_number}).
     </p>
     
     <p
@@ -957,8 +957,8 @@ interest to any person(s) not named herein.</td>
 var document = {
     html: html,
     path: "./output.pdf",
-    type: "",
-    // type: 'buffer',
+    // type: "",
+    type: 'buffer',
     data: {}
   };
 
