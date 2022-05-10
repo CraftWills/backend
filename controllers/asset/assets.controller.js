@@ -715,16 +715,15 @@ const aggcursor3 = await will.aggregate([
     }
     ])
   
-  
 
 
 
   var a = 0;
   var b = 0;
   var c = 0;
-  let N = aggcursor3.map(el=>el?.trust?.assets?.assetData)
+  let N = aggcursor3.map(el=>el?.trust?.assets?.estimatedValueOfShare)
   N.forEach((el)=>{
-      c++
+      c+=el
   })
   aggCursor1.forEach(function (item, index) {
     const agg1 = item.total;
