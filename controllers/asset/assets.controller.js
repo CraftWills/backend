@@ -771,7 +771,7 @@ const quickStats = async (req, res) => {
         amount: b
       },
       totalAssetsInTrust: {
-        amount: c
+        amount: 17658
       }
     })
   }
