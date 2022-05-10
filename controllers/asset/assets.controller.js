@@ -749,10 +749,13 @@ const quickStats = async (req, res) => {
 
       totalAst += item.total
     });
+  
     let N = aggcursor3.map(el => el?.trust?.assets?.estimatedValueOfShare)
     N.forEach((el) => {
       c += el
     })
+
+    let astInTrust  = c
     res.json({
       totalNetWorth: {
         amount: b - a
@@ -764,7 +767,7 @@ const quickStats = async (req, res) => {
         amount: b
       },
       totalAssetsInTrust: {
-        amount: c
+        amount: astInTrust
       }
 
     })
