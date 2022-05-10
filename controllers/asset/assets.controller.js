@@ -636,6 +636,7 @@ const deleteAssetById = async (req, res) => {
     res.send(err.message)
   }
 }
+/////
 
 const countLiquidAndiliquid = async (req, res) => {
   var liquid = 0;
