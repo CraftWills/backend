@@ -658,6 +658,8 @@ const countLiquidAndiliquid = async (req, res) => {
 }
 
 const quickStats = async (req, res) => {
+
+  try{
   const _id = req.token_data._id
   const aggCursor1 = await asset.aggregate([
     {
@@ -688,8 +690,41 @@ const quickStats = async (req, res) => {
     }
   ])
 
+
+const aggcursor3 = await will.aggregate([
+    {
+        $match : {
+            user_id : _id
+        },
+    },
+    {
+        $project : {
+            trust : "$trust"
+        }
+    },
+    {
+        $unwind : {
+            path : "$trust"
+        }
+    },
+    {
+        $unwind : {
+            path : "$trust.assets"
+        }
+    }
+    ])
+  
+  
+
+
+
   var a = 0;
   var b = 0;
+  var c = 0;
+  let N = aggcursor3.map(el=>el?.trust?.assets?.assetData)
+  N.forEach((el)=>{
+      c++
+  })
   aggCursor1.forEach(function (item, index) {
     const agg1 = item.total;
     a += agg1;
@@ -698,7 +733,6 @@ const quickStats = async (req, res) => {
     const agg2 = item.total;
     b += agg2;
   })
-  console.log(a - b)
   const totalAssets = await asset.aggregate([
     {
       $match: {
@@ -715,7 +749,7 @@ const quickStats = async (req, res) => {
   ]);
   var totalAst = 0
   totalAssets.forEach(function (item, index) {
-    console.log(item.total)
+
     totalAst += item.total
   });
   res.json({
@@ -729,12 +763,15 @@ const quickStats = async (req, res) => {
       amount: b
     },
     totalAssetsInTrust: {    ///total assets in trust should be valid
-      amount: a
+      amount: c
     }
 
   })
 }
-
+catch(err){
+  return err.message
+}
+}
 
 
 const averageDistributionRate = async (req, res) => {

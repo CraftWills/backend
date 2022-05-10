@@ -22,7 +22,6 @@ const createMember = async (req, res) => {
                 postalCode: req.body.memberAsPerson?.postalCode,
                 citizenship: req.body.memberAsPerson?.citizenship,
                 dob: req.body.memberAsPerson?.dob
-                
             },
             memberAsOrganisation: {
                 organisationName: req.body.memberAsOrganisation?.organisationName,
@@ -144,9 +143,9 @@ try {
         error : true,
         success : false,
         message : err.message
-    })
-}
-  };
+     })
+    }
+};
 
 const deleteMembers = async (req,res)=>{
     try {
@@ -193,8 +192,8 @@ const getMemberById = async(req,res)=>{
     try{
         const data = await members.findById(req.params.id)
         res.send(data)
-
     }
+
     catch(err){
         res.send(err.message)
     }
