@@ -763,7 +763,7 @@ const aggcursor3 = await will.aggregate([
       amount: b
     },
     totalAssetsInTrust: {    
-      amount: c
+      amount: String(c)
     }
 
   })
