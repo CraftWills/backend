@@ -749,11 +749,17 @@ const quickStats = async (req, res) => {
 
       totalAst += item.total
     });
-  
-    let N = aggcursor3.map(el => el?.trust?.assets?.estimatedValueOfShare).reduce((prev, curr) => prev + curr, 0);
-    console.log("N", N)
-    let astInTrust  = JSON.parse(JSON.stringify(N))
-    console.log("count is => ", astInTrust)
+
+
+    aggcursor3.forEach((el)=>{
+        c+=el?.trust?.assets?.estimatedValueOfShare
+    })  
+    
+ 
+    // let N = aggcursor3.map(el => el?.trust?.assets?.estimatedValueOfShare).reduce((prev, curr) => prev + curr, 0);
+    // console.log("N", N)
+    // let astInTrust  = JSON.parse(JSON.stringify(N))
+    // console.log("count is => ", astInTrust)
     res.json({
       totalNetWorth: {
         amount: b - a
@@ -765,7 +771,7 @@ const quickStats = async (req, res) => {
         amount: b
       },
       totalAssetsInTrust: {
-        amount: 17658
+        amount: c
       }
     })
   }
