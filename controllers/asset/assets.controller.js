@@ -81,7 +81,7 @@ const storeAssets = async (req, res) => {
       }
 
     })
-    if (Asset.type === "bankAccount" ||Asset.type === "investmentAccount" ||Asset.type === "insurancePolicy" ) {
+    if (Asset.type === "bankAccount" || Asset.type === "investmentAccount" || Asset.type === "insurancePolicy") {
       Asset.assetType = "liquid"
     }
     if (Asset.type === "personalPossession" || Asset.type === "realEstate" || Asset.type === "motorVehicle" || Asset.type === "safeDepositBox" || Asset.type === "business" || Asset.type === "intellectualProperty") {
@@ -288,19 +288,19 @@ const Statics = async (req, res) => {
     console.log(YEAR_BEFORE)
     let _id = req.token_data._id
 
-    console.log("userId is ==" ,_id)
+    console.log("userId is ==", _id)
     // req.body.fromDate
     // req.body.endDate
     const monthsArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-   
+
     // /////////////////////////
-  
+
     let data = await asset.aggregate([{
       $match: {
-        user_id : _id,
+        user_id: _id,
         isoDate: {
           $gte: startOfYear,
-          $lte: startOfToday 
+          $lte: startOfToday
         }
       }
     },
@@ -403,7 +403,7 @@ const Statics = async (req, res) => {
       }
     },
     ]);
-    console.log("data hai   ",data)
+    console.log("data hai   ", data)
     // console.log("Dataaa", JSON.stringify(data))
 
     let first = data[0]?.data?.map((item) => ({ ...item, count: 0 }));
@@ -427,7 +427,7 @@ const Statics = async (req, res) => {
           $gte: '2021-01-01',
           $lt: '2022-10-10'
         }
-      } 
+      }
     },
     {
       $group: {
@@ -525,16 +525,16 @@ const Statics = async (req, res) => {
         },
         dataThree: "$data2"
       }
-    // {
-    //   $project: {
-    //     data: { $arrayToObject: "$data2" },
-    //     _id: 0
-    //   }
+      // {
+      //   $project: {
+      //     data: { $arrayToObject: "$data2" },
+      //     _id: 0
+      //   }
     }
     ]);
     let First = data2[0]?.data2?.map((item1) => ({ ...item1, count: 0 }));
     let Second = First?.map((item1) => ({ ...item1, count: data2[0]?.dataThree?.find(el1 => el1?.k === item1?.k)?.c || 0 }))
-    
+
 
     let finalResult;
     if (data.length > 0) {
@@ -660,117 +660,118 @@ const countLiquidAndiliquid = async (req, res) => {
 
 const quickStats = async (req, res) => {
 
-  try{
-  const _id = req.token_data._id
-  const aggCursor1 = await asset.aggregate([
-    {
-      $match: {
-        user_id: _id,
-      }
-    }, {
-      $group: {
-        _id: '$user_id',
-        total: {
-          $sum: '$estimateValue'
+  try {
+    const _id = req.token_data._id
+    const aggCursor1 = await asset.aggregate([
+      {
+        $match: {
+          user_id: _id,
+        }
+      }, {
+        $group: {
+          _id: '$user_id',
+          total: {
+            $sum: '$estimateValue'
+          }
         }
       }
-    }
-  ])
-  const aggCursor2 = await liabilities.aggregate([
-    {
-      $match: {
-        user_id: _id,
-      }
-    }, {
-      $group: {
-        _id: '$user_id',
-        total: {
-          $sum: '$current_Outstanding_Amount'
-        }
-      }
-    }
-  ])
-
-
-const aggcursor3 = await will.aggregate([
-    {
-        $match : {
-            user_id : _id
-        },
-    },
-    {
-        $project : {
-            trust : "$trust"
-        }
-    },
-    {
-        $unwind : {
-            path : "$trust"
-        }
-    },
-    {
-        $unwind : {
-            path : "$trust.assets"
-        }
-    }
     ])
-  
-
-
-
-  var a = 0;
-  var b = 0;
-  var c = 0;
-  let N = aggcursor3.map(el=>el?.trust?.assets?.estimatedValueOfShare)
-  N.forEach((el)=>{
-      c+=el
-  })
-  aggCursor1.forEach(function (item, index) {
-    const agg1 = item.total;
-    a += agg1;
-  });
-  aggCursor2.forEach(function (item, index) {
-    const agg2 = item.total;
-    b += agg2;
-  })
-  const totalAssets = await asset.aggregate([
-    {
-      $match: {
-        user_id: _id
-      }
-    }, {
-      $group: {
-        _id: '$user_id',
-        total: {
-          $sum: '$estimateValue'
+    const aggCursor2 = await liabilities.aggregate([
+      {
+        $match: {
+          user_id: _id,
+        }
+      }, {
+        $group: {
+          _id: '$user_id',
+          total: {
+            $sum: '$current_Outstanding_Amount'
+          }
         }
       }
-    }
-  ]);
-  var totalAst = 0
-  totalAssets.forEach(function (item, index) {
+    ])
 
-    totalAst += item.total
-  });
-  res.json({
-    totalNetWorth: {
-      amount: b-a
-    },
-    totalAssets: {
-      amount: totalAst
-    },
-    totalLiabilities: {
-      amount: b
-    },
-    totalAssetsInTrust: {    
-      amount: c
-    }
 
-  })
-}
-catch(err){
-  return err.message
-}
+    const aggcursor3 = await will.aggregate([
+      {
+        $match: {
+          user_id: _id
+        },
+      },
+      {
+        $project: {
+          trust: "$trust"
+        }
+      },
+      {
+        $unwind: {
+          path: "$trust"
+        }
+      },
+      {
+        $unwind: {
+          path: "$trust.assets"
+        }
+      }
+    ])
+
+
+
+
+    var a = 0;
+    var b = 0;
+    var c = 0;
+
+    aggCursor1.forEach(function (item, index) {
+      const agg1 = item.total;
+      a += agg1;
+    });
+    aggCursor2.forEach(function (item, index) {
+      const agg2 = item.total;
+      b += agg2;
+    })
+    const totalAssets = await asset.aggregate([
+      {
+        $match: {
+          user_id: _id
+        }
+      }, {
+        $group: {
+          _id: '$user_id',
+          total: {
+            $sum: '$estimateValue'
+          }
+        }
+      }
+    ]);
+    var totalAst = 0
+    totalAssets.forEach(function (item, index) {
+
+      totalAst += item.total
+    });
+    let N = aggcursor3.map(el => el?.trust?.assets?.estimatedValueOfShare)
+    N.forEach((el) => {
+      c += el
+    })
+    res.json({
+      totalNetWorth: {
+        amount: b - a
+      },
+      totalAssets: {
+        amount: totalAst
+      },
+      totalLiabilities: {
+        amount: b
+      },
+      totalAssetsInTrust: {
+        amount: c
+      }
+
+    })
+  }
+  catch (err) {
+    return err.message
+  }
 }
 
 
@@ -781,52 +782,52 @@ const averageDistributionRate = async (req, res) => {
     const assets = await will.aggregate([
       {
         $match: {
-            "user_id": _id
+          "user_id": _id
         }
-    },
-    {
+      },
+      {
         $unwind: {
-            path: '$assets'
+          path: '$assets'
         }
-    },
-    {
+      },
+      {
         $unwind: {
-            path: '$assets.membersData'
+          path: '$assets.membersData'
         }
-    },
-    {
+      },
+      {
         $lookup: {
-            from: "members",
-            localField: "assets.membersData.member",
-            foreignField: "_id",
-            as: "memberData"
+          from: "members",
+          localField: "assets.membersData.member",
+          foreignField: "_id",
+          as: "memberData"
         }
-    },
-    {
+      },
+      {
         $project: {
-            assets: 1,
-            memberData: 1
+          assets: 1,
+          memberData: 1
         }
-    },
-    {
+      },
+      {
         $unwind: {
-            path: "$memberData"
+          path: "$memberData"
         }
-    },
-    {
+      },
+      {
         $project: {
-            memberName: "$memberData.memberAsPerson.fullname",
-            member: "$assets.membersData.member",
-            asset: "$assets.assetData",
-            share: "$assets.membersData.specify_Shares"
+          memberName: "$memberData.memberAsPerson.fullname",
+          member: "$assets.membersData.member",
+          asset: "$assets.assetData",
+          share: "$assets.membersData.specify_Shares"
         }
-    }
-  ])
-//  console.log(assetsTwo)
-  const assetIds = assets.map(asset => asset.asset);
+      }
+    ])
+    //  console.log(assetsTwo)
+    const assetIds = assets.map(asset => asset.asset);
     let totalAssets = [...new Set(assetIds)].length;
-    console.log("TotalAssets : ",totalAssets)
-    let grouped =  _.groupBy(assets, 'member');
+    console.log("TotalAssets : ", totalAssets)
+    let grouped = _.groupBy(assets, 'member');
     grouped = Object.keys(grouped).map(member => {
       console.log(member, grouped[member]);
       return {
@@ -834,20 +835,20 @@ const averageDistributionRate = async (req, res) => {
         memberName: assets.find(asset => asset?.member == member)?.memberName,
         assetCount: grouped[member].length
       }
-  })
+    })
 
-  grouped = grouped.map(member => {
+    grouped = grouped.map(member => {
       return {
         ...member,
         share: Number(((member?.assetCount / totalAssets) * 100).toFixed(2))
       }
     })
     res.json({
-      success : true,
-      error : false,
-      data : grouped
+      success: true,
+      error: false,
+      data: grouped
     })
-  
+
   }
 
   catch (err) {
