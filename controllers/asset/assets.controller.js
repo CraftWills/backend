@@ -717,7 +717,7 @@ const quickStats = async (req, res) => {
 
 
 
-
+  console.log("cursor 3 : ",aggcursor3)
     var a = 0;
     var b = 0;
     var c = 0;
@@ -754,8 +754,9 @@ const quickStats = async (req, res) => {
     N.forEach((el) => {
       c += el
     })
-
+    
     let astInTrust  = c
+    console.log("count is => ", astInTrust)
     res.json({
       totalNetWorth: {
         amount: b - a
@@ -769,7 +770,6 @@ const quickStats = async (req, res) => {
       totalAssetsInTrust: {
         amount: astInTrust
       }
-
     })
   }
   catch (err) {
