@@ -762,7 +762,7 @@ const aggcursor3 = await will.aggregate([
     totalLiabilities: {
       amount: b
     },
-    totalAssetsInTrust: {    ///total assets in trust should be valid
+    totalAssetsInTrust: {    
       amount: c
     }
 
