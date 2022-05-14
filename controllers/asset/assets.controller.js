@@ -62,11 +62,13 @@ const storeAssets = async (req, res) => {
       },
       motorVehicle: {
         CarModel: req.body.motorVehicle?.CarModel,
-        plateNo: req.body.motorVehicle?.plateNo
+        plateNo: req.body.motorVehicle?.plateNo,
+        description : req.body.motorVehicle?.description
       },
       otherAssets: {
         asset_name: req.body.otherAssets?.asset_name,
-        id_No: req.body.otherAssets?.id_No
+        id_No: req.body.otherAssets?.id_No,
+        description : req.body.otherAssets?.description
       },
       personalPossession: {
         Name: req.body.personalPossession?.Name,
@@ -157,11 +159,13 @@ const updateAssets = async (req, res) => {
       },
       motorVehicle: {
         CarModel: req.body.motorVehicle?.CarModel,
-        plateNo: req.body.motorVehicle?.plateNo
+        plateNo: req.body.motorVehicle?.plateNo,
+        description : req.body.motorVehicle?.description
       },
       otherAssets: {
         asset_name: req.body.otherAssets?.asset_name,
-        id_No: req.body.otherAssets?.id_No
+        id_No: req.body.otherAssets?.id_No,
+        description : req.body.otherAssets?.description
       },
       personalPossession: {
         Name: req.body.personalPossession?.Name,

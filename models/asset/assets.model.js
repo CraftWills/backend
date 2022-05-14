@@ -87,6 +87,9 @@ const AssetsSchema = new mongoose.Schema({
         plateNo : {
             type : String,
         },
+        description : {
+            type : String
+        }
     
     },
     otherAssets : {
@@ -100,6 +103,9 @@ const AssetsSchema = new mongoose.Schema({
             unique : true,
             sparse : true
         },
+        description : {
+            type : String
+        }
 
     },
     personalPossession : {
