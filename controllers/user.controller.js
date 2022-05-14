@@ -69,6 +69,8 @@ else{
 
 
 //TO DO
+
+/// Cors error
 exports.verifyEmail = async (req)=>{
   try {
     const _id = req.body.id;
