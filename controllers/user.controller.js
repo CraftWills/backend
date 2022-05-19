@@ -70,7 +70,9 @@ else{
 
 //TO DO
 
-/// Cors error
+/// Cors error in verify email
+
+
 exports.verifyEmail = async (req)=>{
   try {
     const _id = req.body.id;
@@ -170,8 +172,17 @@ exports.loginUser = async (req, res) => {
     message: "login user successfully",
     data: userData,
     token,
-  }};
+  }}
+  else{
+    return {
+      error: true,
+      success: false,
+      message: "User is not verified"
+    
+    }
+  }
 };
+
 
 
 // // Update 
