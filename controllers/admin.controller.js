@@ -5,6 +5,11 @@ const {myFunction} = require ("../nodemailer/nodemailer");
 require("dotenv").config();
 const admin = require ("../models/admin.model");
 const usersDataAccess = require("../dal/user.dal")
+const User = require("../models/user.model")
+/// create Admin
+
+
+
 
 exports.createAdmin = async(req,res)=>{
     adminData = {
@@ -304,7 +309,7 @@ exports.updateAdmin = async(req,res)=>{
     return( {
       error: false,
       success: true,
-      message: "admin updated  successfully",
+      message: "admin updated successfully",
       data: updateData,
     });
 
@@ -399,4 +404,26 @@ lastName : users.lastName}
       message : err.message
     };
   }
+};
+
+
+exports.inviteUser = async (req,res)=>{
+  try{
+    const dta = await User.find({fullName : req.body.fullName,email : req.body.email, isVerified : true}); 
+    if (dta){
+      return {
+        success: false,
+        error : true,
+        message : "Already added"
+      }
+    }
+
+  }
+  catch(err){
+    return {
+      success : false,
+      error : true,
+      message : err.message
+    }
+  }   
 };
