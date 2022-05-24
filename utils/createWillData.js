@@ -104,6 +104,7 @@ async function memberDatas(id){
          name : data?.memberAsPerson?.fullname,
          id_type: data?.memberAsPerson?.id_type,
          id_number : data?.memberAsPerson?.id_number,
+         Relationship : data?.memberAsPerson?.Relationship,
          address : {
            streetName : data?.memberAsPerson?.streetName,
            floorNumber : data?.memberAsPerson?.floorNumber,
@@ -118,6 +119,7 @@ async function memberDatas(id){
       member = {
         name  : data?.memberAsOrganisation?.organisationName ,
         id_number : data?.memberAsOrganisation?.registration_number,
+        Relationship : data?.memberAsOrganisation?.Relationship,
         address : {
           streetName : data?.memberAsOrganisation?.streetName,
           floorNumber : data?.memberAsOrganisation?.floorNumber,

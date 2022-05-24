@@ -77,6 +77,11 @@ router.put("/updatePassword", authenticateToken, async (req, res) => {
     const result = await adminController.updatePassword(req);
     return res.send(result);
   });
+router.get("/inviteUser",async(req,res)=>{
+  const result = await adminController.inviteUser(req);
+  return res.send(result);
+})
+
 module.exports = router;
 
 

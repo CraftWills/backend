@@ -343,8 +343,8 @@ exports.generatePdf = async(req,res)=>{
 </tr>
 ${trust.map((el) => {
   return `<tr>
-            <td  class="para para-style">  ${el?.primaryTrustee?.members?.name} (${el?.primaryTrustee?.type} No. ${el?.primaryTrustee?.members?.id_number}), of ${el?.primaryTrustee?.members?.address?.streetName},${el?.primaryTrustee?.members?.address?.floorNumber} ${el?.primaryTrustee?.members?.address?.country}
-               ${el?.primaryTrustee?.members?.address?.postalCode}, ${el?.primaryTrustee?.members?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${el?.primaryTrustee?.members?.name}”).</td>
+            <td  class="para para-style">  ${el?.primaryTrustee?.members[0]?.name} (${el?.primaryTrustee?.type} No. ${el?.primaryTrustee?.members[0]?.id_number}), of ${el?.primaryTrustee?.members[0]?.address?.streetName},${el?.primaryTrustee?.members[0]?.address?.floorNumber} ${el?.primaryTrustee?.members[0]?.address?.country}
+               ${el?.primaryTrustee?.members[0]?.address?.postalCode}, ${el?.primaryTrustee?.members[0]?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${el?.primaryTrustee?.members[0]?.name}”).</td>
           </tr>`
 }).join(',')}
 
@@ -357,7 +357,7 @@ ${trust.map((el) => {
   text-align: justify;
 " > <p>
 
-    I GIVE my immovable property known as ${trust[0]?.trustDetails?.trustName}, ${trust[0]?.primaryTrustee?.members?.address?.country} 
+    I GIVE my immovable property known as ${trust[0]?.trustDetails?.trustName}, ${trust[0]?.primaryTrustee?.members[0]?.address?.country} 
     ("${trust[0]?.trustDetails?.description}") to my Trustee/s to
     hold UPON Trust (the “${trust[0]?.trustDetails?.trustName}”) for the
     following Trust beneficiary/ies in the following proportion/s:</td>
@@ -369,7 +369,7 @@ ${trust.map((el) => {
     <p
       class=""
     >
-      100% to my son, TIMOTHY TSANG (NRIC No. S9714999B).
+      100% to my ${trust[0]?.primaryTrustee?.members[0]?.Relationship},${trust[0]?.primaryTrustee?.members[0]?.name}  (${trust[0]?.primaryTrustee?.members[0]?.id_type} No. ${trust[0]?.primaryTrustee?.members[0]?.id_number}).
     </p>
     
     <p
@@ -790,10 +790,10 @@ interest to any person(s) not named herein.</td>
                 estate.</td>
           </tr>
         
-        ${guardian || ''}<br
-        ${Trust || ''} <br>
-        ${residualEstate || ''} <br>
-        ${ending || ''}
+        ${guardian}<br
+        ${Trust} <br>
+        ${residualEstate} <br><br><br><br>
+        ${ending}
 
           
         
@@ -928,7 +928,7 @@ interest to any person(s) not named herein.</td>
               <table style='width: 100%; margin: 0; padding: 0;'>
                   <tr>
                     <td align='left' vAlign='top'>
-                      <div class="" style="padding: 0;"> THE LAST WILL AND TESTEMENT OF <br> <span style="font-size: 15px;margin-top: 3px;">TIMOTHY TSANG WEI SHAN</span></div>
+                      <div class="" style="padding: 0;"> THE LAST WILL AND TESTEMENT OF <br> <span style="font-size: 15px;margin-top: 3px;">${willData?.user?.fullname}</span></div>
                     </td>
                     <td align='right' vAlign='center'>
                       <img src="${image}" style="width: 140px;">
@@ -964,8 +964,8 @@ var document = {
 
   return pdf.create(document , options).then(async res =>{
     console.log('...',res)
-    // return  (willData)
-    return  (res)
+    return  (willData)
+    // return  (res)
   }).catch(error =>{
       console.log("Error creating pdf",error)
       return reject(error);

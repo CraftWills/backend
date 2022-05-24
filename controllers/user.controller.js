@@ -46,7 +46,12 @@ exports.createUser = async (req) => {
       subject: "Your Password verify Link",
       text: `https://craftwill.vercel.app/verifyEmail/${storedUser._id}`
   };
+  if (otpSend){
+    data.isVerified = true
+  }
+
 myFunction(otpSend);
+
 return {
     error: false,
     success: true,
@@ -64,27 +69,33 @@ else{
 
 
 //TO DO
+
+/// Cors error in verify email
+
+
 exports.verifyEmail = async (req)=>{
   try {
     const _id = req.body.id;
-    let updateData = {
-      _id,
-      toUpdate: {
-        isVerified : true
-      } 
-     }
-     const token = generateAccessToken({ _id: _id });
-     
-    const data = await usersDataAccess.updateUser(updateData)
-    return {
-      success : true,
-      error : false,
-      data : data,
-      token : token
+    let userdata = await User.findByIdAndUpdate(_id, {$set : {
+      isVerified : true
+    }},{new : true})
+    console.log(userdata)
+    const token = generateAccessToken({ _id: _id });
+    if (userdata){
+      return {
+        success : true,
+        error : false,
+        data : userdata,
+        token : token
+      }
     }
   }
   catch(err){
-    return err.message
+    return {
+      success : false,
+      error : true,
+      message : err.message
+    }
 }}
 //  exports.createUserByLink = async (req) => {
   //   if (!password || !email || !first_name || !last_name) {
@@ -129,6 +140,8 @@ exports.loginUser = async (req, res) => {
   const userData = await usersDataAccess.findUserByUsername({
     email: req.body.email.toLowerCase(),
   });
+
+
   if (!userData) {
     return {
       message : "Email not found in the database",
@@ -145,14 +158,24 @@ exports.loginUser = async (req, res) => {
     // new ExpressError(403, "Invalid password");
   }
   const token = generateAccessToken({ _id: userData._id });
+  if (userData.isVerified===true){
   return {
     error: false,
     success: true,
     message: "login user successfully",
     data: userData,
     token,
-  };
+  }}
+  else{
+    return {
+      error: true,
+      success: false,
+      message: "User is not verified"
+    
+    }
+  }
 };
+
 
 
 // // Update 
