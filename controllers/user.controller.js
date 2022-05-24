@@ -76,7 +76,7 @@ else{
 exports.verifyEmail = async (req)=>{
   try {
     const _id = req.body.id;
-    let userdata = User.findByIdAndUpdate(_id, {$set : {
+    let userdata = await User.findByIdAndUpdate(_id, {$set : {
       isVerified : true
     }},{new : true})
     console.log(userdata)
@@ -88,25 +88,13 @@ exports.verifyEmail = async (req)=>{
         data : userdata,
         token : token
       }
-
     }
-
-    // let updateData = {
-    //   _id,
-    //   toUpdate: {
-    //     isVerified : true
-    //   } 
-    //  }
-     
-    // const data = await usersDataAccess.updateUser(updateData)
-
   }
   catch(err){
     return {
       success : false,
       error : true,
       message : err.message
-
     }
 }}
 //  exports.createUserByLink = async (req) => {
