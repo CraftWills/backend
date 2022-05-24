@@ -165,7 +165,7 @@ exports.loginUser = async (req, res) => {
     // new ExpressError(403, "Invalid password");
   }
   const token = generateAccessToken({ _id: userData._id });
-  if (userData.isVerified){
+  if (userData.isVerified===true){
   return {
     error: false,
     success: true,
