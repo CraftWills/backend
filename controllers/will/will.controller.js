@@ -321,7 +321,7 @@ exports.generatePdf = async(req,res)=>{
           </tr>
     `
 
-    const guardian = `
+    const guardian = executors?.guardianExecutor ? `
     <tr>
     <td class="sub-heading  heading-style">GUARDIAN</td>
   </tr>
@@ -330,8 +330,8 @@ exports.generatePdf = async(req,res)=>{
         survive me, I APPOINT ${executors?.guardianExecutor?.name} (${executors?.guardianExecutor?.id_type} No. ${executors?.guardianExecutor?.id_number}), of ${executors?.guardianExecutor?.address?.unitNumber}  ${executors?.guardianExecutor?.address?.streetName}, ${executors?.guardianExecutor?.address?.country} to be the guardian/s of my child/ren
         during their minority to act solely.</td>
   </tr>
-    `
-  const Trust = 
+    ` : ''
+  const Trust = trust?.length ?
   `
   <tr><td class="sub-heading  heading-style">TRUST</td></tr>
   <tr><td class="s3" style="padding-left: 5pt; text-indent: 0pt; text-align: left">Tsang&#39;s Family TRUST</td></tr>
@@ -544,7 +544,7 @@ ${trust.map((el) => {
   </li>
 </ol></td>
 </tr>
-  `
+  ` : ``
 const residualEstate = `
 <tr>
 <td class="sub-heading heading-style">
@@ -790,10 +790,10 @@ interest to any person(s) not named herein.</td>
                 estate.</td>
           </tr>
         
-        ${guardian}<br
-        ${Trust} <br>
-        ${residualEstate} <br>
-        ${ending}
+        ${guardian || ''}<br
+        ${Trust || ''} <br>
+        ${residualEstate || ''} <br>
+        ${ending || ''}
 
           
         

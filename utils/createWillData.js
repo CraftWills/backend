@@ -28,11 +28,16 @@ const ObjectId = require('mongoose').Types.ObjectId;
           const trustDetails = await new Promise((res,rej) => {
             const arr = []
             will?.trust?.forEach(async(singleTrust, index) => {
+              if(singleTrust){
               const newTrustData = await getTrustData(singleTrust);
               arr.push(newTrustData);
               if ((index + 1) === will?.trust?.length) {
                 res(arr);
               }
+              else {
+                rej('no trust found')
+              }
+            }
             }); 
           })
           
@@ -161,7 +166,7 @@ async function memberDatas(id){
         primaryTrustee.members = await new Promise((res, rej) => {
 
           const array = [];
-          if (!trust?.addTrust?.appointPrimaryTrustee?.trustMembers.length) {
+          if (!trust?.addTrust?.appointPrimaryTrustee?.trustMembers?.length) {
             res(array);
             return;
           }
@@ -189,7 +194,7 @@ async function memberDatas(id){
           trust?.addTrust?.appointReplacementTrustee?.trustMembers?.forEach(async(mem, index) =>  {
             const memberData = await memberDatas(mem);
             array1.push(memberData);
-            if ((index+1) == trust?.addTrust?.appointReplacementTrustee?.trustMembers.length ) {
+            if ((index+1) == trust?.addTrust?.appointReplacementTrustee?.trustMembers?.length ) {
               res(array1);
               return;
             }

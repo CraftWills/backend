@@ -33,8 +33,12 @@ router.delete("/deleteWill",authenticateToken,WillController.deleteWills)
 router.delete("/deleteWillById/:id",authenticateToken,WillController.deleteWillById)
 // router.get("/generatePdf",authenticateToken,WillController.generatePdf)
 router.get("/generatePdf/:id" , createWillData, async (request, response) => {
-  const result = await WillController.generatePdf(request);
-  return response.send(result);
+  try {
+    const result = await WillController.generatePdf(request);
+    response.status(200).send(result);
+  } catch (error) {
+    response.status(500).send('Something went wrong')
+  }
 });
 
 
