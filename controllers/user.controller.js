@@ -102,7 +102,12 @@ exports.verifyEmail = async (req)=>{
 
   }
   catch(err){
-    return err.message
+    return {
+      success : false,
+      error : true,
+      message : err.message
+
+    }
 }}
 //  exports.createUserByLink = async (req) => {
   //   if (!password || !email || !first_name || !last_name) {
