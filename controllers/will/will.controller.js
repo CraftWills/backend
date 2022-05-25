@@ -380,7 +380,7 @@ ${trust.map((el) => {
         text-align: justify;
       "
     >
-      The Trust Period of the Tsang&#39;s Family Property Trust shall be
+      The Trust Period of the ${trust[0]?.trustDetails?.trustName} shall be
       from the date of my death to the earlier of (i) the date when the
       Trustee/s sell or dispose of the Tsang&#39;s Family Property with the
       consent of TIMOTHY TSANG (NRIC No. S9714999B), of 8 Taman Siglap,
@@ -576,7 +576,11 @@ const ending = `
     a power of appointment or disposition by will) to the following
     beneficiary/ies in the following proportion/s:</td>
 </tr>
-
+<tr>
+  <td>
+    <br>
+  </td>
+</tr>
 <tr> <td class="para para-style">I DIRECT that my Executor/s and/or Trustee/s may procure clarifications
 and/or assistance from LUCAS SOH of Characterist LLC (email:<a href="mailto:lucas@characterist.com" class="a" target="_blank"
 
@@ -593,6 +597,32 @@ interest to any person(s) not named herein.</td>
       <br>
   </td>
 </tr>`
+
+const witness = `
+  <table class="witness-table">
+    <thead>
+      <tr>
+        <td class='text-center head-row' colspan='4'>
+          Witness
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style='height:10px'></tr>
+      <tr>
+        <td style='padding-left:10px'>Witness Name:</td>
+        <td><input type="text" class="input"></td>
+        <td class="space">NRIC:</td>
+        <td style='padding-right:10px'><input type="text" class="input"></td>
+      </tr>
+      <tr>
+        <td colspan="4"  style='padding: 10px' >
+        	<input style="height: 70px;width:99%;" type='text' class='input'>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+`
   
     let html = `<!DOCTYPE html>
     <html lang="en">
@@ -621,7 +651,7 @@ interest to any person(s) not named herein.</td>
         />
         <style type="text/css">
             table{
-    padding: 40px;
+              padding: 40px;
             }
            
             .sub-heading{
@@ -758,13 +788,52 @@ interest to any person(s) not named herein.</td>
                 margin: 0;
                 padding: 0;
               }
+
+              .witness-table {
+                padding: 0 !important;
+                background-color: #f9fff7;
+                color: #000;
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+              }
+              
+              .input {
+                border: 1px solid #dce0e4;
+                background-color: white;
+                border-radius: 5px;
+                height: 25px;
+              }
+              
+              .space {
+                padding-left: 10px;
+              }
+              
+              .head-row {
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                font-weight: bold;
+                padding-top:7px;
+                padding-bottom:7px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+              }
+              
+              .text-center {
+                text-align: center;
+              }
+              
+              thead {
+                width: 100%;
+                background-color: #ebebeb;
+                
+              }
+              
+              
     
         </style>
       </head>
       
       <body style='margin-top: 0px; padding: 0px;' class="mat-typography">
       
-      <table style="margin-top: 0px; padding-top: 0px;">
+      <table style="margin-top: 0px; padding-top: 0px !important;">
       <tbody>
           <tr>
             <td class="sub-heading heading-style" style="padding-top: 0px;">INTRODUCTION</td>
@@ -779,20 +848,51 @@ interest to any person(s) not named herein.</td>
                 any property over which I may have a power of appointment or disposition
                 by will).</td>
           </tr>
-          ${executor} <br>
+          <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
+          
+          ${executor} 
+          <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
           <tr>
             <td class="sub-heading  heading-style">PROVISION FOR DEBTS AND EXPENSES</td>
           </tr>
+          
           <tr>
             <td class="para para-style">  I DIRECT that all my just debts, funeral and testamentary expenses, estate
                 duty payable in respect of my estate, and any other expenses that may be
                 reasonably incurred upon or by reason of my death, be paid out of my
                 estate.</td>
           </tr>
-        
-        ${guardian}<br
-        ${Trust} <br>
-        ${residualEstate} <br><br><br><br>
+          <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
+        ${guardian}
+        <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
+        ${Trust} 
+        <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
+        ${residualEstate} 
+        <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
         ${ending}
 
           
@@ -811,35 +911,14 @@ interest to any person(s) not named herein.</td>
         </td>
           </tr> 
           
-          <tr> <td class="para para-style">  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        
-        </td>
-          </tr> 
-          <tr>
+        <tr>
+        ${witness}
+        </tr>
+        <tr>
             <td>
-                <br>
-                <br>
-                <br>
-                <br>
+              <br>
             </td>
         </tr>
-          <tr> <td class="para para-style">
-              <hr>
-            (Signature of Testator)
-          </td>
-          </tr> 
-          <tr> <td class="para para-style " style="display: flex;">
-           <div  style="white-space: nowrap;"> Witness One Name:</div>
-            <div class="s5">&nbsp;&nbsp;&nbsp;
-            </div>
-          </td>
-          </tr> 
-          <tr> <td class="para para-style " style="display: flex;">
-            <div  style="white-space: nowrap;"> Witness One NRIC:</div>
-             <div class="s5">&nbsp;&nbsp;&nbsp;
-             </div>
-           </td>
-           </tr>
           <tr> <td class="para para-style ">
          <span class="h3">SIGNED</span>   
             <span class="p"
@@ -851,29 +930,19 @@ interest to any person(s) not named herein.</td>
           </tr> 
           <tr>
             <td>
-                <br>
-                <br>
-                <br>
-                <br>
+            <br>
+            <br>
             </td>
         </tr>
-          <tr> <td class="para para-style">
-              <hr>
-            (Signature of Testator)
-          </td>
-          </tr> 
-          <tr> <td class="para para-style " style="display: flex;">
-            <div  style="white-space: nowrap;"> Witness One Name:</div>
-             <div class="s5">&nbsp;&nbsp;&nbsp;
-             </div>
-           </td>
-           </tr> 
-           <tr> <td class="para para-style " style="display: flex;">
-            <div  style="white-space: nowrap;"> Witness One NRIC:</div>
-             <div class="s5">&nbsp;&nbsp;&nbsp;
-             </div>
-           </td>
-           </tr>
+        <tr>
+        ${witness}
+        </tr>
+        <tr>
+            <td>
+              <br>
+              <br>
+            </td>
+        </tr>
           <tr>
             <td class="sub-heading heading-style">
                 TRANSLATION
@@ -887,29 +956,13 @@ interest to any person(s) not named herein.</td>
           </tr>
           <tr>
             <td>
-                <br>
-                <br>
-                <br>
-                <br>
+            <br>
+            <br>
             </td>
         </tr>
-          <tr> <td class="para para-style">
-            <hr>
-          (Signature of Testator)
-        </td>
-        </tr> 
-        <tr> <td class="para para-style " style="display: flex;">
-            <div  style="white-space: nowrap;"> Witness One Name:</div>
-             <div class="s5">&nbsp;&nbsp;&nbsp;
-             </div>
-           </td>
-           </tr> 
-        <tr> <td class="para para-style " style="display: flex;">
-            <div  style="white-space: nowrap;"> Witness One NRIC:</div>
-             <div class="s5">&nbsp;&nbsp;&nbsp;
-             </div>
-           </td>
-           </tr> 
+        <tr>
+        ${witness}
+        </tr>
         </table>
 
         <div><img src="${image}" style="display: none; width: 0px; height: 0px;"></div>
@@ -964,8 +1017,8 @@ var document = {
 
   return pdf.create(document , options).then(async res =>{
     console.log('...',res)
-    return  (willData)
-    // return  (res)
+    // return  (willData)
+    return  (res)
   }).catch(error =>{
       console.log("Error creating pdf",error)
       return reject(error);

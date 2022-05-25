@@ -161,6 +161,9 @@ async function memberDatas(id){
       if(trust){
         // console.log("newwwwww ..", trust._id, trust?.addTrust?.appointPrimaryTrustee?.trustMembers)
         let trustDetails = await Trust.findById(trust?.trustData);
+        let trustAge = trust?.trustAge;
+        let beneficiariesAge = trust?.beneficiariesAge;
+        let trustFunds = trust?.trustFunds;
         let primaryTrustee = {
           type: trust?.addTrust?.appointPrimaryTrustee?.specifyOwnershipType,
           members: null
@@ -208,7 +211,10 @@ async function memberDatas(id){
           trustDetails,
           primaryTrustee,
           replacementTrustee,
-          trusteePowers
+          trusteePowers,
+          trustAge,
+          trustFunds,
+          beneficiariesAge
         }
       }
       else {
