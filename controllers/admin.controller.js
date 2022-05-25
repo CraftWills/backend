@@ -6,6 +6,7 @@ require("dotenv").config();
 const admin = require ("../models/admin.model");
 const usersDataAccess = require("../dal/user.dal")
 const User = require("../models/user.model")
+const invteUser = require("../models/inviteUser.model")
 /// create Admin
 
 
@@ -417,9 +418,21 @@ exports.inviteUser = async (req,res)=>{
         message : "Already added"
       }
     }
-
-  }
-  catch(err){
+    const invites = new invteUser({
+        email : req.body.email,
+        fullName : req.body.fullName,
+        subscriptionPlan : req.body.subscriptionPlan
+    })
+    if (invites){
+      const invitationData = invites.save();
+      return {
+        success : true,
+        error : false,
+        invitationData : invitationData
+      }      
+    }
+  }  
+catch(err){
     return {
       success : false,
       error : true,
