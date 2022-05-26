@@ -971,9 +971,9 @@ var document = {
   };
 
   return pdf.create(document , options).then(async res =>{
-    console.log('...',res)
-    return  (willData)
-    // return  (res)
+    console.log('....',res)
+    // return  (willData)
+    return  (res)
   }).catch(error =>{
       console.log("Error creating pdf",error)
       return reject(error);
