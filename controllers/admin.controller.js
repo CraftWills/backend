@@ -408,35 +408,35 @@ lastName : users.lastName}
 };
 
 
-exports.inviteUser = async (req,res)=>{
-  try{
-    const dta = await User.find({fullName : req.body.fullName,email : req.body.email, isVerified : true}); 
-    if (dta){
-      return {
-        success: false,
-        error : true,
-        message : "Already added"
-      }
-    }
-    const invites = new invteUser({
-        email : req.body.email,
-        fullName : req.body.fullName,
-        subscriptionPlan : req.body.subscriptionPlan
-    })
-    if (invites){
-      const invitationData = invites.save();
-      return {
-        success : true,
-        error : false,
-        invitationData : invitationData
-      }      
-    }
-  }  
-catch(err){
-    return {
-      success : false,
-      error : true,
-      message : err.message
-    }
-  }   
-};
+// exports.inviteUser = async (req,res)=>{
+//   try{
+//     const dta = await User.find({fullName : req.body.fullName,email : req.body.email, isVerified : true}); 
+//     if (dta){
+//       return {
+//         success: false,
+//         error : true,
+//         message : "Already added"
+//       }
+//     }
+//     const invites = new invteUser({
+//         email : req.body.email,
+//         fullName : req.body.fullName,
+//         subscriptionPlan : req.body.subscriptionPlan
+//     })
+//     if (invites){
+//       const invitationData = invites.save();
+//       return {
+//         success : true,
+//         error : false,
+//         invitationData : invitationData
+//       }      
+//     }
+//   }  
+// catch(err){
+//     return {
+//       success : false,
+//       error : true,
+//       message : err.message
+//     }
+//   }   
+// };

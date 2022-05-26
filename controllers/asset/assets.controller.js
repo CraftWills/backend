@@ -414,15 +414,12 @@ const Statics = async (req, res) => {
     let second = first?.map((item) => ({ ...item, count: data[0]?.dataTwo?.find(el => el?.k === item?.k)?.count || 0 }))
     console.log("sahi h", second)
 
-
-
     let arr3 = data[0]?.data?.map((item, i) => Object.assign({}, item, data[0]?.dataTwo[i]));
 
 
     // const groupedByMonth = _.groupBy(merged, 'k');
 
     // console.log('Data', merged)
-
 
     let data2 = await liabilities.aggregate([{
       $match: {
@@ -766,7 +763,7 @@ const quickStats = async (req, res) => {
     // console.log("count is => ", astInTrust)
     res.json({
       totalNetWorth: {
-        amount: b - a
+        amount: a-b
       },
       totalAssets: {
         amount: totalAst
