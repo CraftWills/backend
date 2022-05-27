@@ -1038,7 +1038,7 @@ var document = {
     return err.message
   }
 }
-
+///// Get Will Info
 exports.getWillInfo = async(req,res)=>{
   try {
   const data = await Will.find({user_id: "624e84a65e9471c649140d96"})
