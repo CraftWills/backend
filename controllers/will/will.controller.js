@@ -334,7 +334,7 @@ exports.generatePdf = async(req,res)=>{
   const Trust = trust?.length ?
   `
   <tr><td class="sub-heading  heading-style">TRUST</td></tr>
-  <tr><td class="s3" style="padding-left: 5pt; text-indent: 0pt; text-align: left">Tsang&#39;s Family TRUST</td></tr>
+  <tr><td class="s3" style="padding-left: 5pt; text-indent: 0pt; text-align: left">${trust.map((el)=>el?.trustDetails?.trustName).join(",")}</td></tr>
   </tbody>
 <tr>
     <td>
@@ -342,11 +342,21 @@ exports.generatePdf = async(req,res)=>{
     </td>
 </tr>
 ${trust.map((el) => {
-  return `<tr>
-            <td  class="para para-style">  ${el?.primaryTrustee?.members[0]?.name} (${el?.primaryTrustee?.type} No. ${el?.primaryTrustee?.members[0]?.id_number}), of ${el?.primaryTrustee?.members[0]?.address?.streetName},${el?.primaryTrustee?.members[0]?.address?.floorNumber} ${el?.primaryTrustee?.members[0]?.address?.country}
-               ${el?.primaryTrustee?.members[0]?.address?.postalCode}, ${el?.primaryTrustee?.members[0]?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${el?.primaryTrustee?.members[0]?.name}”).</td>
-          </tr>`
-}).join(',')}
+  if (el?.primaryTrustee?.type==="joint"|| el?.primaryTrustee?.type==="jointlyAndSeverally" )
+  el?.primaryTrustee?.members.map(dta=>{
+    return  `<tr>
+      <td  class="para para-style">  ${dta?.name} (${el?.primaryTrustee?.type} No. ${dta?.id_number}), of ${dta?.address?.streetName},${dta.address?.floorNumber} ${dta.address?.country}
+         ${dta?.address?.postalCode}, ${dta?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${dta?.name}”).</td>
+    </tr>`
+    }).join('')
+  else{
+    return `<tr>
+    <td  class="para para-style">  ${el?.primaryTrustee?.members[0]?.name} (${el?.primaryTrustee?.type} No. ${el?.primaryTrustee?.members[0]?.id_number}), of ${el?.primaryTrustee?.members[0]?.address?.streetName},${el?.primaryTrustee?.members[0]?.address?.floorNumber} ${el?.primaryTrustee?.members[0]?.address?.country}
+       ${el?.primaryTrustee?.members[0]?.address?.postalCode}, ${el?.primaryTrustee?.members[0]?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${el?.primaryTrustee?.members[0]?.name}”).</td>
+  </tr>`
+  }
+}).join('')
+}
 
 <tr>
   <td  style="
@@ -357,11 +367,11 @@ ${trust.map((el) => {
   text-align: justify;
 " > <p>
 
-    I GIVE my immovable property known as ${trust[0]?.trustDetails?.trustName}, ${trust[0]?.primaryTrustee?.members[0]?.address?.country} 
-    ("${trust[0]?.trustDetails?.description}") to my Trustee/s to
-    hold UPON Trust (the “${trust[0]?.trustDetails?.trustName}”) for the
-    following Trust beneficiary/ies in the following proportion/s:</td>
-  </p>
+I GIVE my immovable property known as ${trust.map((el) => `${el.trustDetails?.trustName}`).join(',')}, ${trust[0]?.primaryTrustee?.members.map((el2)=>el2.address?.country)} 
+("${trust.map((el)=>`${el?.trustDetails?.description}`).join(",")}") to my Trustee/s to
+hold UPON Trust (the “${trust.map((el)=>`${el?.trustDetails?.trustName}`).join(',')}”) for the
+following Trust beneficiary/ies in the following proportion/s:</td>
+</p>
 </tr>
 <tr>
   <td  >  <ol id="l1">
@@ -369,7 +379,7 @@ ${trust.map((el) => {
     <p
       class=""
     >
-      100% to my ${trust[0]?.primaryTrustee?.members[0]?.Relationship},${trust[0]?.primaryTrustee?.members[0]?.name}  (${trust[0]?.primaryTrustee?.members[0]?.id_type} No. ${trust[0]?.primaryTrustee?.members[0]?.id_number}).
+      100% to my ${trust.map((el)=>el.primaryTrustee?.members.map((el2)=>`${el2?.Relationship} ${el2?.name} of (${el2?.id_type} No ${el2?.id_number})`)).join(",")} .
     </p>
     
     <p
@@ -380,12 +390,11 @@ ${trust.map((el) => {
         text-align: justify;
       "
     >
-      The Trust Period of the ${trust[0]?.trustDetails?.trustName} shall be
+      The Trust Period of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} shall be
       from the date of my death to the earlier of (i) the date when the
-      Trustee/s sell or dispose of the Tsang&#39;s Family Property with the
-      consent of TIMOTHY TSANG (NRIC No. S9714999B), of 8 Taman Siglap,
-      Singapore 455669, Singapore or (ii) 99 years from the date of my death
-      (the “Tsang&#39;s Family Property Trust Period”).
+      Trustee/s sell or dispose of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} with the
+      consent of ${trust.map((el)=>el?.primaryTrustee?.members.map((el2)=>`${el2?.name} (${el2?.id_type} No ${el2?.id_number} of ${el2?.address?.streetName} ${el2?.address?.postalCode} ${el2?.address?.country} )`)).join(",")}  ), or (ii) ${trust.map((el)=>el?.trustAge).join(",")} years from the date of my death
+      (the “${trust.map((el)=>el?.trustDetails?.trustName).join(",")} Period”).
     </p>
     <p
       style="
@@ -396,8 +405,8 @@ ${trust.map((el) => {
         text-align: justify;
       "
     >
-      At the expiry of the Tsang&#39;s Family Property Trust Period, the
-      Tsang&#39;s Family Property may be transferred to or may be sold with
+      At the expiry of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} Period, the
+      ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} may be transferred to or may be sold with
       the sale proceeds distributed to the aforesaid beneficiary/ies in the
       aforesaid proportion/s.
     </p>
@@ -411,7 +420,7 @@ ${trust.map((el) => {
       "
     >
       If any of the aforesaid Trust beneficiaries shall die before the
-      expiry of the Tsang&#39;s Family Property Trust Period, then my
+      expiry of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} Period, then my
       surviving Trust beneficiary/ies shall take proportionately.
     </p>
     
@@ -1017,8 +1026,8 @@ var document = {
 
   return pdf.create(document , options).then(async res =>{
     console.log('....',res)
-    // return  (willData)
-    return  (res)
+    return  (willData)
+    // return  (res)
   }).catch(error =>{
       console.log("Error creating pdf",error)
       return reject(error);
