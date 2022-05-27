@@ -426,6 +426,7 @@ following Trust beneficiary/ies in the following proportion/s:</td>
     <p
     class="para-style"
    >
+      ${trust.map((el)=> el?.trusteePowers)}
       A Trustee is entitled to remunerated out of the income and property of
       this Trust for any and all of the Trustee’s fees, which shall be
       reasonable.
