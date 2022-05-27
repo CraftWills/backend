@@ -811,7 +811,7 @@ const witness = `
                 height: 25px;
               }
               
-              .space {
+              .space {6p
                 padding-left: 10px;
               }
               
@@ -1025,8 +1025,8 @@ var document = {
 
   return pdf.create(document , options).then(async res =>{
     console.log('....',res)
-    return  (willData)
-    // return  (res)
+    // return  (willData)
+    return  (res)
   }).catch(error =>{
       console.log("Error creating pdf",error)
       return reject(error);
