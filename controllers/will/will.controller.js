@@ -320,7 +320,7 @@ exports.generatePdf = async(req,res)=>{
           </tr>
     `
 
-    const guardian = `
+    const guardian = executors?.guardianExecutor ? `
     <tr>
     <td class="sub-heading  heading-style">GUARDIAN</td>
   </tr>
@@ -329,11 +329,11 @@ exports.generatePdf = async(req,res)=>{
         survive me, I APPOINT ${executors?.guardianExecutor?.name} (${executors?.guardianExecutor?.id_type} No. ${executors?.guardianExecutor?.id_number}), of ${executors?.guardianExecutor?.address?.unitNumber}  ${executors?.guardianExecutor?.address?.streetName}, ${executors?.guardianExecutor?.address?.country} to be the guardian/s of my child/ren
         during their minority to act solely.</td>
   </tr>
-    `
-  const Trust = 
+    ` : ''
+  const Trust = trust?.length ?
   `
   <tr><td class="sub-heading  heading-style">TRUST</td></tr>
-  <tr><td class="s3" style="padding-left: 5pt; text-indent: 0pt; text-align: left">Tsang&#39;s Family TRUST</td></tr>
+  <tr><td class="s3" style="padding-left: 5pt; text-indent: 0pt; text-align: left">${trust.map((el)=>el?.trustDetails?.trustName).join(",")}</td></tr>
   </tbody>
 <tr>
     <td>
@@ -341,21 +341,22 @@ exports.generatePdf = async(req,res)=>{
     </td>
 </tr>
 ${trust.map((el) => {
-  if (el?.primaryTrustee?.type==="joint"|| el?.primaryTrustee?.type==="jointlyAndSeverally" ){
-    el?.primaryTrustee?.members.map(dta=>{
-      return  `<tr>
-        <td  class="para para-style">  ${dta?.name} (${el?.primaryTrustee?.type} No. ${dta?.id_number}), of ${dta?.address?.streetName},${dta.address?.floorNumber} ${dta.address?.country}
-           ${dta?.address?.postalCode}, ${dta?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${dta?.name}”).</td>
-      </tr>`
-      }).join('')
-  }
+  if (el?.primaryTrustee?.type==="joint"|| el?.primaryTrustee?.type==="jointlyAndSeverally" )
   el?.primaryTrustee?.members.map(dta=>{
-  
-  return  `<tr>
-    <td  class="para para-style">  ${dta?.name} (${el?.primaryTrustee?.type} No. ${dta?.id_number}), of ${dta?.address?.streetName},${dta.address?.floorNumber} ${dta.address?.country}
-       ${dta?.address?.postalCode}, ${dta?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${dta?.name}”).</td>
+    return  `<tr>
+      <td  class="para para-style">  ${dta?.name} (${el?.primaryTrustee?.type} No. ${dta?.id_number}), of ${dta?.address?.streetName},${dta.address?.floorNumber} ${dta.address?.country}
+         ${dta?.address?.postalCode}, ${dta?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${dta?.name}”).</td>
+    </tr>`
+    }).join('')
+  else{
+    return `<tr>
+    <td  class="para para-style">  ${el?.primaryTrustee?.members[0]?.name} (${el?.primaryTrustee?.type} No. ${el?.primaryTrustee?.members[0]?.id_number}), of ${el?.primaryTrustee?.members[0]?.address?.streetName},${el?.primaryTrustee?.members[0]?.address?.floorNumber} ${el?.primaryTrustee?.members[0]?.address?.country}
+       ${el?.primaryTrustee?.members[0]?.address?.postalCode}, ${el?.primaryTrustee?.members[0]?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${el?.primaryTrustee?.members[0]?.name}”).</td>
   </tr>`
-  }).join(',')})}
+  }
+}).join('')
+}
+
 <tr>
   <td  style="
   padding-top: 11pt;
@@ -365,11 +366,11 @@ ${trust.map((el) => {
   text-align: justify;
 " > <p>
 
-    I GIVE my immovable property known as ${trust.map((el) => `${el.trustDetails?.trustName}`).join(',')}, ${trust[0]?.primaryTrustee?.members[0]?.address?.country} 
-    ("${trust.map((el)=>`${el?.trustDetails?.description}`).join(",")}") to my Trustee/s to
-    hold UPON Trust (the “${trust.map((el)=>`${el?.trustDetails?.trustName}`)}”) for the
-    following Trust beneficiary/ies in the following proportion/s:</td>
-  </p>
+I GIVE my immovable property known as ${trust.map((el) => `${el.trustDetails?.trustName}`).join(',')}, ${trust[0]?.primaryTrustee?.members.map((el2)=>el2.address?.country)} 
+("${trust.map((el)=>`${el?.trustDetails?.description}`).join(",")}") to my Trustee/s to
+hold UPON Trust (the “${trust.map((el)=>`${el?.trustDetails?.trustName}`).join(',')}”) for the
+following Trust beneficiary/ies in the following proportion/s:</td>
+</p>
 </tr>
 <tr>
   <td  >  <ol id="l1">
@@ -377,7 +378,7 @@ ${trust.map((el) => {
     <p
       class=""
     >
-      100% to my ${trust[0]?.primaryTrustee?.members[0]?.Relationship},${trust[0]?.primaryTrustee?.members[0]?.name}  (${trust[0]?.primaryTrustee?.members[0]?.id_type} No. ${trust[0]?.primaryTrustee?.members[0]?.id_number}).
+      100% to my ${trust.map((el)=>el.primaryTrustee?.members.map((el2)=>`${el2?.Relationship} ${el2?.name} of (${el2?.id_type} No ${el2?.id_number})`)).join(",")} .
     </p>
     
     <p
@@ -388,12 +389,11 @@ ${trust.map((el) => {
         text-align: justify;
       "
     >
-      The Trust Period of the ${trust.map((el)=>{el?.trustDetails?.trustName})} shall be
+      The Trust Period of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} shall be
       from the date of my death to the earlier of (i) the date when the
-      Trustee/s sell or dispose of the ${trust[0]?.trustDetails?.trustName} with the
-      consent of ${trust[0]?.primaryTrustee?.members[0]?.name} ( ${trust[0]?.primaryTrustee?.members[0]?.id_type} No.  ${trust[0]?.primaryTrustee?.members[0]?.id_number}), of ${trust[0]?.primaryTrustee?.members[0]?.name},
-      ${trust[0]?.primaryTrustee?.members[0]?.name} 455669, Singapore or (ii) 99 years from the date of my death
-      (the “Tsang&#39;s Family Property Trust Period”).
+      Trustee/s sell or dispose of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} with the
+      consent of ${trust.map((el)=>el?.primaryTrustee?.members.map((el2)=>`${el2?.name} (${el2?.id_type} No ${el2?.id_number} of ${el2?.address?.streetName} ${el2?.address?.postalCode} ${el2?.address?.country} )`)).join(",")}  ), or (ii) ${trust.map((el)=>el?.trustAge).join(",")} years from the date of my death
+      (the “${trust.map((el)=>el?.trustDetails?.trustName).join(",")} Period”).
     </p>
     <p
       style="
@@ -404,8 +404,8 @@ ${trust.map((el) => {
         text-align: justify;
       "
     >
-      At the expiry of the Tsang&#39;s Family Property Trust Period, the
-      Tsang&#39;s Family Property may be transferred to or may be sold with
+      At the expiry of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} Period, the
+      ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} may be transferred to or may be sold with
       the sale proceeds distributed to the aforesaid beneficiary/ies in the
       aforesaid proportion/s.
     </p>
@@ -419,7 +419,7 @@ ${trust.map((el) => {
       "
     >
       If any of the aforesaid Trust beneficiaries shall die before the
-      expiry of the Tsang&#39;s Family Property Trust Period, then my
+      expiry of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} Period, then my
       surviving Trust beneficiary/ies shall take proportionately.
     </p>
     
@@ -552,7 +552,7 @@ ${trust.map((el) => {
   </li>
 </ol></td>
 </tr>
-  `
+  ` : ``
 const residualEstate = `
 <tr>
 <td class="sub-heading heading-style">
@@ -584,7 +584,11 @@ const ending = `
     a power of appointment or disposition by will) to the following
     beneficiary/ies in the following proportion/s:</td>
 </tr>
-
+<tr>
+  <td>
+    <br>
+  </td>
+</tr>
 <tr> <td class="para para-style">I DIRECT that my Executor/s and/or Trustee/s may procure clarifications
 and/or assistance from LUCAS SOH of Characterist LLC (email:<a href="mailto:lucas@characterist.com" class="a" target="_blank"
 
@@ -601,6 +605,32 @@ interest to any person(s) not named herein.</td>
       <br>
   </td>
 </tr>`
+
+const witness = `
+  <table class="witness-table">
+    <thead>
+      <tr>
+        <td class='text-center head-row' colspan='4'>
+          Witness
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style='height:10px'></tr>
+      <tr>
+        <td style='padding-left:10px'>Witness Name:</td>
+        <td><input type="text" class="input"></td>
+        <td class="space">NRIC:</td>
+        <td style='padding-right:10px'><input type="text" class="input"></td>
+      </tr>
+      <tr>
+        <td colspan="4"  style='padding: 10px' >
+        	<input style="height: 70px;width:99%;" type='text' class='input'>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+`
   
     let html = `<!DOCTYPE html>
     <html lang="en">
@@ -629,7 +659,7 @@ interest to any person(s) not named herein.</td>
         />
         <style type="text/css">
             table{
-    padding: 40px;
+              padding: 40px;
             }
            
             .sub-heading{
@@ -766,13 +796,52 @@ interest to any person(s) not named herein.</td>
                 margin: 0;
                 padding: 0;
               }
+
+              .witness-table {
+                padding: 0 !important;
+                background-color: #f9fff7;
+                color: #000;
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+              }
+              
+              .input {
+                border: 1px solid #dce0e4;
+                background-color: white;
+                border-radius: 5px;
+                height: 25px;
+              }
+              
+              .space {
+                padding-left: 10px;
+              }
+              
+              .head-row {
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                font-weight: bold;
+                padding-top:7px;
+                padding-bottom:7px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+              }
+              
+              .text-center {
+                text-align: center;
+              }
+              
+              thead {
+                width: 100%;
+                background-color: #ebebeb;
+                
+              }
+              
+              
     
         </style>
       </head>
       
       <body style='margin-top: 0px; padding: 0px;' class="mat-typography">
       
-      <table style="margin-top: 0px; padding-top: 0px;">
+      <table style="margin-top: 0px; padding-top: 0px !important;">
       <tbody>
           <tr>
             <td class="sub-heading heading-style" style="padding-top: 0px;">INTRODUCTION</td>
@@ -787,20 +856,51 @@ interest to any person(s) not named herein.</td>
                 any property over which I may have a power of appointment or disposition
                 by will).</td>
           </tr>
-          ${executor} <br>
+          <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
+          
+          ${executor} 
+          <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
           <tr>
             <td class="sub-heading  heading-style">PROVISION FOR DEBTS AND EXPENSES</td>
           </tr>
+          
           <tr>
             <td class="para para-style">  I DIRECT that all my just debts, funeral and testamentary expenses, estate
                 duty payable in respect of my estate, and any other expenses that may be
                 reasonably incurred upon or by reason of my death, be paid out of my
                 estate.</td>
           </tr>
-        
-        ${guardian}<br
-        ${Trust} <br>
-        ${residualEstate} <br><br><br><br>
+          <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
+        ${guardian}
+        <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
+        ${Trust} 
+        <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
+        ${residualEstate} 
+        <tr>
+            <td>
+            <br>
+            </td>
+          </tr>
         ${ending}
 
           
@@ -819,35 +919,14 @@ interest to any person(s) not named herein.</td>
         </td>
           </tr> 
           
-          <tr> <td class="para para-style">  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        
-        </td>
-          </tr> 
-          <tr>
+        <tr>
+        ${witness}
+        </tr>
+        <tr>
             <td>
-                <br>
-                <br>
-                <br>
-                <br>
+              <br>
             </td>
         </tr>
-          <tr> <td class="para para-style">
-              <hr>
-            (Signature of Testator)
-          </td>
-          </tr> 
-          <tr> <td class="para para-style " style="display: flex;">
-           <div  style="white-space: nowrap;"> Witness One Name:</div>
-            <div class="s5">&nbsp;&nbsp;&nbsp;
-            </div>
-          </td>
-          </tr> 
-          <tr> <td class="para para-style " style="display: flex;">
-            <div  style="white-space: nowrap;"> Witness One NRIC:</div>
-             <div class="s5">&nbsp;&nbsp;&nbsp;
-             </div>
-           </td>
-           </tr>
           <tr> <td class="para para-style ">
          <span class="h3">SIGNED</span>   
             <span class="p"
@@ -859,29 +938,19 @@ interest to any person(s) not named herein.</td>
           </tr> 
           <tr>
             <td>
-                <br>
-                <br>
-                <br>
-                <br>
+            <br>
+            <br>
             </td>
         </tr>
-          <tr> <td class="para para-style">
-              <hr>
-            (Signature of Testator)
-          </td>
-          </tr> 
-          <tr> <td class="para para-style " style="display: flex;">
-            <div  style="white-space: nowrap;"> Witness One Name:</div>
-             <div class="s5">&nbsp;&nbsp;&nbsp;
-             </div>
-           </td>
-           </tr> 
-           <tr> <td class="para para-style " style="display: flex;">
-            <div  style="white-space: nowrap;"> Witness One NRIC:</div>
-             <div class="s5">&nbsp;&nbsp;&nbsp;
-             </div>
-           </td>
-           </tr>
+        <tr>
+        ${witness}
+        </tr>
+        <tr>
+            <td>
+              <br>
+              <br>
+            </td>
+        </tr>
           <tr>
             <td class="sub-heading heading-style">
                 TRANSLATION
@@ -895,29 +964,13 @@ interest to any person(s) not named herein.</td>
           </tr>
           <tr>
             <td>
-                <br>
-                <br>
-                <br>
-                <br>
+            <br>
+            <br>
             </td>
         </tr>
-          <tr> <td class="para para-style">
-            <hr>
-          (Signature of Testator)
-        </td>
-        </tr> 
-        <tr> <td class="para para-style " style="display: flex;">
-            <div  style="white-space: nowrap;"> Witness One Name:</div>
-             <div class="s5">&nbsp;&nbsp;&nbsp;
-             </div>
-           </td>
-           </tr> 
-        <tr> <td class="para para-style " style="display: flex;">
-            <div  style="white-space: nowrap;"> Witness One NRIC:</div>
-             <div class="s5">&nbsp;&nbsp;&nbsp;
-             </div>
-           </td>
-           </tr> 
+        <tr>
+        ${witness}
+        </tr>
         </table>
 
         <div><img src="${image}" style="display: none; width: 0px; height: 0px;"></div>
@@ -965,20 +1018,21 @@ interest to any person(s) not named herein.</td>
 var document = {
     html: html,
     path: "./output.pdf",
-    type: "",
-    // type: 'buffer',
+    // type: "",
+    type: 'buffer',
     data: {}
   };
 
   return pdf.create(document , options).then(async res =>{
     console.log('....',res)
-    // return  (willData)
-    return  (res)
+    return  (willData)
+    // return  (res)
   }).catch(error =>{
       console.log("Error creating pdf",error)
       return reject(error);
   })
-}
+
+  }
   catch(err){
     return err.message
   }
