@@ -308,7 +308,22 @@ exports.generatePdf = async(req,res)=>{
     console.log("final data :=== ",willData)
     
     const {executors, trust, residualAsset} = willData;
-    
+    const cover = `<body>
+    <div style="width:100%; height:100vh; display:flex; align-items:center; justify-content:center">
+        <div style="text-align:center ;">
+            <div style="display:flex; margin-bottom: 100px;">
+                <p style="height: 40px;font-size: 20px; margin-right: 10px;">Dated This</p>
+                <input type="text"
+                    style="border:none; border-bottom: 1px solid black; height: 40px; width: 200px;font-size: 20px; text-align: center;" />
+            </div>
+
+            <img src="${image} "width="400" height="100">
+            <p style="color:black; font-size: 25px; margin-top: 100px;">The Last Will and Testament Of</p>
+            <p style="color:black; font-size: 25px;">${willData?.user?.fullname}</p>
+            <p style="color:black;font-size:25px">(${willData?.user?.id_number})</p>
+        </div>
+    </div>
+</body>`
     const executor = `
     <tr>
             <td class="sub-heading  heading-style">EXECUTOR</td>
@@ -436,16 +451,13 @@ following Trust beneficiary/ies in the following proportion/s:</td>
     <p style="padding-left: 5pt; text-indent: 0pt; text-align: justify">
       I EMPOWER my Trustee/s to use their discretion to:
     </p>
-    
-  <p>  
-
-
-    <ul id="l2">
+  <p> 
+<ul id="l2">
       <li data-list-text="-">
         <p
          class="para-style"
         >
-        ${trust.map((el)=>el?.trusteePowers?.map((powers)=>` -${powers}<br>`)).join("")}
+        ${trust.map((el)=>el?.trusteePowers?.map((powers)=>`-${powers}<br>`)).join("")}
         </p>
         
       </li>
@@ -739,8 +751,14 @@ const witness = `
         </style>
       </head>
       
+      <body>
+      ${cover} <br>  <br> <br> <br> <br> <br> <br> <br>
+      <br>
+      <br>
+  
+      </body>
       <body style='margin-top: 0px; padding: 0px;' class="mat-typography">
-      
+
       <table style="margin-top: 0px; padding-top: 0px !important;">
       <tbody>
           <tr>
@@ -918,8 +936,8 @@ const witness = `
 var document = {
     html: html,
     path: "./output.pdf",
-    // type: "",
-    type: 'buffer',
+    type: "",
+    // type: 'buffer',
     data: {}
   };
 
