@@ -308,12 +308,12 @@ exports.generatePdf = async(req,res)=>{
     console.log("final data :=== ",willData)
     
     const {executors, trust, residualAsset} = willData;
-    const cover = `<body>
-    <div style="width:100%; height:100vh; display:flex; align-items:center; justify-content:center">
+    const cover = `
+    <div style="width:100%; height:100vh; margin-top:400px; display:flex; align-items:center; justify-content:center">
         <div style="text-align:center ;">
-            <div style="display:flex; margin-bottom: 100px;">
+            <div style="display:flex; margin-bottom: 100px;  margin-top: 100px;">
                 <p style="height: 40px;font-size: 20px; margin-right: 10px;">Dated This</p>
-                <input type="text"
+                <input type="text"bottom
                     style="border:none; border-bottom: 1px solid black; height: 40px; width: 200px;font-size: 20px; text-align: center;" />
             </div>
 
@@ -322,8 +322,7 @@ exports.generatePdf = async(req,res)=>{
             <p style="color:black; font-size: 25px;">${willData?.user?.fullname}</p>
             <p style="color:black;font-size:25px">(${willData?.user?.id_number})</p>
         </div>
-    </div>
-</body>`
+    </div>`
     const executor = `
     <tr>
             <td class="sub-heading  heading-style">EXECUTOR</td>
@@ -457,7 +456,7 @@ following Trust beneficiary/ies in the following proportion/s:</td>
         <p
          class="para-style"
         >
-        ${trust.map((el)=>el?.trusteePowers?.map((powers)=>`-${powers}<br>`)).join("")}
+        ${trust.map((el) =>el?.trusteePowers?.map((powers)=>`-${powers}<br>`)).join("")}
         </p>
         
       </li>
@@ -745,18 +744,19 @@ const witness = `
                 background-color: #ebebeb;
                 
               }
-              
+
+          
               
     
         </style>
       </head>
-      
       <body>
-      ${cover} <br>  <br> <br> <br> <br> <br> <br> <br>
-      <br>
-      <br>
-  
-      </body>
+            <div class="cover-page">${cover}</div>
+
+            <div style='height: 6in; width: 100%'></div>
+
+            </body>
+     
       <body style='margin-top: 0px; padding: 0px;' class="mat-typography">
 
       <table style="margin-top: 0px; padding-top: 0px !important;">
@@ -833,7 +833,7 @@ const witness = `
             <div class="s5">&nbsp;&nbsp; </div>
             <span class="p">(month) </span>
             <div class="s5">&nbsp;&nbsp; </div>
-            <span class="p">(year).</span>
+            <span class="p">(year).</span>    
         </td>
           </tr> 
           
@@ -861,7 +861,7 @@ const witness = `
             </td>
         </tr>
         <tr>
-        ${witness}
+        ${witness}   
         </tr>
         <tr>
             <td>
@@ -894,15 +894,21 @@ const witness = `
         <div><img src="${image}" style="display: none; width: 0px; height: 0px;"></div>
         </body>
     </html>
+            <br><br>  <br> <br> <br> <br> <br> <br> <br>
+            <br>
+
+            <br>
      `
  var options = {
       format: "A3",
       orientation: "portrait",
       border: "0mm",
       header: {
-          height: "40mm",
-          contents: `
-            <div style='padding-left: 42px; padding-right: 42px;'>
+          height: "30mm",
+          contents: {
+            first: '<br>',
+            default: `
+            <div class="Header" style='padding-left: 42px; padding-right: 42px;'>
             <hr style="height:2px;border-width:0;color:#000;background-color:#000">
               <table style='width: 100%; margin: 0; padding: 0;'>
                   <tr>
@@ -916,10 +922,12 @@ const witness = `
               </table>
               <hr style="height:2px;border-width:0;color:#000;background-color:#000">
             </div>`
+          }
       },
       footer: {
           height: "35mm",
           contents: {
+              first: `<br>`,
               default: `<div style='padding-left: 42px; padding-right: 42px; padding-top: 8px;'>
                   <table style='border-collapse: collapse; width: 100%; height: 110px; page-break-inside: avoid;'>
                       <tr>
@@ -936,13 +944,13 @@ const witness = `
 var document = {
     html: html,
     path: "./output.pdf",
-    type: "",
-    // type: 'buffer',
+    // type: "",
+    type: 'buffer',
     data: {}
   };
 
   return pdf.create(document , options).then(async res =>{
-    // console.log('....',res)
+    console.log('....',res)
     // return  (willData)
     return  (res)
   }).catch(error =>{
