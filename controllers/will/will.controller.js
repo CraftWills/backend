@@ -337,22 +337,23 @@ exports.generatePdf = async(req,res)=>{
   </tbody>
 <tr>
     <td>
-        I APPOINT 
+        I APPOINT
     </td>
 </tr>
 ${trust.map((el) => {
-  if (el?.primaryTrustee?.type==="joint"|| el?.primaryTrustee?.type==="jointlyAndSeverally" )
+ 
+   if (el?.primaryTrustee?.type==="joint"|| el?.primaryTrustee?.type==="jointlyAndSeverally" )
   el?.primaryTrustee?.members.map(dta=>{
-    return  `<tr>
-      <td  class="para para-style">  ${dta?.name} (${el?.primaryTrustee?.type} No. ${dta?.id_number}), of ${dta?.address?.streetName},${dta.address?.floorNumber} ${dta.address?.country}
+    return dta?.name ? `<tr>
+      <td  class="para para-style">(${dta?.name} ${ el?.primaryTrustee?.type} No. ${dta?.id_number}), of ${dta?.address?.streetName},${dta.address?.floorNumber} ${dta.address?.country}
          ${dta?.address?.postalCode}, ${dta?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${dta?.name}”).</td>
     </tr>`
-    }).join('')
+    :""}).join('')
   else{
-    return `<tr>
-    <td  class="para para-style">  ${el?.primaryTrustee?.members[0]?.name} (${el?.primaryTrustee?.type} No. ${el?.primaryTrustee?.members[0]?.id_number}), of ${el?.primaryTrustee?.members[0]?.address?.streetName},${el?.primaryTrustee?.members[0]?.address?.floorNumber} ${el?.primaryTrustee?.members[0]?.address?.country}
+    return el?.primaryTrustee?.members.length ? `<tr>
+    <td  class="para para-style">${ el?.primaryTrustee?.members[0]?.name} (${el?.primaryTrustee?.type} No. ${el?.primaryTrustee?.members[0]?.id_number}), of ${el?.primaryTrustee?.members[0]?.address?.streetName},${el?.primaryTrustee?.members[0]?.address?.floorNumber} ${el?.primaryTrustee?.members[0]?.address?.country}
        ${el?.primaryTrustee?.members[0]?.address?.postalCode}, ${el?.primaryTrustee?.members[0]?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${el?.primaryTrustee?.members[0]?.name}”).</td>
-  </tr>`
+  </tr>` : ""
   }
 }).join('')
 }
@@ -364,10 +365,10 @@ ${trust.map((el) => {
   text-indent: 0pt;
   line-height: 152%;
   text-align: justify;
-" > <p>
+" > <p> 
 
-I GIVE my immovable property known as ${trust.map((el) => `${el.trustDetails?.trustName}`).join(',')}, ${trust[0]?.primaryTrustee?.members.map((el2)=>el2.address?.country)} 
-("${trust.map((el)=>`${el?.trustDetails?.description}`).join(",")}") to my Trustee/s to
+I GIVE my immovable property known as ${trust.map((el) => el? `${el.trustDetails?.trustName}`:"").join(',')}, ${trust[0]?.primaryTrustee?.members.map((el2)=>el2.address?.country)} 
+("${trust.map((el)=>el? `${el?.trustDetails?.description}`: "").join(",")}") to my Trustee/s to
 hold UPON Trust (the “${trust.map((el)=>`${el?.trustDetails?.trustName}`).join(',')}”) for the
 following Trust beneficiary/ies in the following proportion/s:</td>
 </p>
@@ -378,7 +379,7 @@ following Trust beneficiary/ies in the following proportion/s:</td>
     <p
       class=""
     >
-      100% to my ${trust.map((el)=>el.primaryTrustee?.members.map((el2)=>`${el2?.Relationship} ${el2?.name} of (${el2?.id_type} No ${el2?.id_number})`)).join(",")} .
+      My ${trust.map((el)=>el? el.primaryTrustee?.members.map((el2)=>`${el2?.Relationship} ${el2?.name} of (${el2?.id_type} No ${el2?.id_number})`): "").join(",")} .
     </p>
     
     <p
@@ -389,11 +390,11 @@ following Trust beneficiary/ies in the following proportion/s:</td>
         text-align: justify;
       "
     >
-      The Trust Period of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} shall be
+      The Trust Period of the ${trust.map((el)=> el? el?.trustDetails?.trustName : "").join(",")} shall be
       from the date of my death to the earlier of (i) the date when the
-      Trustee/s sell or dispose of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} with the
-      consent of ${trust.map((el)=>el?.primaryTrustee?.members.map((el2)=>`${el2?.name} (${el2?.id_type} No ${el2?.id_number} of ${el2?.address?.streetName} ${el2?.address?.postalCode} ${el2?.address?.country} )`)).join(",")}  ), or (ii) ${trust.map((el)=>el?.trustAge).join(",")} years from the date of my death
-      (the “${trust.map((el)=>el?.trustDetails?.trustName).join(",")} Period”).
+      Trustee/s sell or dispose of the ${trust.map((el)=>el? el?.trustDetails?.trustName :"").join(",")} with the
+      consent of ${trust.map((el)=>el?.primaryTrustee?.members.map((el2)=>el2 ? `${el2?.name} (${el2?.id_type} No ${el2?.id_number} of ${el2?.address?.streetName} ${el2?.address?.postalCode} ${el2?.address?.country} )`:"" )).join(",")}  ), or (ii) ${trust.map((el)=>el?.trustAge).join(",")} years from the date of my death
+      (the “${trust.map((el)=>el? el?.trustDetails?.trustName : "").join(",")} Period”).
     </p>
     <p
       style="
