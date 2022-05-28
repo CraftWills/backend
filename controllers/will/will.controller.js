@@ -426,7 +426,7 @@ following Trust beneficiary/ies in the following proportion/s:</td>
     <p
     class="para-style"
    >
-      ${trust.map((el)=> el?.trusteePowers)}
+      
       A Trustee is entitled to remunerated out of the income and property of
       this Trust for any and all of the Trustee’s fees, which shall be
       reasonable.
@@ -436,121 +436,19 @@ following Trust beneficiary/ies in the following proportion/s:</td>
       I EMPOWER my Trustee/s to use their discretion to:
     </p>
     
+  <p>  
+
+
     <ul id="l2">
       <li data-list-text="-">
         <p
          class="para-style"
         >
-          employ and rely on the advice of experts including legal counsel,
-          accountants and investment advisors to assist in the management of
-          the Trust and to be reimbursed out of the income and property of
-          the Trust for any and all expenses where such expense is
-          reasonably and properly incurred in the management of the Trust.
+        ${trust.map((el)=>el?.trusteePowers?.map((powers)=>` -${powers}<br>`)).join("")}
         </p>
         
       </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          appoint a suitable replacement Trustee at any time where the
-          Trustee is no longer able to act as Trustee for any reason.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          purchase, maintain, convert and liquidate investments or
-          securities, at reasonable risk, and for the purpose of generating
-          income and growth, or exercise any option concerning any
-          investments or securities, as the Trustee deems reasonable and in
-          the best overall interest of the Trust, without liability for loss
-          or depreciation.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          insure, repair, improve, or add to or otherwise deal with any and
-          all property belonging to the Trust, both movable and immovable,
-          as the Trustee deems reasonable and in the best overall interest
-          of the Trust, without liability for loss or depreciation.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          sell, call in and convert into money any and all property
-          belonging to the Trust, both movable and immovable, with the power
-          to postpone the sale, calling in and conversion as the Trustee
-          deems reasonable and in the best overall interest of the Trust,
-          without liability for loss or depreciation.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          deposit monies into safe bank accounts but shall not make any
-          investments.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          apply the Trust assets towards the emergency or reasonable medical
-          expenses of my Trust beneficiary/ies within the relevant Trust
-          period.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          apply the Trust assets towards the educational needs of my Trust
-          beneficiary/ies within the relevant Trust period.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          apply the Trust assets towards purchasing life insurance policies
-          on behalf of my Trust beneficiary/ies within the relevant Trust
-          period.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          adjust each payout made to a Trust beneficiary from the Trust,
-          taking into account inflation rates from the date of the signing
-          of this Will.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style">
-          withhold or advance any payouts from the Trust to any of my Trust
-          beneficiaries
-        </p>
-      </li>
-    </ul>
-  </li>
+      
 </ol></td>
 </tr>
   ` : ``
@@ -1019,13 +917,13 @@ const witness = `
 var document = {
     html: html,
     path: "./output.pdf",
-    // type: "",
-    type: 'buffer',
+    type: "",
+    // type: 'buffer',
     data: {}
   };
 
   return pdf.create(document , options).then(async res =>{
-    console.log('....',res)
+    // console.log('....',res)
     // return  (willData)
     return  (res)
   }).catch(error =>{
