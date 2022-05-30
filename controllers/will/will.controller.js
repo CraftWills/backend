@@ -71,14 +71,7 @@ exports.storeWill = async (req,res) => {
     })
 
 const savedData = await data.save();
-  // if (savedData){
-  //   const memberData = await member.updateMany({
-  //     user_id: _id
-  //   },{$set : {
-  //     isMember : false
-  //   }}, { new: true })
-  // console.log(memberData)
-  // }
+
 
 if (savedData){
 
@@ -92,15 +85,8 @@ if (savedData){
     })
 
     console.log(memberIds)
-    // const Willdata = await Will.find({"member":memberIds})
-    // console.log(Willdata)
-    // console.log("willdata via Member:   ",Willdata)
-    // data.forEach((el)=>{
-    //   memberIds.push(el._id)
-    // })
-    // console.log(memberIds)
+
   }
-    // console.log(savedData);
    res.json({
       message : "Data has been saved successfully",
       success : true,
@@ -117,7 +103,7 @@ if (savedData){
 }
 
 
-// Getting Business Details
+// Getting Will Details
 
 
 exports.getWillDetails = async (req, res) => {
@@ -136,6 +122,7 @@ exports.getWillDetails = async (req, res) => {
   }
 }
 
+/// Past Will Versions
 
 exports.pastVersions = async (req,res)=>{
   const user = req.token_data._id
@@ -958,7 +945,7 @@ var document = {
     return err.message
   }
 }
-///// Get Will Info
+///// Get Will Info by id
 exports.getWillInfo = async(req,res)=>{
   try {
   const data = await Will.find({user_id: "624e84a65e9471c649140d96"})
@@ -966,10 +953,7 @@ exports.getWillInfo = async(req,res)=>{
 let replacementExecutorsData = data.map(el=>el.replacementExecutors)
 let guardianExecutorData = data.map(el=>el.guardianExecutor)
 let guardianReplacementExecutorData = data.map(el=>el.guardianReplacementExecutor)
-// console.log(primaryExecutorData)
-// console.log(replacementExecutorsData)
-// console.log(guardianExecutorData)
-// console.log(guardianReplacementExecutorData)
+
   res.json({
     message : "data found successfully",
     success : true,
@@ -983,3 +967,5 @@ let guardianReplacementExecutorData = data.map(el=>el.guardianReplacementExecuto
     })
   }
 }
+
+/// commiting changes
