@@ -71,14 +71,7 @@ exports.storeWill = async (req,res) => {
     })
 
 const savedData = await data.save();
-  // if (savedData){
-  //   const memberData = await member.updateMany({
-  //     user_id: _id
-  //   },{$set : {
-  //     isMember : false
-  //   }}, { new: true })
-  // console.log(memberData)
-  // }
+
 
 if (savedData){
 
@@ -92,15 +85,8 @@ if (savedData){
     })
 
     console.log(memberIds)
-    // const Willdata = await Will.find({"member":memberIds})
-    // console.log(Willdata)
-    // console.log("willdata via Member:   ",Willdata)
-    // data.forEach((el)=>{
-    //   memberIds.push(el._id)
-    // })
-    // console.log(memberIds)
+
   }
-    // console.log(savedData);
    res.json({
       message : "Data has been saved successfully",
       success : true,
@@ -117,7 +103,7 @@ if (savedData){
 }
 
 
-// Getting Business Details
+// Getting Will Details
 
 
 exports.getWillDetails = async (req, res) => {
@@ -136,6 +122,7 @@ exports.getWillDetails = async (req, res) => {
   }
 }
 
+/// Past Will Versions
 
 exports.pastVersions = async (req,res)=>{
   const user = req.token_data._id
@@ -308,7 +295,21 @@ exports.generatePdf = async(req,res)=>{
     console.log("final data :=== ",willData)
     
     const {executors, trust, residualAsset} = willData;
-    
+    const cover = `
+    <div style="width:100%; height:100vh; margin-top:400px; display:flex; align-items:center; justify-content:center">
+        <div style="text-align:center ;">
+            <div style="display:flex; margin-bottom: 100px;  margin-top: 100px;">
+                <p style="height: 40px;font-size: 20px; margin-right: 10px;">Dated This</p>
+                <input type="text"bottom
+                    style="border:none; border-bottom: 1px solid black; height: 40px; width: 200px;font-size: 20px; text-align: center;" />
+            </div>
+
+            <img src="${image} "width="400" height="100">
+            <p style="color:black; font-size: 25px; margin-top: 100px;">The Last Will and Testament Of</p>
+            <p style="color:black; font-size: 25px;">${willData?.user?.fullname}</p>
+            <p style="color:black;font-size:25px">(${willData?.user?.id_type} ${willData?.user?.id_number})</p>
+        </div>
+    </div>`
     const executor = `
     <tr>
             <td class="sub-heading  heading-style">EXECUTOR</td>
@@ -337,22 +338,23 @@ exports.generatePdf = async(req,res)=>{
   </tbody>
 <tr>
     <td>
-        I APPOINT 
+        I APPOINT
     </td>
 </tr>
 ${trust.map((el) => {
-  if (el?.primaryTrustee?.type==="joint"|| el?.primaryTrustee?.type==="jointlyAndSeverally" )
+ 
+   if (el?.primaryTrustee?.type==="joint"|| el?.primaryTrustee?.type==="jointlyAndSeverally" )
   el?.primaryTrustee?.members.map(dta=>{
-    return  `<tr>
-      <td  class="para para-style">  ${dta?.name} (${el?.primaryTrustee?.type} No. ${dta?.id_number}), of ${dta?.address?.streetName},${dta.address?.floorNumber} ${dta.address?.country}
+    return dta?.name ? `<tr>
+      <td  class="para para-style">(${dta?.name} ${ el?.primaryTrustee?.type} No. ${dta?.id_number}), of ${dta?.address?.streetName},${dta.address?.floorNumber} ${dta.address?.country}
          ${dta?.address?.postalCode}, ${dta?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${dta?.name}”).</td>
     </tr>`
-    }).join('')
+    :""}).join('')
   else{
-    return `<tr>
-    <td  class="para para-style">  ${el?.primaryTrustee?.members[0]?.name} (${el?.primaryTrustee?.type} No. ${el?.primaryTrustee?.members[0]?.id_number}), of ${el?.primaryTrustee?.members[0]?.address?.streetName},${el?.primaryTrustee?.members[0]?.address?.floorNumber} ${el?.primaryTrustee?.members[0]?.address?.country}
+    return el?.primaryTrustee?.members.length ? `<tr>
+    <td  class="para para-style">${ el?.primaryTrustee?.members[0]?.name} (${el?.primaryTrustee?.type} No. ${el?.primaryTrustee?.members[0]?.id_number}), of ${el?.primaryTrustee?.members[0]?.address?.streetName},${el?.primaryTrustee?.members[0]?.address?.floorNumber} ${el?.primaryTrustee?.members[0]?.address?.country}
        ${el?.primaryTrustee?.members[0]?.address?.postalCode}, ${el?.primaryTrustee?.members[0]?.address?.country} to be the ${el?.primaryTrustee?.type} Trustee of this my Will (“${el?.primaryTrustee?.members[0]?.name}”).</td>
-  </tr>`
+  </tr>` : ""
   }
 }).join('')
 }
@@ -364,10 +366,10 @@ ${trust.map((el) => {
   text-indent: 0pt;
   line-height: 152%;
   text-align: justify;
-" > <p>
+" > <p> 
 
-I GIVE my immovable property known as ${trust.map((el) => `${el.trustDetails?.trustName}`).join(',')}, ${trust[0]?.primaryTrustee?.members.map((el2)=>el2.address?.country)} 
-("${trust.map((el)=>`${el?.trustDetails?.description}`).join(",")}") to my Trustee/s to
+I GIVE my immovable property known as ${trust.map((el) => el? `${el.trustDetails?.trustName}`:"").join(',')}, ${trust[0]?.primaryTrustee?.members.map((el2)=>el2.address?.country)} 
+("${trust.map((el)=>el? `${el?.trustDetails?.description}`: "").join(",")}") to my Trustee/s to
 hold UPON Trust (the “${trust.map((el)=>`${el?.trustDetails?.trustName}`).join(',')}”) for the
 following Trust beneficiary/ies in the following proportion/s:</td>
 </p>
@@ -378,7 +380,7 @@ following Trust beneficiary/ies in the following proportion/s:</td>
     <p
       class=""
     >
-      100% to my ${trust.map((el)=>el.primaryTrustee?.members.map((el2)=>`${el2?.Relationship} ${el2?.name} of (${el2?.id_type} No ${el2?.id_number})`)).join(",")} .
+      My ${trust.map((el)=>el? el.primaryTrustee?.members.map((el2)=>`${el2?.Relationship} ${el2?.name} of (${el2?.id_type} No ${el2?.id_number})`): "").join(",")} .
     </p>
     
     <p
@@ -389,11 +391,11 @@ following Trust beneficiary/ies in the following proportion/s:</td>
         text-align: justify;
       "
     >
-      The Trust Period of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} shall be
+      The Trust Period of the ${trust.map((el)=> el? el?.trustDetails?.trustName : "").join(",")} shall be
       from the date of my death to the earlier of (i) the date when the
-      Trustee/s sell or dispose of the ${trust.map((el)=>el?.trustDetails?.trustName).join(",")} with the
-      consent of ${trust.map((el)=>el?.primaryTrustee?.members.map((el2)=>`${el2?.name} (${el2?.id_type} No ${el2?.id_number} of ${el2?.address?.streetName} ${el2?.address?.postalCode} ${el2?.address?.country} )`)).join(",")}  ), or (ii) ${trust.map((el)=>el?.trustAge).join(",")} years from the date of my death
-      (the “${trust.map((el)=>el?.trustDetails?.trustName).join(",")} Period”).
+      Trustee/s sell or dispose of the ${trust.map((el)=>el? el?.trustDetails?.trustName :"").join(",")} with the
+      consent of ${trust.map((el)=>el?.primaryTrustee?.members.map((el2)=>el2 ? `${el2?.name} (${el2?.id_type} No ${el2?.id_number} of ${el2?.address?.streetName} ${el2?.address?.postalCode} ${el2?.address?.country} )`:"" )).join(",")}  ), or (ii) ${trust.map((el)=>el?.trustAge).join(",")} years from the date of my death
+      (the “${trust.map((el)=>el? el?.trustDetails?.trustName : "").join(",")} Period”).
     </p>
     <p
       style="
@@ -426,6 +428,7 @@ following Trust beneficiary/ies in the following proportion/s:</td>
     <p
     class="para-style"
    >
+      
       A Trustee is entitled to remunerated out of the income and property of
       this Trust for any and all of the Trustee’s fees, which shall be
       reasonable.
@@ -434,122 +437,15 @@ following Trust beneficiary/ies in the following proportion/s:</td>
     <p style="padding-left: 5pt; text-indent: 0pt; text-align: justify">
       I EMPOWER my Trustee/s to use their discretion to:
     </p>
-    
-    <ul id="l2">
-      <li data-list-text="-">
-        <p
-         class="para-style"
-        >
-          employ and rely on the advice of experts including legal counsel,
-          accountants and investment advisors to assist in the management of
-          the Trust and to be reimbursed out of the income and property of
-          the Trust for any and all expenses where such expense is
-          reasonably and properly incurred in the management of the Trust.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          appoint a suitable replacement Trustee at any time where the
-          Trustee is no longer able to act as Trustee for any reason.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          purchase, maintain, convert and liquidate investments or
-          securities, at reasonable risk, and for the purpose of generating
-          income and growth, or exercise any option concerning any
-          investments or securities, as the Trustee deems reasonable and in
-          the best overall interest of the Trust, without liability for loss
-          or depreciation.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          insure, repair, improve, or add to or otherwise deal with any and
-          all property belonging to the Trust, both movable and immovable,
-          as the Trustee deems reasonable and in the best overall interest
-          of the Trust, without liability for loss or depreciation.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          sell, call in and convert into money any and all property
-          belonging to the Trust, both movable and immovable, with the power
-          to postpone the sale, calling in and conversion as the Trustee
-          deems reasonable and in the best overall interest of the Trust,
-          without liability for loss or depreciation.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          deposit monies into safe bank accounts but shall not make any
-          investments.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          apply the Trust assets towards the emergency or reasonable medical
-          expenses of my Trust beneficiary/ies within the relevant Trust
-          period.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          apply the Trust assets towards the educational needs of my Trust
-          beneficiary/ies within the relevant Trust period.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          apply the Trust assets towards purchasing life insurance policies
-          on behalf of my Trust beneficiary/ies within the relevant Trust
-          period.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style"
-        >
-          adjust each payout made to a Trust beneficiary from the Trust,
-          taking into account inflation rates from the date of the signing
-          of this Will.
-        </p>
-        
-      </li>
-      <li data-list-text="-">
-        <p
-        class="para-style">
-          withhold or advance any payouts from the Trust to any of my Trust
-          beneficiaries
-        </p>
-      </li>
-    </ul>
-  </li>
+  <p> 
+<ul id="l2">
+     ${trust?.map((el)=>el?.trusteePowers?.map((powers)=>powers? `  <li data-list-text="-">
+     <p
+      class="para-style"
+     >-${powers}<br>`:"").join(""))}
+     </p>
+        </li>
+      
 </ol></td>
 </tr>
   ` : ``
@@ -811,7 +707,7 @@ const witness = `
                 height: 25px;
               }
               
-              .space {
+              .space {6p
                 padding-left: 10px;
               }
               
@@ -833,14 +729,18 @@ const witness = `
                 background-color: #ebebeb;
                 
               }
-              
-              
-    
+
         </style>
       </head>
-      
+      <body>
+            <div class="cover-page">${cover}</div>
+
+            <div style='height: 6in; width: 100%'></div>
+
+            </body>
+     
       <body style='margin-top: 0px; padding: 0px;' class="mat-typography">
-      
+
       <table style="margin-top: 0px; padding-top: 0px !important;">
       <tbody>
           <tr>
@@ -915,7 +815,7 @@ const witness = `
             <div class="s5">&nbsp;&nbsp; </div>
             <span class="p">(month) </span>
             <div class="s5">&nbsp;&nbsp; </div>
-            <span class="p">(year).</span>
+            <span class="p">(year).</span>    
         </td>
           </tr> 
           
@@ -943,7 +843,7 @@ const witness = `
             </td>
         </tr>
         <tr>
-        ${witness}
+        ${witness}   
         </tr>
         <tr>
             <td>
@@ -976,15 +876,21 @@ const witness = `
         <div><img src="${image}" style="display: none; width: 0px; height: 0px;"></div>
         </body>
     </html>
+            <br><br>  <br> <br> <br> <br> <br> <br> <br>
+            <br>
+
+            <br>
      `
  var options = {
       format: "A3",
       orientation: "portrait",
       border: "0mm",
       header: {
-          height: "40mm",
-          contents: `
-            <div style='padding-left: 42px; padding-right: 42px;'>
+          height: "30mm",
+          contents: {
+            first: '<br>',
+            default: `
+            <div class="Header" style='padding-left: 42px; padding-right: 42px;'>
             <hr style="height:2px;border-width:0;color:#000;background-color:#000">
               <table style='width: 100%; margin: 0; padding: 0;'>
                   <tr>
@@ -998,10 +904,12 @@ const witness = `
               </table>
               <hr style="height:2px;border-width:0;color:#000;background-color:#000">
             </div>`
+          }
       },
       footer: {
           height: "35mm",
           contents: {
+              first: `<br>`,
               default: `<div style='padding-left: 42px; padding-right: 42px; padding-top: 8px;'>
                   <table style='border-collapse: collapse; width: 100%; height: 110px; page-break-inside: avoid;'>
                       <tr>
@@ -1037,7 +945,7 @@ var document = {
     return err.message
   }
 }
-///// Get Will Info
+///// Get Will Info by id
 exports.getWillInfo = async(req,res)=>{
   try {
   const data = await Will.find({user_id: "624e84a65e9471c649140d96"})
@@ -1045,10 +953,7 @@ exports.getWillInfo = async(req,res)=>{
 let replacementExecutorsData = data.map(el=>el.replacementExecutors)
 let guardianExecutorData = data.map(el=>el.guardianExecutor)
 let guardianReplacementExecutorData = data.map(el=>el.guardianReplacementExecutor)
-// console.log(primaryExecutorData)
-// console.log(replacementExecutorsData)
-// console.log(guardianExecutorData)
-// console.log(guardianReplacementExecutorData)
+
   res.json({
     message : "data found successfully",
     success : true,
@@ -1062,3 +967,5 @@ let guardianReplacementExecutorData = data.map(el=>el.guardianReplacementExecuto
     })
   }
 }
+
+/// commiting changes
