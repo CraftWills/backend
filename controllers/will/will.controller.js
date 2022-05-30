@@ -320,7 +320,7 @@ exports.generatePdf = async(req,res)=>{
             <img src="${image} "width="400" height="100">
             <p style="color:black; font-size: 25px; margin-top: 100px;">The Last Will and Testament Of</p>
             <p style="color:black; font-size: 25px;">${willData?.user?.fullname}</p>
-            <p style="color:black;font-size:25px">(${willData?.user?.id_number})</p>
+            <p style="color:black;font-size:25px">(${willData?.user?.id_type} ${willData?.user?.id_number})</p>
         </div>
     </div>`
     const executor = `
@@ -452,14 +452,12 @@ following Trust beneficiary/ies in the following proportion/s:</td>
     </p>
   <p> 
 <ul id="l2">
-      <li data-list-text="-">
-        <p
-         class="para-style"
-        >
-        ${trust.map((el) =>el?.trusteePowers?.map((powers)=>`-${powers}<br>`)).join("")}
-        </p>
-        
-      </li>
+     ${trust?.map((el)=>el?.trusteePowers?.map((powers)=>powers? `  <li data-list-text="-">
+     <p
+      class="para-style"
+     >-${powers}<br>`:"").join(""))}
+     </p>
+        </li>
       
 </ol></td>
 </tr>
@@ -745,9 +743,6 @@ const witness = `
                 
               }
 
-          
-              
-    
         </style>
       </head>
       <body>
@@ -944,8 +939,8 @@ const witness = `
 var document = {
     html: html,
     path: "./output.pdf",
-    // type: "",
-    type: 'buffer',
+    type: "",
+    // type: 'buffer',
     data: {}
   };
 
