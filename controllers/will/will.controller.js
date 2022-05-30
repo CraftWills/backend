@@ -939,8 +939,8 @@ const witness = `
 var document = {
     html: html,
     path: "./output.pdf",
-    type: "",
-    // type: 'buffer',
+    // type: "",
+    type: 'buffer',
     data: {}
   };
 
